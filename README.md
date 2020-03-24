@@ -4,6 +4,7 @@
 1. Get VS Code here: https://code.visualstudio.com/
 2. Install VS Code and download Node.js here: https://nodejs.org/en/
 3. Install Node.js then clone the project.
+4. Run the commands below in VS Code's Terminal.
 
 ## Project setup
 ```
