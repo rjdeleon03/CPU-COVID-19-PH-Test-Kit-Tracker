@@ -22,20 +22,29 @@
             <td align="center">0</td>
           </tr>
         </tbody>
-        <tfoot>
+      </table>
+      <table id="tbl-test-kits-summary-id" border="1">
+        <thead>
+          <th colspan="2">SUMMARY</th>
+        </thead>
+        <tbody>
           <tr>
-            <td></td>
-            <td align="center">Total</td>
+            <td>Total Units On-hand</td>
             <td align="center">3,000</td>
-            <td align="center">0</td>
+          </tr>
+          <tr>
+            <td>Total Units Pledged</td>
             <td align="center">0</td>
           </tr>
           <tr>
-            <td></td>
-            <td align="center">Total (On-hand + Pledged)</td>
-            <td align="center" colspan="3">3,000</td>
+            <td>Total Units Used</td>
+            <td align="center">0</td>
           </tr>
-        </tfoot>
+          <tr>
+            <td>Remaining Units Available For Use</td>
+            <td align="center">3,000</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
