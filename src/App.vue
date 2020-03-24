@@ -8,11 +8,11 @@
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import Navbar from "./components/layout/Navbar.vue";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 export default {
   name: "App",
   components: {
-    // HelloWorld
     Navbar
   }
 };
