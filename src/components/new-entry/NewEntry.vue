@@ -16,7 +16,8 @@
         <label>Acquired through: </label>
         </td>
         <td>
-        <select id="natureOfAcquisition" v-model="acquired" @keyup.enter="addKit">
+        <select id="natureOfAcquisition" v-model="acquired">
+          <option value="" disabled>Select an option</option>
           <option value="0">Pledge</option>
           <option value="1">Donation</option>
           <option value="2">Government Procurement</option>
@@ -60,7 +61,7 @@
         <label>Date Received: </label>
         </td>
         <td>
-        <input id="dateReceived" type="date" v-model="dateReceived" />
+        <input id="dateReceived" type="date" v-model="dateReceived" :disabled="disableDate"/>
         </td>
       </tr>
     </table>
@@ -97,7 +98,7 @@ export default {
   },
   methods: {
     addKit() {
-      console.log("Hello!");
+      console.log("Adding kit...");
       db.collection("kits").add({
         date_received: this.dateReceived,
         nature_of_acquisition: this.acquired,
@@ -108,6 +109,15 @@ export default {
         units_pledged_min: this.pledgedMinUnits,
         units_used: this.distributedUnits
       });
+    }    
+  },
+  computed: {
+    disableDate: function(){
+      console.log(this.acquired)
+      if(this.acquired == "0")
+        return true;
+      else
+        return false;
     }
   }
 };
