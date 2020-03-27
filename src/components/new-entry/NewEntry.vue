@@ -2,9 +2,72 @@
   <div>
     <h1>Create New Entry</h1>
     <div>
-      <input type="text" v-model="newReptile" @keyup.enter="addReptile" />
-      <button @click="addReptile">
-        Add Reptile
+    <table id="inputTab">
+      <tr>
+        <td>
+        <label>Source: </label>
+        </td>
+        <td>
+        <input id="source" type="text" v-model="source" @keyup.enter="addKit" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>Acquired through: </label>
+        </td>
+        <td>
+        <select id="natureOfAcquisition" v-model="acquired" @keyup.enter="addKit">
+          <option value="0">Pledge</option>
+          <option value="1">Donation</option>
+          <option value="2">Government Procurement</option>
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>On-hand: </label>
+        </td>
+        <td>
+        <input id="onHand" type="text" v-model="onHandUnits" @keyup.enter="addKit" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>Pledged (Min): </label>
+        </td>
+        <td>
+        <input id="pledgedMin" type="text" v-model="pledgedMinUnits" @keyup.enter="addKit" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>Pledged (Max): </label>
+        </td>
+        <td>
+        <input id="pledgedMax" type="text" v-model="pledgedMaxUnits" @keyup.enter="addKit" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>Distributed: </label>
+        </td>
+        <td>
+        <input id="used" type="text" v-model="distributedUnits" @keyup.enter="addKit" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <label>Date Received: </label>
+        </td>
+        <td>
+        <input id="dateReceived" type="date" v-model="dateReceived" />
+        </td>
+      </tr>
+    </table>
+    </div>
+    <div>
+      <button @click="addKit">
+        Submit
       </button>
     </div>
   </div>
@@ -17,24 +80,44 @@ export default {
   components: {},
   data() {
     return {
-      newReptile: ""
+      source: "",
+      acquired: "",
+      onHandUnits: "",
+      pledgedMinUnits: "",
+      pledgedMaxUnits: "",
+      distributedUnits: "",
+      dateReceived: ""
+
     };
   },
   dao() {
     return {
-      reptiles: db.collection("kits")
+      kits: db.collection("kits")
     };
   },
   methods: {
-    addReptile() {
+    addKit() {
       console.log("Hello!");
       db.collection("kits").add({
-        name: this.newReptile,
-        timestamp: new Date()
+        date_received: this.dateReceived,
+        nature_of_acquisition: this.acquired,
+        source: this.source,
+        timestamp: new Date(),
+        units_on_hand: this.onHandUnits,
+        units_pledged_max: this.pledgedMaxUnits,
+        units_pledged_min: this.pledgedMinUnits,
+        units_used: this.distributedUnits
       });
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-align: left;
+  margin: 0 auto;
+}
+</style>
