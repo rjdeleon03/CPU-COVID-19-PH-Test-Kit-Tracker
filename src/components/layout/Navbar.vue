@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Navbar</h1>
+  <div class="navbar">
+    <!-- <h1>Navbar</h1> -->
   </div>
 </template>
 
@@ -11,4 +11,7 @@ export default {
 </script>
 
 <style>
+div.navbar {
+  background-color: #581845;
+}
 </style>
