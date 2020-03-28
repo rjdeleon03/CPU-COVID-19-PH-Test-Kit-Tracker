@@ -1,6 +1,6 @@
 <template>
   <div id="new-entry">
-    <h1>Add Kit</h1>
+    <h1>Edit Kit</h1>
     <div>
       <table id="inputTab">
         <tr>
@@ -8,7 +8,7 @@
             <label>Source:</label>
           </td>
           <td>
-            <input id="source" type="text" v-model="source" @keyup.enter="addKit" />
+            <input id="source" type="text" v-model="source" @keyup.enter="editKit" />
           </td>
         </tr>
         <tr>
@@ -33,7 +33,7 @@
               id="onHand"
               type="text"
               v-model="onHandUnits"
-              @keyup.enter="addKit"
+              @keyup.enter="editKit"
               :disabled="disableInput"
             />
           </td>
@@ -43,7 +43,7 @@
             <label>Pledged (Min):</label>
           </td>
           <td>
-            <input id="pledgedMin" type="text" v-model="pledgedMinUnits" @keyup.enter="addKit" />
+            <input id="pledgedMin" type="text" v-model="pledgedMinUnits" @keyup.enter="editKit" />
           </td>
         </tr>
         <tr>
@@ -51,7 +51,7 @@
             <label>Pledged (Max):</label>
           </td>
           <td>
-            <input id="pledgedMax" type="text" v-model="pledgedMaxUnits" @keyup.enter="addKit" />
+            <input id="pledgedMax" type="text" v-model="pledgedMaxUnits" @keyup.enter="editKit" />
           </td>
         </tr>
         <tr>
@@ -63,7 +63,7 @@
               id="used"
               type="text"
               v-model="distributedUnits"
-              @keyup.enter="addKit"
+              @keyup.enter="editKit"
               :disabled="disableInput"
             />
           </td>
@@ -85,7 +85,7 @@
       </table>
     </div>
     <div>
-      <button @click="addKit">Add Kits</button>
+      <button @click="editKit">Save Changes</button>
     </div>
   </div>
 </template>
@@ -113,9 +113,9 @@ export default {
     };
   },
   methods: {
-    addKit() {
-      console.log("Adding kit...");
-      db.collection("kits").add({
+    editKit() {
+      console.log("Editing kit...");
+      db.collection("kits").doc("mxI3RL2ZUmxN0G6ZQMes").update({
         date_received: this.dateReceived,
         nature_of_acquisition: this.acquired,
         source: this.source,
