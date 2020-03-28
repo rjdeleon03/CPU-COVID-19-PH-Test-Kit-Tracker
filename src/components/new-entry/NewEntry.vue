@@ -3,7 +3,7 @@
     <v-form>
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <div class="title">
             <h2>Create New Test Kit Entry</h2>
             <v-divider />
@@ -14,7 +14,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-text-field
             v-model="source"
             :counter="10"
@@ -28,7 +28,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-select
             :items="natureOfAcquisition"
             label="Acquired Through"
@@ -43,7 +43,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-text-field
             v-model="onHandUnits"
             label="No. of On-hand Units"
@@ -56,7 +56,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-text-field
             v-model="pledgedMinUnits"
             label="Minimum No. of Pledged Units"
@@ -69,7 +69,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-text-field
             v-model="pledgedMaxUnits"
             label="Maximum No. of Pledged Units"
@@ -82,7 +82,7 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-text-field
             v-model="distributedUnits"
             label="No. of Distributed Units"
@@ -95,14 +95,12 @@
 
       <v-layout row wrap>
         <v-spacer></v-spacer>
-        <v-flex xs12 sm6 md4>
+        <v-flex xs10 sm8 md4>
           <v-dialog
             ref="dialog"
             v-model="datePickerVisible"
-            :return-value.sync="date"
+            :return-value.sync="dateReceived"
             persistent
-            lazy
-            full-width
             width="290px"
           >
             <template v-slot:activator="{ on }">
@@ -126,7 +124,7 @@
         <v-spacer></v-spacer>
       </v-layout>
 
-      <v-btn class="mr-6" @click="validate" color="amber darken-3">
+      <v-btn class="mr-6" @click="addKit" color="amber darken-3">
         <span class="button-text">Submit</span>
       </v-btn>
     </v-form>
