@@ -29,46 +29,14 @@
         </table>
       </div>
       <div id="table-container">
-        <v-card class="mx-auto" max-width="400">
-          <v-img
-            class="white--text align-end"
-            height="200px"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-          >
-            <v-card-title>Top 10 Australian beaches</v-card-title>
-          </v-img>
-
-          <v-card-subtitle class="pb-0">Number 10</v-card-subtitle>
-
-          <v-card-text class="text--primary">
-            <div>Whitehaven Beach</div>
-
-            <div>Whitsunday Island, Whitsunday Islands</div>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn color="orange" text>Share</v-btn>
-
-            <v-btn color="orange" text>Explore</v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-data-table
+          :headers="headers"
+          :items="kits"
+          :sort-desc="[false, true]"
+          multi-sort
+          class="elevation-1"
+        ></v-data-table>
       </div>
-      <!-- <div align="center">
-      <table>
-        <tr>
-          <th>Quantity</th>
-          <th>Used</th>
-          <th>Source</th>
-          <th>On-Hand?</th>
-        </tr>
-        <tr v-for="(kit, idx) in kits" :key="idx">
-          <td>{{ kit.units_pledged_max }}</td>
-          <td>{{ kit.units_used }}</td>
-          <td>{{ kit.source }}</td>
-          <td>{{ kit.units_on_hand }}</td>
-        </tr>
-      </table>
-      </div>-->
     </div>
   </div>
 </template>
@@ -80,6 +48,16 @@ export default {
   components: {},
   data() {
     return {
+      headers: [
+        {
+          text: "Source",
+          align: "start",
+          value: "source"
+        },
+        { text: "Units Pledged", value: "units_pledged_max", align: "end" },
+        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
+        { text: "Units Used", value: "units_used", align: "end" }
+      ],
       kits: []
     };
   },
@@ -94,7 +72,7 @@ export default {
 <style>
 .background {
   width: 100%;
-  height: 400px;
+  height: 450px;
   background-color: #581845;
   position: absolute;
   top: 0;
@@ -110,7 +88,7 @@ export default {
   right: 0;
 }
 .top-content {
-  height: 380px;
+  height: 320px;
   color: white;
   margin-bottom: 10px;
   position: relative;
@@ -149,5 +127,8 @@ export default {
   margin-top: -10px;
   font-size: 1em;
   text-transform: uppercase;
+}
+#table-container {
+  margin: 20px 10%;
 }
 </style>

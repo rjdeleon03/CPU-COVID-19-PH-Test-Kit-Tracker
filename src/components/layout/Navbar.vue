@@ -10,7 +10,7 @@
           width="40"
       />-->
 
-      <!-- <h2>COVID-19 PH ATM</h2> -->
+      <h2>COVID-19 PH ATM</h2>
     </div>
 
     <v-spacer></v-spacer>
