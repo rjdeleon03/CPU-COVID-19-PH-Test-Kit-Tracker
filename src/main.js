@@ -4,6 +4,7 @@ import VueFirestore from "vue-firestore";
 
 import router from "./router";
 import vuetify from "./plugins/vuetify";
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 Vue.config.productionTip = false;
 Vue.use(VueFirestore);

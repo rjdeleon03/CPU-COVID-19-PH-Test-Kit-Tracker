@@ -1,77 +1,137 @@
 <template>
   <div id="new-entry" class="content-wrapper">
     <v-form>
-      <v-container>
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
         <v-flex xs12 sm6 md4>
           <div class="title">
-            <h2>Create New Entry</h2>
+            <h2>Create New Test Kit Entry</h2>
             <v-divider />
           </div>
         </v-flex>
-        <v-row>
-          <v-col cols="12" md="3" />
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="source"
-              :counter="100"
-              label="Source"
-              required
-              color="orange darken-4"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3" />
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="3" />
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="onHandUnits"
-              :counter="100"
-              label="No. of On-hand Units"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3" />
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="3" />
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="pledgedMinUnits"
-              :counter="100"
-              label="Minimum No. of Pledged Units"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3" />
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="3" />
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="pledgedMaxUnits"
-              :counter="100"
-              label="Maximum No. of Pledged Units"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3" />
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="3" />
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="distributedUnits"
-              :counter="100"
-              label="No. of Distributed Units"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3" />
-        </v-row>
-      </v-container>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="source"
+            :counter="10"
+            label="Source"
+            required
+            color="pink darken-4"
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-select
+            :items="natureOfAcquisition"
+            label="Acquired Through"
+            v-model="acquired"
+            required
+            color="pink darken-4"
+            item-color="amber darken-4"
+          ></v-select>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="onHandUnits"
+            label="No. of On-hand Units"
+            required
+            color="pink darken-4"
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="pledgedMinUnits"
+            label="Minimum No. of Pledged Units"
+            required
+            color="pink darken-4"
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="pledgedMaxUnits"
+            label="Maximum No. of Pledged Units"
+            required
+            color="pink darken-4"
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="distributedUnits"
+            label="No. of Distributed Units"
+            required
+            color="pink darken-4"
+          ></v-text-field>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-spacer></v-spacer>
+        <v-flex xs12 sm6 md4>
+          <v-dialog
+            ref="dialog"
+            v-model="datePickerVisible"
+            :return-value.sync="date"
+            persistent
+            lazy
+            full-width
+            width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="dateReceived"
+                label="Date Received"
+                readonly
+                v-on="on"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="dateReceived"
+              @input="datePickerVisible = false"
+              header-color="pink darken-4"
+              color="amber darken-4"
+            ></v-date-picker>
+          </v-dialog>
+        </v-flex>
+        <v-spacer></v-spacer>
+      </v-layout>
+
+      <v-btn class="mr-6" @click="validate" color="amber darken-3">
+        <span class="button-text">Submit</span>
+      </v-btn>
     </v-form>
-    <!-- test -->
+
+    <!--
     <div>
       <table id="inputTab">
         <tr>
@@ -158,17 +218,20 @@
     <div>
       <button @click="addKit">Submit</button>
     </div>
+    -->
   </div>
 </template>
 
 <script>
 import { db } from "@/firebase/init";
-// import test from "./test.json";
+import { natureOfAcquisition } from "../../constants";
 export default {
   name: "NewEntry",
   components: {},
   data() {
     return {
+      datePickerVisible: false,
+      natureOfAcquisition: natureOfAcquisition,
       source: null,
       acquired: null,
       onHandUnits: null,
@@ -176,11 +239,6 @@ export default {
       pledgedMaxUnits: null,
       distributedUnits: null,
       dateReceived: new Date().toISOString().slice(0, 10)
-    };
-  },
-  dao() {
-    return {
-      kits: db.collection("kits")
     };
   },
   methods: {
@@ -231,5 +289,10 @@ export default {
   margin-bottom: 20px;
   text-align: start;
   color: #880e4f;
+}
+.button-text {
+  color: white;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>
