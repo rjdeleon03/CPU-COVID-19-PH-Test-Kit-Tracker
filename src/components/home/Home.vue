@@ -76,6 +76,7 @@ export default {
   height: 400px;
   background-image: url("~@/assets/header_bg_400h.png");
   background-position: bottom center;
+  background-size: cover;
   position: absolute;
   top: 0;
   left: 0;

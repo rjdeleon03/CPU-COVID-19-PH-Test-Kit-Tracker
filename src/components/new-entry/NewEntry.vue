@@ -1,6 +1,77 @@
 <template>
-  <div id="new-entry">
-    <h1>Create New Entry</h1>
+  <div id="new-entry" class="content-wrapper">
+    <v-form>
+      <v-container>
+        <v-flex xs12 sm6 md4>
+          <div class="title">
+            <h2>Create New Entry</h2>
+            <v-divider />
+          </div>
+        </v-flex>
+        <v-row>
+          <v-col cols="12" md="3" />
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="source"
+              :counter="100"
+              label="Source"
+              required
+              color="orange darken-4"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3" />
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="3" />
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="onHandUnits"
+              :counter="100"
+              label="No. of On-hand Units"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3" />
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="3" />
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="pledgedMinUnits"
+              :counter="100"
+              label="Minimum No. of Pledged Units"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3" />
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="3" />
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="pledgedMaxUnits"
+              :counter="100"
+              label="Maximum No. of Pledged Units"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3" />
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="3" />
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="distributedUnits"
+              :counter="100"
+              label="No. of Distributed Units"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3" />
+        </v-row>
+      </v-container>
+    </v-form>
+    <!-- test -->
     <div>
       <table id="inputTab">
         <tr>
@@ -151,5 +222,14 @@ export default {
   border-collapse: collapse;
   text-align: left;
   margin: 0 auto;
+}
+
+.content-wrapper .title {
+  margin: 30px 0 20px 0;
+}
+.title h2 {
+  margin-bottom: 20px;
+  text-align: start;
+  color: #880e4f;
 }
 </style>
