@@ -4,18 +4,21 @@
     <v-content>
       <router-view />
     </v-content>
+    <Footer />
   </v-app>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import Navbar from "./components/layout/Navbar.vue";
+import Footer from "./components/layout/Footer.vue";
 
 export default {
   name: "App",
   components: {
     // HelloWorld
-    Navbar
+    Navbar,
+    Footer
   }
 };
 </script>

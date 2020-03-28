@@ -54,6 +54,7 @@ export default {
           align: "start",
           value: "source"
         },
+        { text: "Date Received", value: "date_received", align: "end" },
         { text: "Units Pledged", value: "units_pledged_max", align: "end" },
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" }
@@ -72,26 +73,27 @@ export default {
 <style>
 .background {
   width: 100%;
-  height: 450px;
+  height: 400px;
   background-color: #581845;
   position: absolute;
   top: 0;
   left: 0;
 }
 .container {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   z-index: 1;
-  position: absolute;
+  /* position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 0; */
 }
 .top-content {
   height: 320px;
   color: white;
   margin-bottom: 10px;
   position: relative;
+  z-index: 1;
 }
 .top-content table {
   position: absolute;
@@ -130,5 +132,7 @@ export default {
 }
 #table-container {
   margin: 20px 10%;
+  z-index: 1;
+  position: relative;
 }
 </style>
