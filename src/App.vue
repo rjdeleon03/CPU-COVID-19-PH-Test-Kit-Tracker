@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Navbar />
-    <v-content>
+    <v-content id="main-container">
       <router-view />
     </v-content>
     <Footer />
@@ -30,5 +30,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+}
+#main-container {
+  background-color: #fafafa !important;
 }
 </style>

@@ -1,132 +1,172 @@
 <template>
   <div id="new-entry" class="content-wrapper">
     <v-form>
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <div class="title">
-            <h2>Create New Test Kit Entry</h2>
-            <v-divider />
-          </div>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+      <v-container class="grey lighten-5">
+        <v-row justify="center">
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <div class="title">
+              <h2>Create New Test Kit Entry</h2>
+              <v-divider />
+            </div>
+          </v-col>
+        </v-row>
 
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-text-field
-            v-model="source"
-            :counter="10"
-            label="Source"
-            required
-            color="pink darken-4"
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-text-field
+              v-model="source"
+              :counter="10"
+              label="Source"
+              required
+              color="pink darken-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
 
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-select
-            :items="natureOfAcquisition"
-            label="Acquired Through"
-            v-model="acquired"
-            required
-            color="pink darken-4"
-            item-color="amber darken-4"
-          ></v-select>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-select
+              :items="natureOfAcquisition"
+              label="Acquired Through"
+              v-model="acquired"
+              required
+              color="pink darken-4"
+              item-color="amber darken-4"
+            ></v-select>
+          </v-col>
+        </v-row>
 
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-text-field
-            v-model="onHandUnits"
-            label="No. of On-hand Units"
-            required
-            color="pink darken-4"
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+        <v-row justify="center">
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <div class="title">
+              <h4>Pledged Units</h4>
+              <v-divider />
+            </div>
+          </v-col>
+        </v-row>
 
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-text-field
-            v-model="pledgedMinUnits"
-            label="Minimum No. of Pledged Units"
-            required
-            color="pink darken-4"
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-switch
+              class="default-switch"
+              v-model="pledgedUnitsUsesRange"
+              label="No. of Pledged Units is a Range"
+              @change="pledgedMinUnits = 0"
+              color="amber darken-4"
+            ></v-switch>
+          </v-col>
+        </v-row>
 
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-text-field
-            v-model="pledgedMaxUnits"
-            label="Maximum No. of Pledged Units"
-            required
-            color="pink darken-4"
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
-
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-text-field
-            v-model="distributedUnits"
-            label="No. of Distributed Units"
-            required
-            color="pink darken-4"
-          ></v-text-field>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
-
-      <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-flex xs10 sm8 md4>
-          <v-dialog
-            ref="dialog"
-            v-model="datePickerVisible"
-            :return-value.sync="dateReceived"
-            persistent
-            width="290px"
-          >
-            <template v-slot:activator="{ on }">
+        <div v-if="pledgedUnitsUsesRange">
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
               <v-text-field
-                v-model="dateReceived"
-                label="Date Received"
-                readonly
-                v-on="on"
+                v-model="pledgedMinUnits"
+                label="Minimum No. of Pledged Units"
+                type="number"
                 required
                 color="pink darken-4"
               ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="dateReceived"
-              @input="datePickerVisible = false"
-              header-color="pink darken-4"
-              color="amber darken-4"
-            ></v-date-picker>
-          </v-dialog>
-        </v-flex>
-        <v-spacer></v-spacer>
-      </v-layout>
+            </v-col>
+          </v-row>
 
-      <v-btn class="mr-6" @click="addKit" color="amber darken-3">
-        <span class="button-text">Submit</span>
-      </v-btn>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="pledgedMaxUnits"
+                label="Maximum No. of Pledged Units"
+                type="number"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+
+        <div v-if="!pledgedUnitsUsesRange">
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="pledgedMaxUnits"
+                label="No. of Pledged Units"
+                type="number"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+
+        <v-row justify="center">
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <div class="title">
+              <h4>On-hand Information</h4>
+              <v-divider />
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-text-field
+              v-model="onHandUnits"
+              label="No. of On-hand Units"
+              type="number"
+              required
+              color="pink darken-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-text-field
+              v-model="distributedUnits"
+              label="No. of Distributed Units"
+              type="number"
+              required
+              color="pink darken-4"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <v-dialog
+              ref="dialog"
+              v-model="datePickerVisible"
+              :return-value.sync="dateReceived"
+              persistent
+              width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateReceived"
+                  label="Date Received"
+                  readonly
+                  v-on="on"
+                  required
+                  color="pink darken-4"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateReceived"
+                @input="datePickerVisible = false"
+                header-color="pink darken-4"
+                color="amber darken-4"
+              ></v-date-picker>
+            </v-dialog>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center">
+          <v-col cols="12" xs="2">
+            <v-btn class="default-button" @click="addKit" color="amber darken-3">
+              <span class="button-text">Submit</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-form>
 
     <!--
@@ -228,14 +268,15 @@ export default {
   components: {},
   data() {
     return {
+      pledgedUnitsUsesRange: false,
       datePickerVisible: false,
       natureOfAcquisition: natureOfAcquisition,
       source: null,
-      acquired: null,
-      onHandUnits: null,
-      pledgedMinUnits: null,
-      pledgedMaxUnits: null,
-      distributedUnits: null,
+      acquired: 0,
+      onHandUnits: 0,
+      pledgedMinUnits: 0,
+      pledgedMaxUnits: 0,
+      distributedUnits: 0,
       dateReceived: new Date().toISOString().slice(0, 10)
     };
   },
@@ -271,6 +312,9 @@ export default {
 </script>
 
 <style>
+#new-entry {
+  padding-bottom: 30px;
+}
 #new-entry table,
 #new-entry th,
 #new-entry td {
@@ -287,6 +331,15 @@ export default {
   margin-bottom: 20px;
   text-align: start;
   color: #880e4f;
+}
+.title h4 {
+  margin-bottom: 4px;
+  text-align: start;
+  color: #880e4f;
+  font-weight: 500;
+}
+.default-switch {
+  margin-top: 0 !important;
 }
 .button-text {
   color: white;
