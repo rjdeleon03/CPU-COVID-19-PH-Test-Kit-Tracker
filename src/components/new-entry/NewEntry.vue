@@ -16,7 +16,7 @@
         <label>Acquired through: </label>
         </td>
         <td>
-        <select id="natureOfAcquisition" v-model="acquired">
+        <select id="natureOfAcquisition" v-model="acquired" @change="resetForm($event)">
           <option value="" disabled>Select an option</option>
           <option value="0">Pledge</option>
           <option value="1">Donation</option>
@@ -29,7 +29,7 @@
         <label>On-hand: </label>
         </td>
         <td>
-        <input id="onHand" type="text" v-model="onHandUnits" @keyup.enter="addKit" />
+        <input id="onHand" type="text" v-model="onHandUnits" @keyup.enter="addKit" :disabled="disableInput" />
         </td>
       </tr>
       <tr>
@@ -53,7 +53,7 @@
         <label>Distributed: </label>
         </td>
         <td>
-        <input id="used" type="text" v-model="distributedUnits" @keyup.enter="addKit" />
+        <input id="used" type="text" v-model="distributedUnits" @keyup.enter="addKit" :disabled="disableInput"/>
         </td>
       </tr>
       <tr>
@@ -61,7 +61,7 @@
         <label>Date Received: </label>
         </td>
         <td>
-        <input id="dateReceived" type="date" v-model="dateReceived" :disabled="disableDate"/>
+        <input id="dateReceived" type="date" value="" v-model="dateReceived" :disabled="disableInput"/>
         </td>
       </tr>
     </table>
@@ -81,14 +81,13 @@ export default {
   components: {},
   data() {
     return {
-      source: "",
-      acquired: "",
-      onHandUnits: "",
-      pledgedMinUnits: "",
-      pledgedMaxUnits: "",
-      distributedUnits: "",
-      dateReceived: ""
-
+      source: null,
+      acquired: null,
+      onHandUnits: null,
+      pledgedMinUnits: null,
+      pledgedMaxUnits: null,
+      distributedUnits: null,
+      dateReceived: new Date().toISOString().slice(0,10)
     };
   },
   dao() {
@@ -109,11 +108,18 @@ export default {
         units_pledged_min: this.pledgedMinUnits,
         units_used: this.distributedUnits
       });
+    },
+    resetForm(event){
+      if(event.target.value == "0")
+      {
+        this.dateReceived=null;
+        this.onHandUnits=null;
+        this.distributedUnits=null;
+      }
     }    
   },
   computed: {
-    disableDate: function(){
-      console.log(this.acquired)
+    disableInput: function(){
       if(this.acquired == "0")
         return true;
       else
