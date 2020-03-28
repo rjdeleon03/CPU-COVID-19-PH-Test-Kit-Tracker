@@ -19,12 +19,7 @@
   </v-footer>-->
 
   <v-footer dark padless>
-    <v-col class="text-center" cols="12">
-      {{ new Date().getFullYear() }} —
-      <strong>Computer Professionals' Union</strong>
-    </v-col>
-    <v-divider red></v-divider>
-    <v-col class="text-center" cols="12">
+    <v-col class="text-center pink darken-4" cols="12">
       {{ new Date().getFullYear() }} —
       <strong>Computer Professionals' Union</strong>
     </v-col>

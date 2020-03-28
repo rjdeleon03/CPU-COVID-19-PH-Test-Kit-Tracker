@@ -74,7 +74,7 @@ export default {
 .background {
   width: 100%;
   height: 400px;
-  background-color: #581845;
+  background-color: #880e4f;
   position: absolute;
   top: 0;
   left: 0;
