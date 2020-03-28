@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "@firebase/app": "^0.6.0",
-    "@firebase/firestore": "^1.12.2",
+    "@firebase/firestore": "^1.13.0",
     "core-js": "^3.6.4",
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.5.0",
+    "http2": "^3.3.7",
     "vue": "^2.6.11",
     "vue-firestore": "^0.3.30",
     "vue-router": "^3.1.6",
