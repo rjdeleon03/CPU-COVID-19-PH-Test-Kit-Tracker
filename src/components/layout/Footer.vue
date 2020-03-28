@@ -21,7 +21,7 @@
   <v-footer dark padless>
     <v-col class="text-center pink darken-4" cols="12">
       {{ new Date().getFullYear() }} —
-      <strong>Computer Professionals' Union</strong>
+      <strong>Computer Professionals' Union and Volunteers</strong>
     </v-col>
   </v-footer>
 </template>
