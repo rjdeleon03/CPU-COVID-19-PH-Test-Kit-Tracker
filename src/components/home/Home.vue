@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div ref="printMe">
-      <h1>Print me!</h1>
-    </div>
     <div class="background"></div>
     <div class="top-content figures">
+      <div ref="printMe" @click="print" style="background-color: black;">
+        <h1>Print me!</h1>
+      </div>
       <v-container>
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="5" sm="12">
@@ -45,7 +45,7 @@
     <div class="share-content">
       <v-container>
         <v-row justify="center">
-          <social-sharing url="http://192.168.1.10:8080" inline-template>
+          <social-sharing url="http://192.168.1.12:8080" inline-template>
             <div>
               Share to:
               <network network="facebook">
@@ -101,6 +101,27 @@ import { db } from "@/firebase/init";
 export default {
   name: "Home",
   components: {},
+  metaInfo: {
+    meta: [
+      {
+        name: "description",
+        content:
+          "Epiloge is about connecting in your field of interest. Our vision is to help people share their knowledge, work, projects, papers and ideas and build their network through what they do rather where they live, study or work."
+      },
+      {
+        property: "og:title",
+        content: "Epiloge - Build your network in your field of interest"
+      },
+      { property: "og:site_name", content: "Epiloge" },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "index,follow" },
+      {
+        property: "og:image",
+        content:
+          "https://designshack.net/wp-content/uploads/placeholder-image.png"
+      }
+    ]
+  },
   data() {
     return {
       // Totals
@@ -145,7 +166,18 @@ export default {
       if (!x) return "0";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
-    deleteTestKit() {}
+    deleteTestKit() {},
+    async print() {
+      const el = this.$refs.printMe;
+      // add option type to get the image version
+      // if not provided the promise will return
+      // the canvas.
+      const options = {
+        type: "dataURL"
+      };
+      this.output = await this.$html2canvas(el, options);
+      console.log(this.output);
+    }
   },
   mounted() {
     db.collection("stats-main")

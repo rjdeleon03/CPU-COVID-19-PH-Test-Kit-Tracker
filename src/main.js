@@ -5,11 +5,17 @@ import VueFirestore from "vue-firestore";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import VueHtml2Canvas from 'vue-html2canvas';
+import VueMeta from 'vue-meta'
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import "regenerator-runtime/runtime.js";
 
 Vue.use(VueHtml2Canvas);
+
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+})
 
 // var $ = require("jquery");
 
