@@ -275,6 +275,7 @@ export default {
     };
   },
   mounted() {
+    if (!this.kitId) return;
     this.displayLoadingScreen("Fetching test kit entry...");
     this.dbKits()
       .doc(this.kitId)
