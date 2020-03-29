@@ -128,7 +128,7 @@ export default {
         { text: "Units Pledged", value: "units_pledged_max", align: "end" },
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: "Actions", value: "actions", align: "end", sortable: false }
       ],
       kits: []
     };
