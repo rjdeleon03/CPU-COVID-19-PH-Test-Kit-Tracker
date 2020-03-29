@@ -281,7 +281,7 @@ export default {
       .doc(this.kitId)
       .get()
       .then(doc => {
-        console.log(doc.data());
+        // console.log(doc.data());
         const data = doc.data();
         this.isLoading = false;
         this.isSuccess = false;

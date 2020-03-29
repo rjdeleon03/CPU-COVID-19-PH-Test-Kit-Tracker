@@ -9,3 +9,49 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 // firebase.analytics();
 export const db = firebaseApp.firestore();
 export const auth = firebase.auth();
+
+db.collection("kits").onSnapshot((snapshot) => {
+    let docs = snapshot.docs;
+    if (!docs) return;
+
+    var onHandTotal = 0;
+    var pledgedMinTotal = 0;
+    var pledgedMaxTotal = 0;
+    var hasPendingWrites = false;
+
+    docs.forEach(doc => {
+        let kit = doc.data();
+        if (kit.units_on_hand) {
+            onHandTotal += parseInt(kit.units_on_hand, 10);
+        }
+        if (kit.units_pledged_max) {
+            pledgedMaxTotal += parseInt(kit.units_pledged_max, 10);
+        }
+        if (kit.units_pledged_min) {
+            pledgedMinTotal += parseInt(kit.units_pledged_min, 10);
+        } else if (kit.units_pledged_max) {
+            pledgedMinTotal += parseInt(kit.units_pledged_max, 10);
+        }
+
+        // console.log(doc.metadata.hasPendingWrites)
+
+        if (doc.metadata.hasPendingWrites) {
+            console.log(doc);
+            hasPendingWrites = true;
+        }
+    });
+
+    if (hasPendingWrites) {
+        db.collection("stats-main")
+            .doc("MAIN_STATS_ID")
+            .update({
+                testKitsOnHand: onHandTotal,
+                testKitsPledgedMin: pledgedMinTotal,
+                testKitsPledgedMax: pledgedMaxTotal
+            });
+    }
+
+    // console.log("onHandTotal: " + onHandTotal);
+    // console.log("pledgedMinTotal: " + pledgedMinTotal);
+    // console.log("pledgedMaxTotal: " + pledgedMaxTotal);
+});

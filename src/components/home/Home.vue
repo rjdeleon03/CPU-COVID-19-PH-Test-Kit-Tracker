@@ -4,42 +4,45 @@
     <div class="top-content figures">
       <v-container>
         <v-row justify="center">
-          <v-col cols="12" xl="3" lg="3">
+          <v-col cols="12" xl="5" lg="5" sm="12">
             <div class="figures-main figures-container">
               <span class="figure">1,000,000</span>
               <p class="label">Cases</p>
             </div>
           </v-col>
         </v-row>
-        <v-row justify="end">
-          <v-col cols="12" lg="3" md="6">
+        <v-row justify="center">
+          <v-col cols="12" md="auto">
             <div class="figures-container">
-              <span class="figure">12,345</span>
+              <span class="figure">122,312,345</span>
               <p class="label">Deaths</p>
             </div>
           </v-col>
-          <v-col cols="12" lg="3" md="6">
+          <v-col cols="12" md="auto">
             <div class="figures-container">
               <span class="figure">234,983,277</span>
               <p class="label">Tests Conducted</p>
             </div>
           </v-col>
-          <v-col cols="12" lg="3" md="6">
+          <v-col cols="12" md="auto">
             <div class="figures-container">
-              <span class="figure">12,345</span>
+              <span class="figure">{{onHandTotal}}</span>
               <p class="label">Test Kits (On-Hand)</p>
             </div>
           </v-col>
-          <v-col cols="12" lg="3" md="6">
+          <v-col cols="12" md="auto">
             <div class="figures-container">
-              <span class="figure">4,983,277</span>
-              <p class="label">Test Kits (Pledged)</p>
+              <span class="figure">{{pledgedTotal}}</span>
+              <p class="label">Test Kits (Pledged + On-Hand)</p>
             </div>
           </v-col>
         </v-row>
       </v-container>
     </div>
-    <div id="table-container">
+    <!-- <div id="table-container">
+      
+    </div>-->
+    <v-container id="table-container">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -67,7 +70,7 @@
           </template>
         </v-data-table>
       </v-card>
-    </div>
+    </v-container>
   </div>
 </template>
 
@@ -78,6 +81,12 @@ export default {
   components: {},
   data() {
     return {
+      // Totals
+      onHandTotal: "-",
+      pledgedTotal: "-",
+      pledgedMinTotal: "-",
+      pledgedMaxTotal: "-",
+
       search: "",
       headers: [
         {
@@ -107,7 +116,26 @@ export default {
       let key = item[".key"];
       this.$router.push("/kits/edit/" + key);
     },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
     deleteTestKit() {}
+  },
+  mounted() {
+    db.collection("stats-main")
+      .doc("MAIN_STATS_ID")
+      .onSnapshot(doc => {
+        const data = doc.data();
+        this.onHandTotal = this.numberWithCommas(data.testKitsOnHand);
+        this.pledgedMinTotal = this.numberWithCommas(data.testKitsPledgedMin);
+        this.pledgedMaxTotal = this.numberWithCommas(data.testKitsPledgedMax);
+        if (data.testKitsPledgedMax > data.testKitsPledgedMin) {
+          this.pledgedTotal =
+            this.pledgedMinTotal + " - " + this.pledgedMaxTotal;
+        } else {
+          this.pledgedTotal = this.pledgedMaxTotal;
+        }
+      });
   }
 };
 </script>
@@ -150,7 +178,7 @@ export default {
   text-align: end;
 }
 .top-content .figures-main.figures-container {
-  text-align: end;
+  text-align: center;
 }
 .top-content .figures-main.figures-container .figure {
   font-size: 4em;
@@ -166,7 +194,7 @@ export default {
   text-transform: uppercase;
 }
 .top-content .figures-container .figure {
-  font-size: 3em;
+  font-size: 2.6em;
   font-weight: 600;
 }
 .top-content .figures-container .label {
@@ -175,7 +203,9 @@ export default {
   text-transform: uppercase;
 }
 #table-container {
-  margin: 20px 10%;
+  /* margin: 20px 5%; */
+  margin-top: 50px;
+  margin-bottom: 100px;
   z-index: 1;
   position: relative;
 }
