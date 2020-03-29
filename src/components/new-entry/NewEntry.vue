@@ -104,7 +104,7 @@
             </v-col>
           </v-row>
         </div>
-
+        <div v-if="acquired!='Pledge'">
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
             <div class="title">
@@ -167,7 +167,7 @@
             </v-dialog>
           </v-col>
         </v-row>
-
+        </div>
         <v-row justify="center">
           <v-col cols="12" xs="2">
             <v-btn class="default-button" @click="addKit" color="amber darken-3">
@@ -317,7 +317,12 @@ export default {
     },
     addKit() {
       if (!this.$refs.form.validate()) return;
-
+      if (this.acquired=="Pledge")
+      {
+        this.onHandUnits = 0;
+        this.distributedUnits = 0;
+        this.dateReceived = null;
+      }
       var task = null;
       if (this.kitId) {
         this.displayLoadingScreen(
@@ -366,12 +371,6 @@ export default {
     },
     redirectToHome() {
       this.$router.push("/");
-    }
-  },
-  computed: {
-    disableInput: function() {
-      if (this.acquired == "0") return true;
-      else return false;
     }
   }
 };
