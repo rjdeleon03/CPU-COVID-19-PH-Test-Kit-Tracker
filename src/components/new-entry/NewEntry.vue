@@ -261,13 +261,13 @@ export default {
       pledgedMinUnits: 0,
       pledgedMinUnitsRules: [
         v =>
-          v < this.pledgedMaxUnits ||
+          parseInt(v) < parseInt(this.pledgedMaxUnits) ||
           "Minimum no. of pledged units must be less than the maximum."
       ],
       pledgedMaxUnits: 0,
       pledgedMaxUnitsRules: [
         v =>
-          v > this.pledgedMinUnits ||
+          parseInt(v) > parseInt(this.pledgedMinUnits) ||
           "Maximum no. of pledged units must be greater than the minimum."
       ],
       distributedUnits: 0,
