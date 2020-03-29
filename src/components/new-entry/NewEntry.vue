@@ -105,68 +105,68 @@
           </v-row>
         </div>
         <div v-if="acquired!='Pledge'">
-        <v-row justify="center">
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <div class="title">
-              <h4>On-hand Information</h4>
-              <v-divider />
-            </div>
-          </v-col>
-        </v-row>
+          <v-row justify="center">
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <div class="title">
+                <h4>On-hand Information</h4>
+                <v-divider />
+              </div>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-text-field
-              v-model="onHandUnits"
-              label="No. of On-hand Units"
-              type="number"
-              min="0"
-              required
-              color="pink darken-4"
-            ></v-text-field>
-          </v-col>
-        </v-row>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="onHandUnits"
+                label="No. of On-hand Units"
+                type="number"
+                min="0"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-text-field
-              v-model="distributedUnits"
-              label="No. of Distributed Units"
-              type="number"
-              min="0"
-              required
-              color="pink darken-4"
-            ></v-text-field>
-          </v-col>
-        </v-row>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="distributedUnits"
+                label="No. of Distributed Units"
+                type="number"
+                min="0"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-dialog
-              ref="dialog"
-              v-model="datePickerVisible"
-              :return-value.sync="dateReceived"
-              width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-dialog
+                ref="dialog"
+                v-model="datePickerVisible"
+                :return-value.sync="dateReceived"
+                width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateReceived"
+                    label="Date Received"
+                    readonly
+                    v-on="on"
+                    required
+                    color="pink darken-4"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="dateReceived"
-                  label="Date Received"
-                  readonly
-                  v-on="on"
-                  required
-                  color="pink darken-4"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateReceived"
-                @input="datePickerVisible = false"
-                header-color="pink darken-4"
-                color="amber darken-4"
-              ></v-date-picker>
-            </v-dialog>
-          </v-col>
-        </v-row>
+                  @input="datePickerVisible = false"
+                  header-color="pink darken-4"
+                  color="amber darken-4"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
         </div>
         <v-row justify="center">
           <v-col cols="12" xs="2">
@@ -231,7 +231,7 @@ export default {
   name: "NewEntry",
   components: {},
   data() {
-    console.log(this.$route.params.kit_id);
+    // console.log(this.$route.params.kit_id);
     return {
       // Loading dialog
       isLoading: false,
@@ -317,8 +317,7 @@ export default {
     },
     addKit() {
       if (!this.$refs.form.validate()) return;
-      if (this.acquired=="Pledge")
-      {
+      if (this.acquired == "Pledge") {
         this.onHandUnits = 0;
         this.distributedUnits = 0;
         this.dateReceived = null;

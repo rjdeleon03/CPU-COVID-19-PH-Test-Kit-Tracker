@@ -1,5 +1,5 @@
 <template>
-  <div id="new-entry" class="content-wrapper">
+  <div id="update-stats" class="content-wrapper">
     <v-form ref="form">
       <v-container class="grey lighten-5">
         <v-row justify="center">
@@ -41,7 +41,7 @@
 
         <v-row justify="center">
           <v-col cols="12" xs="2">
-            <v-btn class="default-button" @click="addKit" color="amber darken-3">
+            <v-btn class="default-button" @click="updateStats" color="amber darken-3">
               <span class="button-text">Submit</span>
             </v-btn>
           </v-col>
@@ -50,56 +50,38 @@
     </v-form>
 
     <!-- Display dialog when loading -->
-    <v-dialog v-model="isLoading" max-width="350" persistent>
-      <v-card>
-        <v-card-text>
-          <div class="dialog-contents">
-            <v-progress-circular :size="100" :width="7" color="amber darken-4" indeterminate></v-progress-circular>
-            <p>{{loadingMessage}}</p>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
+
+    <!-- Display dialog on fetch error -->
+    <ErrorDialog
+      :isError="isFetchingError"
+      :errorMessage="fetchingErrorMessage"
+      :callback="redirectToHome"
+    />
+
+    <!-- Display dialog when submitting -->
+    <ProgressDialog :isLoading="isSubmitting" :loadingMessage="submittingMessage" />
 
     <!-- Display dialog on success -->
-    <v-dialog v-model="isSuccess" max-width="350" persistent>
-      <v-card>
-        <v-card-title class="headline">Operation Successful</v-card-title>
+    <SuccessDialog :isSuccess="isSuccess" :successMessage="successMessage" />
 
-        <v-card-text>
-          <p align="left">Your test kit entry has been saved.</p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="amber darken-4" text @click="redirectToHome()">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Display dialog on failure -->
-    <v-dialog v-model="isFailure" max-width="350" persistent>
-      <v-card>
-        <v-card-title class="headline">Operation Failed</v-card-title>
-
-        <v-card-text>
-          <p align="left">{{ failureMessage }}</p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="amber darken-4" text @click="isFailure = false">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- Display dialog on submission error -->
+    <ErrorDialog
+      :isError="isSubmittingError"
+      :errorMessage="submittingErrorMessage"
+      :callback="hideSubmittingError"
+    />
   </div>
 </template>
 
 <script>
 import { db } from "@/firebase/init";
+import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
+import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
+import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 export default {
-  name: "NewEntry",
-  components: {},
+  name: "UpdateStats",
+  components: { ProgressDialog, SuccessDialog, ErrorDialog },
   data() {
     console.log(this.$route.params.kit_id);
     return {
@@ -113,126 +95,87 @@ export default {
       ],
 
       // Loading dialog
-      isLoading: false,
-      loadingMessage: "",
+      isFetching: false,
+      fetchingMessage: "Fetching COVID-19 statistics...",
+
+      // Loading error dialog
+      isFetchingError: false,
+      fetchingErrorMessage:
+        "An error occurred while fetching COVID-19 statistics.",
+
+      // Submitting dialog
+      isSubmitting: false,
+      submittingMessage: "Updating COVID-19 statistics...",
 
       // Success dialog
       isSuccess: false,
+      successMessage: "The COVID-19 statistics have been updated.",
 
       // Failure dialog
-      isFailure: false,
-      failureMessage: ""
+      isSubmittingError: false,
+      submittingErrorMessage:
+        "An error occurred while upadting COVID-19 statistics."
     };
   },
   mounted() {
-    if (!this.kitId) return;
-    this.displayLoadingScreen("Fetching test kit entry...");
-    this.dbKits()
-      .doc(this.kitId)
+    this.isFetching = true;
+    this.dbMainStats()
+      .doc("EXTERNAL_STATS_ID")
       .get()
       .then(doc => {
         const data = doc.data();
-        this.isLoading = false;
-        this.isSuccess = false;
-        this.isFailure = false;
-        this.source = data.source;
-        this.acquired = this.natureOfAcquisition[data.nature_of_acquisition];
-        this.pledgedMinUnits = data.units_pledged_min;
-        this.pledgedMaxUnits = data.units_pledged_max;
-        this.onHandUnits = data.units_on_hand;
-        this.distributedUnits = data.units_used;
-        this.dateReceived = data.date_received;
+        this.isFetching = false;
+        this.deaths = data.deaths;
+        this.positiveCases = data.totalCases;
       })
       .catch(() => {
-        // this.displayFailureMessage("The test kit entry could not be loaded.");
-        this.$router.push("/");
+        this.isFetching = false;
+        this.isFetchingError = true;
+        this.redirectToHome();
       });
   },
   methods: {
-    dbKits() {
-      return db.collection("main-stats");
+    dbMainStats() {
+      return db.collection("stats-main");
     },
-    displayLoadingScreen(message) {
-      this.isLoading = true;
-      this.isSuccess = false;
-      this.isFailure = false;
-      this.loadingMessage = message;
-    },
-    displayFailureMessage(message) {
-      this.isLoading = false;
-      this.isSuccess = false;
-      this.isFailure = true;
-      this.failureMessage = message;
-    },
-    addKit() {
+    updateStats() {
+      console.log("Hello");
       if (!this.$refs.form.validate()) return;
 
-      var task = null;
-      if (this.kitId) {
-        this.displayLoadingScreen(
-          "Saving changes to the selected test kit entry..."
-        );
-        task = this.dbKits()
-          .doc(this.kitId)
-          .update({
-            date_received: this.dateReceived,
-            nature_of_acquisition: this.natureOfAcquisition.findIndex(v => {
-              return v === this.acquired;
-            }),
-            source: this.source,
-            timestampModified: new Date(),
-            units_on_hand: this.onHandUnits,
-            units_pledged_max: this.pledgedMaxUnits,
-            units_pledged_min: this.pledgedMinUnits,
-            units_used: this.distributedUnits
-          });
-      } else {
-        this.displayLoadingScreen("Submitting your new test kit entry...");
-        task = this.dbKits().add({
-          date_received: this.dateReceived,
-          nature_of_acquisition: this.acquired,
-          source: this.source,
-          timestamp: new Date(),
-          units_on_hand: this.onHandUnits,
-          units_pledged_max: this.pledgedMaxUnits,
-          units_pledged_min: this.pledgedMinUnits,
-          units_used: this.distributedUnits
-        });
-      }
-      task
+      this.isSubmitting = true;
+
+      this.dbMainStats()
+        .doc("EXTERNAL_STATS_ID")
+        .update({
+          deaths: this.deaths,
+          totalCases: this.positiveCases
+        })
         .then(() => {
-          this.isLoading = false;
+          this.isSubmitting = false;
           this.isSuccess = true;
-          this.isFailure = false;
         })
         .catch(() => {
-          this.isLoading = false;
-          this.isSuccess = false;
-          this.displayFailureMessage(
-            "Your new test kit entry has not been saved. Please try again."
-          );
+          this.isSubmitting = false;
+          this.isSubmittingError = true;
         });
     },
     redirectToHome() {
       this.$router.push("/");
-    }
-  },
-  computed: {
-    disableInput: function() {
-      if (this.acquired == "0") return true;
-      else return false;
+    },
+    hideSubmittingError() {
+      this.isSubmittingError = false;
     }
   }
 };
 </script>
 
 <style>
-#new-entry {
+#update-stats {
   padding-bottom: 30px;
 }
-#new-entry table,
-#new-entry th,
-#new-entry td {
+#update-stats table,
+#update-stats th,
+#update-stats td {
   border: 1px solid black;
   border-collapse: collapse;
   text-align: left;
