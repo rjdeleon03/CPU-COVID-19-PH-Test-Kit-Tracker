@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="background"></div>
+    <!-- <div class="background"></div> -->
     <div class="top-content figures">
       <v-container>
         <v-row justify="center">
@@ -11,26 +11,26 @@
             </div>
           </v-col>
         </v-row>
-        <v-row justify="center">
-          <v-col cols="12" md="auto">
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{deathsTotal}}</span>
               <p class="label">Deaths</p>
             </div>
           </v-col>
-          <v-col cols="12" md="auto">
+          <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{usedTotal}}</span>
               <p class="label">Test Kits (Used)</p>
             </div>
           </v-col>
-          <v-col cols="12" md="auto">
+          <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{onHandTotal}}</span>
               <p class="label">Test Kits (On-Hand)</p>
             </div>
           </v-col>
-          <v-col cols="12" md="auto">
+          <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{pledgedTotal}}</span>
               <p class="label">Test Kits (Pledged + On-Hand)</p>
@@ -90,24 +90,32 @@
         </v-data-table>
       </v-card>
     </v-container>
+
+    <!-- Display dialog when loading -->
+    <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
   </div>
 </template>
 
 <script>
+import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import { db } from "@/firebase/init";
 export default {
   name: "Home",
-  components: {},
+  components: { ProgressDialog },
   data() {
     return {
+      // Fetching flag
+      isFetching: false,
+      fetchingMessage: "Loading data...",
+
       // Totals
-      casesTotal: "-",
-      deathsTotal: "-",
-      onHandTotal: "-",
-      pledgedTotal: "-",
-      pledgedMinTotal: "-",
-      pledgedMaxTotal: "-",
-      usedTotal: "-",
+      casesTotal: "0",
+      deathsTotal: "0",
+      onHandTotal: "0",
+      pledgedTotal: "0",
+      pledgedMinTotal: "0",
+      pledgedMaxTotal: "0",
+      usedTotal: "0",
 
       search: "",
       headers: [
@@ -145,6 +153,7 @@ export default {
     deleteTestKit() {}
   },
   mounted() {
+    this.isFetching = true;
     db.collection("stats-main")
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
@@ -163,6 +172,7 @@ export default {
     db.collection("stats-main")
       .doc("EXTERNAL_STATS_ID")
       .onSnapshot(doc => {
+        this.isFetching = false;
         const data = doc.data();
         this.casesTotal = this.numberWithCommas(data.totalCases);
         this.deathsTotal = this.numberWithCommas(data.deaths);
@@ -192,11 +202,13 @@ export default {
   right: 0; */
 }
 .top-content {
-  height: 320px;
   color: white;
-  margin-bottom: 10px;
+  padding-bottom: 150px;
   position: relative;
   z-index: 1;
+  background-image: url("~@/assets/header_bg_400h.png");
+  background-position: bottom center;
+  background-size: cover;
 }
 .top-content table {
   position: absolute;
@@ -233,6 +245,64 @@ export default {
   font-size: 1em;
   text-transform: uppercase;
 }
+
+/* Large Screen */
+@media screen and (max-width: 1280px) {
+  .top-content .figures-container {
+    text-align: center;
+  }
+}
+
+/* Medium Screen */
+@media screen and (max-width: 960px) {
+  .top-content .figures-main.figures-container .figure {
+    font-size: 3em;
+    font-weight: 600;
+  }
+  .top-content .figures-main.figures-container .figure {
+    font-size: 3.5em;
+    font-weight: 600;
+  }
+  .top-content .figures-main.figures-container .label {
+    margin-top: -20px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+  }
+  .top-content .figures-container .figure {
+    font-size: 2em;
+    font-weight: 600;
+  }
+  .top-content .figures-container {
+    text-align: center;
+  }
+}
+
+/* Small Screen */
+@media screen and (max-width: 600px) {
+  .top-content .figures-main.figures-container .figure {
+    font-size: 2em;
+    font-weight: 600;
+  }
+  .top-content .figures-main.figures-container .figure {
+    font-size: 2.5em;
+    font-weight: 600;
+  }
+  .top-content .figures-main.figures-container .label {
+    margin-top: -15px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+  }
+  .top-content .figures-container .figure {
+    font-size: 1.8em;
+    font-weight: 600;
+  }
+  .top-content .figures-container {
+    text-align: center;
+  }
+  #table-container {
+    margin-top: -190px !important;
+  }
+}
 .share-content {
   z-index: 1;
   position: relative;
@@ -244,8 +314,8 @@ export default {
 }
 #table-container {
   /* margin: 20px 5%; */
-  margin-top: 50px;
-  margin-bottom: 100px;
+  margin-top: -170px;
+  margin-bottom: 70px;
   z-index: 1;
   position: relative;
 }
