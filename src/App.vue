@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <Navbar />
     <v-content id="main-container">
       <router-view />

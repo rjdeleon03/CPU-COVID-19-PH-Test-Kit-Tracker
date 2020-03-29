@@ -39,10 +39,30 @@
         </v-row>
       </v-container>
     </div>
-    <!-- <div id="table-container">
-      
-    </div>-->
-    <v-container id="table-container">
+    <div class="share-content">
+      <v-container>
+        <v-row justify="center">
+          <social-sharing url="http://192.168.1.10:8080" inline-template>
+            <div>
+              Share to:
+              <network network="facebook">
+                <i class="fa fa-fw fa-facebook"></i> Facebook
+              </network>
+              <network network="twitter">
+                <i class="fa fa-fw fa-twitter"></i> Twitter
+              </network>
+              <network network="linkedin">
+                <i class="fa fa-fw fa-linkedin"></i> LinkedIn
+              </network>
+              <network network="reddit">
+                <i class="fa fa-fw fa-reddit"></i> Reddit
+              </network>
+            </div>
+          </social-sharing>
+        </v-row>
+      </v-container>
+    </div>
+    <v-container>
       <v-card>
         <v-card-title>
           <v-text-field
@@ -54,7 +74,6 @@
             hide-details
             class="search-field"
           ></v-text-field>
-
           <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
         </v-card-title>
         <v-data-table
@@ -213,6 +232,15 @@ export default {
   margin-top: -10px;
   font-size: 1em;
   text-transform: uppercase;
+}
+.share-content {
+  z-index: 1;
+  position: relative;
+  color: white;
+  text-align: right;
+}
+i {
+  cursor: pointer !important;
 }
 #table-container {
   /* margin: 20px 5%; */
