@@ -20,9 +20,15 @@ const router = new Router({
       component: Login
     },
     {
-      path: "/new",
+      path: "/kits/new",
       name: "NewEntry",
       component: NewEntry
+    },
+    {
+      path: "/kits/edit/:kit_id",
+      name: "EditEntry",
+      component: NewEntry,
+      props: true
     }
   ]
 });

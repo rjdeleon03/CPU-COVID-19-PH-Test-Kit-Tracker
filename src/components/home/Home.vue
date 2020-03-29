@@ -96,10 +96,11 @@ export default {
   },
   methods: {
     navigateToAddTestKit() {
-      this.$router.push("/new");
+      this.$router.push("/kits/new");
     },
     navigateToEditTestKit(item) {
-      console.log(item[".key"]);
+      let key = item[".key"];
+      this.$router.push("/kits/edit/" + key);
     },
     deleteTestKit() {}
   }

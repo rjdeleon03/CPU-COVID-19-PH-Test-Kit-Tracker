@@ -5,7 +5,8 @@
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
             <div class="title">
-              <h2>Create New Test Kit Entry</h2>
+              <h2 v-if="!kitId">Create New Test Kit Entry</h2>
+              <h2 v-else>Edit Test Kit Entry</h2>
               <v-divider />
             </div>
           </v-col>
@@ -145,7 +146,6 @@
               ref="dialog"
               v-model="datePickerVisible"
               :return-value.sync="dateReceived"
-              persistent
               width="290px"
             >
               <template v-slot:activator="{ on }">
@@ -184,7 +184,7 @@
         <v-card-text>
           <div class="dialog-contents">
             <v-progress-circular :size="100" :width="7" color="amber darken-4" indeterminate></v-progress-circular>
-            <p>Submitting your new test kit entry...</p>
+            <p>{{loadingMessage}}</p>
           </div>
         </v-card-text>
       </v-card>
@@ -193,10 +193,10 @@
     <!-- Display dialog on success -->
     <v-dialog v-model="isSuccess" max-width="350" persistent>
       <v-card>
-        <v-card-title class="headline">Submission Successful</v-card-title>
+        <v-card-title class="headline">Operation Successful</v-card-title>
 
         <v-card-text>
-          <p align="left">Your new test kit entry has been added.</p>
+          <p align="left">Your test kit entry has been saved.</p>
         </v-card-text>
 
         <v-card-actions>
@@ -209,10 +209,10 @@
     <!-- Display dialog on failure -->
     <v-dialog v-model="isFailure" max-width="350" persistent>
       <v-card>
-        <v-card-title class="headline">Submission Failed</v-card-title>
+        <v-card-title class="headline">Operation Failed</v-card-title>
 
         <v-card-text>
-          <p align="left">Your new test kit entry has not been added. Please try again.</p>
+          <p align="left">{{ failureMessage }}</p>
         </v-card-text>
 
         <v-card-actions>
@@ -231,10 +231,20 @@ export default {
   name: "NewEntry",
   components: {},
   data() {
+    console.log(this.$route.params.kit_id);
     return {
+      // Loading dialog
       isLoading: false,
+      loadingMessage: "",
+
+      // Success dialog
       isSuccess: false,
+
+      // Failure dialog
       isFailure: false,
+      failureMessage: "",
+
+      kitId: this.$route.params.kit_id,
       source: "",
       sourceRules: [
         v => !!v || "Please specify the source.",
@@ -264,14 +274,71 @@ export default {
       dateReceived: new Date().toISOString().slice(0, 10)
     };
   },
+  mounted() {
+    this.displayLoadingScreen("Fetching test kit entry...");
+    this.dbKits()
+      .doc(this.kitId)
+      .get()
+      .then(doc => {
+        console.log(doc.data());
+        const data = doc.data();
+        this.isLoading = false;
+        this.isSuccess = false;
+        this.isFailure = false;
+        this.source = data.source;
+        this.acquired = this.natureOfAcquisition[data.nature_of_acquisition];
+        this.pledgedMinUnits = data.units_pledged_min;
+        this.pledgedMaxUnits = data.units_pledged_max;
+        this.onHandUnits = data.units_on_hand;
+        this.distributedUnits = data.units_used;
+        this.dateReceived = data.date_received;
+      })
+      .catch(() => {
+        // this.displayFailureMessage("The test kit entry could not be loaded.");
+        this.$router.push("/");
+      });
+  },
   methods: {
-    addKit() {
-      if (!this.$refs.form.validate()) return;
+    dbKits() {
+      return db.collection("kits");
+    },
+    displayLoadingScreen(message) {
       this.isLoading = true;
       this.isSuccess = false;
       this.isFailure = false;
-      db.collection("kits")
-        .add({
+      this.loadingMessage = message;
+    },
+    displayFailureMessage(message) {
+      this.isLoading = false;
+      this.isSuccess = false;
+      this.isFailure = true;
+      this.failureMessage = message;
+    },
+    addKit() {
+      if (!this.$refs.form.validate()) return;
+
+      var task = null;
+      if (this.kitId) {
+        this.displayLoadingScreen(
+          "Saving changes to the selected test kit entry..."
+        );
+        task = this.dbKits()
+          .doc(this.kitId)
+          .update({
+            date_received: this.dateReceived,
+            nature_of_acquisition: this.natureOfAcquisition.findIndex(v => {
+              return v === this.acquired;
+            }),
+            source: this.source,
+            timestampModified: new Date(),
+            units_on_hand: this.onHandUnits,
+            units_pledged_max: this.pledgedMaxUnits,
+            units_pledged_min: this.pledgedMinUnits,
+            units_used: this.distributedUnits
+          });
+      } else {
+        this.displayLoadingScreen("Submitting your new test kit entry...");
+        task = this.dbKits().add({
           date_received: this.dateReceived,
           nature_of_acquisition: this.acquired,
           source: this.source,
@@ -280,7 +347,9 @@ export default {
           units_pledged_max: this.pledgedMaxUnits,
           units_pledged_min: this.pledgedMinUnits,
           units_used: this.distributedUnits
-        })
+        });
+      }
+      task
         .then(() => {
           this.isLoading = false;
           this.isSuccess = true;
@@ -289,7 +358,9 @@ export default {
         .catch(() => {
           this.isLoading = false;
           this.isSuccess = false;
-          this.isFailure = true;
+          this.displayFailureMessage(
+            "Your new test kit entry has not been saved. Please try again."
+          );
         });
     },
     redirectToHome() {
