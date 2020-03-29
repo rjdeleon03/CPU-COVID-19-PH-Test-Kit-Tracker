@@ -42,7 +42,7 @@
     <div class="share-content">
       <v-container>
         <v-row justify="center">
-          <social-sharing url="http://192.168.1.10:8080" inline-template>
+          <social-sharing url="https://cpu-test-kit-tracker-dev.firebaseapp.com/" inline-template>
             <div>
               Share to:
               <network network="facebook">
