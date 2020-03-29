@@ -52,6 +52,7 @@
             color="pink darken-4"
             single-line
             hide-details
+            class="search-field"
           ></v-text-field>
 
           <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
@@ -219,5 +220,11 @@ export default {
   margin-bottom: 100px;
   z-index: 1;
   position: relative;
+}
+.search-field {
+  margin-right: 20px;
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+  margin-bottom: 4px !important;
 }
 </style>
