@@ -1,6 +1,17 @@
 <template>
   <v-app>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <!-- <meta property="og:site_name" content="Your Website Name Here" />
+    <meta property="og:title" content="Yourtitle goes here, about 90 characters in length." />
+    <meta
+      property="og:description"
+      content="description of URL that is about 300 characters in length."
+    />
+    <meta property="og:image" content />
+    <meta property="og:url" content="http://192.168.254.138:8083/" />-->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+    />
     <Navbar />
     <v-content id="main-container">
       <router-view />

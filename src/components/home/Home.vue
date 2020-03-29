@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div ref="printMe">
+      <h1>Print me!</h1>
+    </div>
     <div class="background"></div>
     <div class="top-content figures">
       <v-container>
@@ -167,6 +170,11 @@ export default {
         this.casesTotal = this.numberWithCommas(data.totalCases);
         this.deathsTotal = this.numberWithCommas(data.deaths);
       });
+    // generateThumbnail() {
+    //   html2canvas($(".top-content")).then(canvas => {
+    //     $("meta[property='og:image']").attr("content", canvas);
+    //   });
+    // }
   }
 };
 </script>
