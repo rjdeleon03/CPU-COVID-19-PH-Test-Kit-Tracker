@@ -11,10 +11,21 @@
           width="40"
         />-->
 
-        <h2>COVID-19 PH ATM</h2>
+        <h3>COVID-19 PH ATM Tracker</h3>
       </div>
-
       <v-spacer></v-spacer>
+
+      <v-btn icon @click="goToEditStats">
+        <v-icon>mdi-chart-line</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-login</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-share-variant</v-icon>
+      </v-btn>
 
       <!-- <v-btn href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank" text>
         <span class="mr-2">Latest Release</span>
@@ -26,12 +37,20 @@
 
 <script>
 export default {
-  name: "Navbar"
+  name: "Navbar",
+  methods: {
+    goToEditStats() {
+      this.$router.push("/stats/update");
+    }
+  }
 };
 </script>
 
 <style>
 div#navbar {
   background-color: #581845;
+}
+div#navbar h3 {
+  text-align: start;
 }
 </style>

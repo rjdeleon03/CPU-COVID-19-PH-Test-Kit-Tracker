@@ -300,7 +300,7 @@ export default {
     text-align: center;
   }
   #table-container {
-    margin-top: -210px !important;
+    margin-top: -190px !important;
   }
 }
 .share-content {
