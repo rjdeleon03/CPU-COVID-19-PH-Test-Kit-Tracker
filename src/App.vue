@@ -31,6 +31,9 @@ export default {
     // HelloWorld
     Navbar,
     Footer
+  },
+  created() {
+    document.title = "COVID-19 PH ATM Tracker";
   }
 };
 </script>

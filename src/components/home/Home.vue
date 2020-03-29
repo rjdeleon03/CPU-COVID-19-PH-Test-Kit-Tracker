@@ -2,9 +2,9 @@
   <div>
     <div class="background"></div>
     <div class="top-content figures">
-      <div ref="printMe" @click="print" style="background-color: black;">
+      <!-- <div ref="printMe" @click="print" style="background-color: black;">
         <h1>Print me!</h1>
-      </div>
+      </div>-->
       <v-container>
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="5" sm="12">
@@ -104,15 +104,10 @@ export default {
   metaInfo: {
     meta: [
       {
-        name: "description",
-        content:
-          "Epiloge is about connecting in your field of interest. Our vision is to help people share their knowledge, work, projects, papers and ideas and build their network through what they do rather where they live, study or work."
-      },
-      {
         property: "og:title",
-        content: "Epiloge - Build your network in your field of interest"
+        content: "COVID-19 PH ATM Tracker"
       },
-      { property: "og:site_name", content: "Epiloge" },
+      { property: "og:site_name", content: "COVID-19 PH ATM Tracker" },
       { property: "og:type", content: "website" },
       { name: "robots", content: "index,follow" },
       {
