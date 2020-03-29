@@ -29,13 +29,38 @@
         </table>
       </div>
       <div id="table-container">
-        <v-data-table
-          :headers="headers"
-          :items="kits"
-          :sort-desc="[false, true]"
-          multi-sort
-          class="elevation-1"
-        ></v-data-table>
+        <v-card>
+          <v-card-title>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              color="pink darken-4"
+              single-line
+              hide-details
+            ></v-text-field>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              dark
+              class="mb-2"
+              @click="navigateToAddTestKit()"
+              color="amber darken-4"
+            >New Entry</v-btn>
+          </v-card-title>
+          <v-data-table
+            :headers="headers"
+            :items="kits"
+            :sort-desc="[false, true]"
+            multi-sort
+            :search="search"
+          >
+            <template v-slot:item.actions="{ item }">
+              <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
+              <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
       </div>
     </div>
   </div>
@@ -48,6 +73,7 @@ export default {
   components: {},
   data() {
     return {
+      search: "",
       headers: [
         {
           text: "Source",
@@ -57,7 +83,8 @@ export default {
         { text: "Date Received", value: "date_received", align: "end" },
         { text: "Units Pledged", value: "units_pledged_max", align: "end" },
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
-        { text: "Units Used", value: "units_used", align: "end" }
+        { text: "Units Used", value: "units_used", align: "end" },
+        { text: "Actions", value: "actions", sortable: false }
       ],
       kits: []
     };
@@ -66,6 +93,15 @@ export default {
     return {
       kits: db.collection("kits").orderBy("timestamp")
     };
+  },
+  methods: {
+    navigateToAddTestKit() {
+      this.$router.push("/new");
+    },
+    navigateToEditTestKit(item) {
+      console.log(item[".key"]);
+    },
+    deleteTestKit() {}
   }
 };
 </script>
@@ -73,7 +109,7 @@ export default {
 <style>
 .background {
   width: 100%;
-  height: 400px;
+  height: 500px;
   background-image: url("~@/assets/header_bg_400h.png");
   background-position: bottom center;
   background-size: cover;
