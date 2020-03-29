@@ -53,7 +53,6 @@
             single-line
             hide-details
           ></v-text-field>
-          <v-spacer></v-spacer>
 
           <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
         </v-card-title>
@@ -130,8 +129,6 @@ export default {
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
         const data = doc.data();
-        this.casesTotal = this.numberWithCommas(data.totalCases);
-        this.deathsTotal = this.numberWithCommas(data.deaths);
         this.usedTotal = this.numberWithCommas(data.testKitsUsed);
         this.onHandTotal = this.numberWithCommas(data.testKitsOnHand);
         this.pledgedMinTotal = this.numberWithCommas(data.testKitsPledgedMin);
@@ -142,6 +139,13 @@ export default {
         } else {
           this.pledgedTotal = this.pledgedMaxTotal;
         }
+      });
+    db.collection("stats-main")
+      .doc("EXTERNAL_STATS_ID")
+      .onSnapshot(doc => {
+        const data = doc.data();
+        this.casesTotal = this.numberWithCommas(data.totalCases);
+        this.deathsTotal = this.numberWithCommas(data.deaths);
       });
   }
 };
