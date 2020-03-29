@@ -17,6 +17,7 @@ db.collection("kits").onSnapshot((snapshot) => {
     var onHandTotal = 0;
     var pledgedMinTotal = 0;
     var pledgedMaxTotal = 0;
+    var usedTotal = 0;
     var hasPendingWrites = false;
 
     docs.forEach(doc => {
@@ -32,6 +33,9 @@ db.collection("kits").onSnapshot((snapshot) => {
         } else if (kit.units_pledged_max) {
             pledgedMinTotal += parseInt(kit.units_pledged_max, 10);
         }
+        if (kit.units_used) {
+            usedTotal += parseInt(kit.units_used, 10);
+        }
 
         // console.log(doc.metadata.hasPendingWrites)
 
@@ -45,6 +49,7 @@ db.collection("kits").onSnapshot((snapshot) => {
         db.collection("stats-main")
             .doc("MAIN_STATS_ID")
             .update({
+                testKitsUsed: usedTotal,
                 testKitsOnHand: onHandTotal,
                 testKitsPledgedMin: pledgedMinTotal,
                 testKitsPledgedMax: pledgedMaxTotal

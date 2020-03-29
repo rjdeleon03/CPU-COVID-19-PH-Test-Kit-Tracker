@@ -6,7 +6,7 @@
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="5" sm="12">
             <div class="figures-main figures-container">
-              <span class="figure">1,000,000</span>
+              <span class="figure">{{casesTotal}}</span>
               <p class="label">Cases</p>
             </div>
           </v-col>
@@ -14,14 +14,14 @@
         <v-row justify="center">
           <v-col cols="12" md="auto">
             <div class="figures-container">
-              <span class="figure">122,312,345</span>
+              <span class="figure">{{deathsTotal}}</span>
               <p class="label">Deaths</p>
             </div>
           </v-col>
           <v-col cols="12" md="auto">
             <div class="figures-container">
-              <span class="figure">234,983,277</span>
-              <p class="label">Tests Conducted</p>
+              <span class="figure">{{usedTotal}}</span>
+              <p class="label">Test Kits (Used)</p>
             </div>
           </v-col>
           <v-col cols="12" md="auto">
@@ -82,10 +82,13 @@ export default {
   data() {
     return {
       // Totals
+      casesTotal: "-",
+      deathsTotal: "-",
       onHandTotal: "-",
       pledgedTotal: "-",
       pledgedMinTotal: "-",
       pledgedMaxTotal: "-",
+      usedTotal: "-",
 
       search: "",
       headers: [
@@ -117,6 +120,7 @@ export default {
       this.$router.push("/kits/edit/" + key);
     },
     numberWithCommas(x) {
+      if (!x) return "0";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     deleteTestKit() {}
@@ -126,6 +130,9 @@ export default {
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
         const data = doc.data();
+        this.casesTotal = this.numberWithCommas(data.totalCases);
+        this.deathsTotal = this.numberWithCommas(data.deaths);
+        this.usedTotal = this.numberWithCommas(data.testKitsUsed);
         this.onHandTotal = this.numberWithCommas(data.testKitsOnHand);
         this.pledgedMinTotal = this.numberWithCommas(data.testKitsPledgedMin);
         this.pledgedMaxTotal = this.numberWithCommas(data.testKitsPledgedMax);
