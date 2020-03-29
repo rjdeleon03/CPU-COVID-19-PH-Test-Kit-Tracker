@@ -1,4 +1,9 @@
 <template>
+    <meta property="og:site_name" content="Your Website Name Here"/>
+    <meta property="og:title" content="Yourtitle goes here, about 90 characters in length."/>
+    <meta property="og:description" content="description of URL that is about 300 characters in length."/>
+    <meta property="og:image" content="" />
+    <meta property="og:url" content="http://192.168.254.138:8083/">
   <div>
     <div class="background"></div>
     <div class="top-content figures">
@@ -40,7 +45,7 @@
       </v-container>
     </div>
     <div class="share-content">
-      <v-container>
+      <v-container @click="generateThumbnail()">
         <social-sharing url="http://192.168.254.138:8083/" inline-template>
           <div> Share To
             <network network="facebook">
@@ -126,7 +131,12 @@ export default {
       let key = item[".key"];
       this.$router.push("/kits/edit/" + key);
     },
-    deleteTestKit() {}
+    deleteTestKit() {},
+    generateThumbnail() {
+      html2canvas($(".top-content")).then(canvas => {
+          $("meta[property='og:image']").attr("content", canvas);
+      });
+    }
   }
 };
 </script>
