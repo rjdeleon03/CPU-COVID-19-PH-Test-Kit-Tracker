@@ -1,67 +1,72 @@
 <template>
   <div>
     <div class="background"></div>
-    <div class="container">
-      <div class="top-content">
-        <table>
-          <tr>
-            <td colspan="2">
-              <div class="figures-main figures-container">
-                <span class="figure">1,000,000</span>
-                <p class="label">Cases</p>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="figures-container">
-                <span class="figure">12,345</span>
-                <p class="label">Deaths</p>
-              </div>
-            </td>
-            <td>
-              <div class="figures-container">
-                <span class="figure">4,983,277</span>
-                <p class="label">Tests Conducted</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div id="table-container">
-        <v-card>
-          <v-card-title>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              color="pink darken-4"
-              single-line
-              hide-details
-            ></v-text-field>
-            <v-spacer></v-spacer>
+    <div class="top-content figures">
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" xl="3" lg="3">
+            <div class="figures-main figures-container">
+              <span class="figure">1,000,000</span>
+              <p class="label">Cases</p>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row justify="end">
+          <v-col cols="12" lg="3" md="6">
+            <div class="figures-container">
+              <span class="figure">12,345</span>
+              <p class="label">Deaths</p>
+            </div>
+          </v-col>
+          <v-col cols="12" lg="3" md="6">
+            <div class="figures-container">
+              <span class="figure">234,983,277</span>
+              <p class="label">Tests Conducted</p>
+            </div>
+          </v-col>
+          <v-col cols="12" lg="3" md="6">
+            <div class="figures-container">
+              <span class="figure">12,345</span>
+              <p class="label">Test Kits (On-Hand)</p>
+            </div>
+          </v-col>
+          <v-col cols="12" lg="3" md="6">
+            <div class="figures-container">
+              <span class="figure">4,983,277</span>
+              <p class="label">Test Kits (Pledged)</p>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+    <div id="table-container">
+      <v-card>
+        <v-card-title>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            color="pink darken-4"
+            single-line
+            hide-details
+          ></v-text-field>
+          <v-spacer></v-spacer>
 
-            <v-btn
-              dark
-              class="mb-2"
-              @click="navigateToAddTestKit()"
-              color="amber darken-4"
-            >New Entry</v-btn>
-          </v-card-title>
-          <v-data-table
-            :headers="headers"
-            :items="kits"
-            :sort-desc="[false, true]"
-            multi-sort
-            :search="search"
-          >
-            <template v-slot:item.actions="{ item }">
-              <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
-              <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-            </template>
-          </v-data-table>
-        </v-card>
-      </div>
+          <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="kits"
+          :sort-desc="[false, true]"
+          multi-sort
+          :search="search"
+        >
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
+            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+      </v-card>
     </div>
   </div>
 </template>
@@ -140,31 +145,31 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.top-content table .figures-container {
+.top-content .figures-container {
   margin: 10px 20px;
-  text-align: right;
+  text-align: end;
 }
-.top-content table .figures-main.figures-container {
-  text-align: right;
+.top-content .figures-main.figures-container {
+  text-align: end;
 }
-.top-content table .figures-main.figures-container .figure {
+.top-content .figures-main.figures-container .figure {
   font-size: 4em;
   font-weight: 600;
 }
-.top-content table .figures-main.figures-container .figure {
+.top-content .figures-main.figures-container .figure {
   font-size: 4.5em;
   font-weight: 600;
 }
-.top-content table .figures-main.figures-container .label {
+.top-content .figures-main.figures-container .label {
   margin-top: -25px;
   font-size: 2em;
   text-transform: uppercase;
 }
-.top-content table .figures-container .figure {
+.top-content .figures-container .figure {
   font-size: 3em;
   font-weight: 600;
 }
-.top-content table .figures-container .label {
+.top-content .figures-container .label {
   margin-top: -10px;
   font-size: 1em;
   text-transform: uppercase;
