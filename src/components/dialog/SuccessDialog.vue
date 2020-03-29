@@ -4,7 +4,7 @@
       <v-card-title class="headline">Operation Successful</v-card-title>
 
       <v-card-text>
-        <p align="left">{{successMessage}}.</p>
+        <p align="left">{{successMessage}}</p>
       </v-card-text>
 
       <v-card-actions>

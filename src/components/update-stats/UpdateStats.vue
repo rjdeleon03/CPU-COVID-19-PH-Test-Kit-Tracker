@@ -87,11 +87,13 @@ export default {
     return {
       positiveCases: 0,
       positiveCasesRules: [
-        v => !!v || "Please specify the total number of COVID-19 cases."
+        v => !!v || "Please specify the total number of COVID-19 cases.",
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
       ],
       deaths: 0,
       deathsRules: [
-        v => !!v || "Please specify the total number of COVID-19 deaths."
+        v => !!v || "Please specify the total number of COVID-19 deaths.",
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
       ],
 
       // Loading dialog
@@ -114,7 +116,7 @@ export default {
       // Failure dialog
       isSubmittingError: false,
       submittingErrorMessage:
-        "An error occurred while upadting COVID-19 statistics."
+        "An error occurred while upadting COVID-19 statistics. Please try again."
     };
   },
   mounted() {
