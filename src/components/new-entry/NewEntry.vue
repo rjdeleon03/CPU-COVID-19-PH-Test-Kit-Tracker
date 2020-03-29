@@ -95,6 +95,7 @@
             <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
               <v-text-field
                 v-model="pledgedMaxUnits"
+                :rules="pledgedMaxUnitsNonRangeRules"
                 label="No. of Pledged Units"
                 type="number"
                 min="0"
@@ -105,68 +106,70 @@
           </v-row>
         </div>
         <div v-if="acquired!='Pledge'">
-        <v-row justify="center">
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <div class="title">
-              <h4>On-hand Information</h4>
-              <v-divider />
-            </div>
-          </v-col>
-        </v-row>
+          <v-row justify="center">
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <div class="title">
+                <h4>On-hand Information</h4>
+                <v-divider />
+              </div>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-text-field
-              v-model="onHandUnits"
-              label="No. of On-hand Units"
-              type="number"
-              min="0"
-              required
-              color="pink darken-4"
-            ></v-text-field>
-          </v-col>
-        </v-row>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="onHandUnits"
+                :rules="onHandUnitsRules"
+                label="No. of On-hand Units"
+                type="number"
+                min="0"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-text-field
-              v-model="distributedUnits"
-              label="No. of Distributed Units"
-              type="number"
-              min="0"
-              required
-              color="pink darken-4"
-            ></v-text-field>
-          </v-col>
-        </v-row>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-text-field
+                v-model="distributedUnits"
+                :rules="distributedUnitsRules"
+                label="No. of Distributed Units"
+                type="number"
+                min="0"
+                required
+                color="pink darken-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-        <v-row justify="center" no-gutters>
-          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-            <v-dialog
-              ref="dialog"
-              v-model="datePickerVisible"
-              :return-value.sync="dateReceived"
-              width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+              <v-dialog
+                ref="dialog"
+                v-model="datePickerVisible"
+                :return-value.sync="dateReceived"
+                width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateReceived"
+                    label="Date Received"
+                    readonly
+                    v-on="on"
+                    required
+                    color="pink darken-4"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="dateReceived"
-                  label="Date Received"
-                  readonly
-                  v-on="on"
-                  required
-                  color="pink darken-4"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateReceived"
-                @input="datePickerVisible = false"
-                header-color="pink darken-4"
-                color="amber darken-4"
-              ></v-date-picker>
-            </v-dialog>
-          </v-col>
-        </v-row>
+                  @input="datePickerVisible = false"
+                  header-color="pink darken-4"
+                  color="amber darken-4"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
         </div>
         <v-row justify="center">
           <v-col cols="12" xs="2">
@@ -179,70 +182,63 @@
     </v-form>
 
     <!-- Display dialog when loading -->
-    <v-dialog v-model="isLoading" max-width="350" persistent>
-      <v-card>
-        <v-card-text>
-          <div class="dialog-contents">
-            <v-progress-circular :size="100" :width="7" color="amber darken-4" indeterminate></v-progress-circular>
-            <p>{{loadingMessage}}</p>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
+
+    <!-- Display dialog on fetch error -->
+    <ErrorDialog
+      :isError="isFetchingError"
+      :errorMessage="fetchingErrorMessage"
+      :callback="redirectToHome"
+    />
+
+    <!-- Display dialog when submitting -->
+    <ProgressDialog :isLoading="isSubmitting" :loadingMessage="submittingMessage" />
 
     <!-- Display dialog on success -->
-    <v-dialog v-model="isSuccess" max-width="350" persistent>
-      <v-card>
-        <v-card-title class="headline">Operation Successful</v-card-title>
+    <SuccessDialog :isSuccess="isSuccess" :successMessage="successMessage" />
 
-        <v-card-text>
-          <p align="left">Your test kit entry has been saved.</p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="amber darken-4" text @click="redirectToHome()">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Display dialog on failure -->
-    <v-dialog v-model="isFailure" max-width="350" persistent>
-      <v-card>
-        <v-card-title class="headline">Operation Failed</v-card-title>
-
-        <v-card-text>
-          <p align="left">{{ failureMessage }}</p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="amber darken-4" text @click="isFailure = false">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- Display dialog on submission error -->
+    <ErrorDialog
+      :isError="isSubmittingError"
+      :errorMessage="submittingErrorMessage"
+      :callback="hideSubmittingError"
+    />
   </div>
 </template>
 
 <script>
 import { db } from "@/firebase/init";
 import { natureOfAcquisition } from "../../constants";
+import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
+import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
+import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 export default {
   name: "NewEntry",
-  components: {},
+  components: { ProgressDialog, SuccessDialog, ErrorDialog },
   data() {
-    console.log(this.$route.params.kit_id);
+    // console.log(this.$route.params.kit_id);
     return {
       // Loading dialog
-      isLoading: false,
-      loadingMessage: "",
+      isFetching: false,
+      fetchingMessage: "Fetching test kit entry...",
+
+      // Loading error dialog
+      isFetchingError: false,
+      fetchingErrorMessage:
+        "An error occurred while fetching COVID-19 statistics.",
+
+      // Submitting dialog
+      isSubmitting: false,
+      submittingMessage: "Saving the test kit entry...",
 
       // Success dialog
       isSuccess: false,
+      successMessage: "The test kit entry has been saved.",
 
       // Failure dialog
-      isFailure: false,
-      failureMessage: "",
+      isSubmittingError: false,
+      submittingErrorMessage:
+        "An error occurred while saving the test kit entry. Please try again.",
 
       kitId: this.$route.params.kit_id,
       source: "",
@@ -258,34 +254,44 @@ export default {
       acquired: "",
       acquiredRules: [v => !!v || "Please select the nature of acquisition."],
       onHandUnits: 0,
+      onHandUnitsRules: [
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
+      ],
       pledgedMinUnits: 0,
       pledgedMinUnitsRules: [
         v =>
           parseInt(v) < parseInt(this.pledgedMaxUnits) ||
-          "Minimum no. of pledged units must be less than the maximum."
+          "Minimum no. of pledged units must be less than the maximum.",
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
       ],
       pledgedMaxUnits: 0,
       pledgedMaxUnitsRules: [
         v =>
           parseInt(v) > parseInt(this.pledgedMinUnits) ||
-          "Maximum no. of pledged units must be greater than the minimum."
+          "Maximum no. of pledged units must be greater than the minimum.",
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
+      ],
+      pledgedMaxUnitsNonRangeRules: [
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
       ],
       distributedUnits: 0,
+      distributedUnitsRules: [
+        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
+      ],
       dateReceived: new Date().toISOString().slice(0, 10)
     };
   },
   mounted() {
     if (!this.kitId) return;
-    this.displayLoadingScreen("Fetching test kit entry...");
+    this.isFetching = true;
     this.dbKits()
       .doc(this.kitId)
       .get()
       .then(doc => {
         // console.log(doc.data());
         const data = doc.data();
-        this.isLoading = false;
-        this.isSuccess = false;
-        this.isFailure = false;
+
+        this.isFetching = false;
         this.source = data.source;
         this.acquired = this.natureOfAcquisition[data.nature_of_acquisition];
         this.pledgedMinUnits = data.units_pledged_min;
@@ -295,7 +301,8 @@ export default {
         this.dateReceived = data.date_received;
       })
       .catch(() => {
-        // this.displayFailureMessage("The test kit entry could not be loaded.");
+        this.isFetching = false;
+        this.isFetchingError = true;
         this.$router.push("/");
       });
   },
@@ -303,31 +310,16 @@ export default {
     dbKits() {
       return db.collection("kits");
     },
-    displayLoadingScreen(message) {
-      this.isLoading = true;
-      this.isSuccess = false;
-      this.isFailure = false;
-      this.loadingMessage = message;
-    },
-    displayFailureMessage(message) {
-      this.isLoading = false;
-      this.isSuccess = false;
-      this.isFailure = true;
-      this.failureMessage = message;
-    },
     addKit() {
       if (!this.$refs.form.validate()) return;
-      if (this.acquired=="Pledge")
-      {
+      if (this.acquired == "Pledge") {
         this.onHandUnits = 0;
         this.distributedUnits = 0;
         this.dateReceived = null;
       }
+      this.isSubmitting = true;
       var task = null;
       if (this.kitId) {
-        this.displayLoadingScreen(
-          "Saving changes to the selected test kit entry..."
-        );
         task = this.dbKits()
           .doc(this.kitId)
           .update({
@@ -343,7 +335,6 @@ export default {
             units_used: this.distributedUnits
           });
       } else {
-        this.displayLoadingScreen("Submitting your new test kit entry...");
         task = this.dbKits().add({
           date_received: this.dateReceived,
           nature_of_acquisition: this.acquired,
@@ -357,20 +348,19 @@ export default {
       }
       task
         .then(() => {
-          this.isLoading = false;
+          this.isSubmitting = false;
           this.isSuccess = true;
-          this.isFailure = false;
         })
         .catch(() => {
-          this.isLoading = false;
-          this.isSuccess = false;
-          this.displayFailureMessage(
-            "Your new test kit entry has not been saved. Please try again."
-          );
+          this.isSubmitting = false;
+          this.isSubmittingError = false;
         });
     },
     redirectToHome() {
       this.$router.push("/");
+    },
+    hideSubmittingError() {
+      this.isSubmittingError = false;
     }
   }
 };
