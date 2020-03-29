@@ -199,8 +199,8 @@ export default {
   color: white;
   text-align: right;
 }
-i {
-  cursor: pointer !important;
+.share-content div span {
+  cursor: pointer;
 }
 #table-container {
   margin: 20px 10%;
