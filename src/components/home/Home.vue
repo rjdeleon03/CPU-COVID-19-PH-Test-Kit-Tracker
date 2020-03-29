@@ -90,24 +90,32 @@
         </v-data-table>
       </v-card>
     </v-container>
+
+    <!-- Display dialog when loading -->
+    <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
   </div>
 </template>
 
 <script>
+import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import { db } from "@/firebase/init";
 export default {
   name: "Home",
-  components: {},
+  components: { ProgressDialog },
   data() {
     return {
+      // Fetching flag
+      isFetching: false,
+      fetchingMessage: "Loading data...",
+
       // Totals
-      casesTotal: "-",
-      deathsTotal: "-",
-      onHandTotal: "-",
-      pledgedTotal: "-",
-      pledgedMinTotal: "-",
-      pledgedMaxTotal: "-",
-      usedTotal: "-",
+      casesTotal: "0",
+      deathsTotal: "0",
+      onHandTotal: "0",
+      pledgedTotal: "0",
+      pledgedMinTotal: "0",
+      pledgedMaxTotal: "0",
+      usedTotal: "0",
 
       search: "",
       headers: [
@@ -145,6 +153,7 @@ export default {
     deleteTestKit() {}
   },
   mounted() {
+    this.isFetching = true;
     db.collection("stats-main")
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
@@ -163,6 +172,7 @@ export default {
     db.collection("stats-main")
       .doc("EXTERNAL_STATS_ID")
       .onSnapshot(doc => {
+        this.isFetching = false;
         const data = doc.data();
         this.casesTotal = this.numberWithCommas(data.totalCases);
         this.deathsTotal = this.numberWithCommas(data.deaths);
