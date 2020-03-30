@@ -78,11 +78,11 @@
           <v-btn
             v-if="authenticated"
             dark
-            class="mb-2"
+            class="mb-2 new-entry-button"
             @click="navigateToAddTestKit()"
             color="amber darken-4"
           >New Entry</v-btn>
-          <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn>
+          <!-- <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn> -->
         </v-card-title>
         <v-data-table
           v-if="authenticated"
@@ -433,9 +433,11 @@ export default {
   position: relative;
 }
 .search-field {
-  margin-right: 20px;
   margin-top: 0px !important;
   padding-top: 0px !important;
   margin-bottom: 4px !important;
+}
+.new-entry-button {
+  margin-left: 20px;
 }
 </style>
