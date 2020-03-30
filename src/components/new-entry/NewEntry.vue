@@ -295,9 +295,9 @@ export default {
         this.user.data = user;
       } else {
         // Redirect to login page
-        this.$router.push("/login");
+        this.$router.push("/");
       }
-      });
+    });
 
     if (!this.kitId) return;
     this.isFetching = true;

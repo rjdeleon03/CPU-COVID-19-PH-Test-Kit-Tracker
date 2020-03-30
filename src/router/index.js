@@ -35,7 +35,11 @@ const router = new Router({
       path: "/stats/update",
       name: "UpdateStats",
       component: UpdateStats
-    }
+    },
+    {
+      path: "*",
+      redirect: "/"
+    },
   ]
 });
 

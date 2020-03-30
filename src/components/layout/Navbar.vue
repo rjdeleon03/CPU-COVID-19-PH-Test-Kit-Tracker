@@ -22,14 +22,6 @@
       <!-- </div> -->
       <v-spacer></v-spacer>
 
-      <!-- <v-btn icon @click="goToEditStats">
-        <v-icon>mdi-chart-line</v-icon>
-      </v-btn>
-
-      <v-btn icon @click="login">
-        <v-icon>mdi-login</v-icon>
-      </v-btn>-->
-
       <v-btn icon>
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
@@ -64,47 +56,6 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <!-- <v-navigation-drawer v-model="isDrawerVisible" absolute temporary :width="325">
-      <div class="navbar-header">
-        <img src="@/assets/cpu.png" />
-        <p>COVID-19 PH ATM Tracker</p>
-        <p id="sub">by Computer Professionals' Union</p>
-      </div>
-      <v-list nav>
-        <v-list-item-group active-class="pink--text darken-4 text--accent-4">
-          <v-list-item @click="redirectToHome">
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Home</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="login">
-            <v-list-item-icon>
-              <v-icon>mdi-login</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout">
-            <v-list-item-icon>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Logout</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="goToEditStats">
-            <v-list-item-icon>
-              <v-icon>mdi-chart-line</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
-          </v-list-item>
-          <v-list-item href="http://covid19phstatus.cp-union.com" target="_blank">
-            <v-list-item-icon>
-              <v-icon>mdi-map-marker</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">#COVID19PHReport</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>-->
 
     <!-- Display dialog on login success -->
     <SuccessDialogWithCallback
