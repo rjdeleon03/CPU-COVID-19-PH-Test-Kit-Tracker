@@ -95,7 +95,7 @@
         >
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
           </template>
         </v-data-table>
         <v-data-table
@@ -105,17 +105,20 @@
           :sort-desc="[false, true]"
           multi-sort
           :search="search"
-        >
-          <template v-slot:item.actions="{ item }">
-            <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
+        />
       </v-card>
     </v-container>
 
     <!-- Display dialog when loading -->
     <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
+
+    <ConfirmationDialog
+      :isDisplayed="forDeletion.isDeleteConfirm"
+      :title="forDeletion.title"
+      :message="forDeletion.message"
+      :callback="deleteItem"
+      :negativeCallback="cancelDeletion"
+    />
   </div>
 </template>
 
@@ -123,9 +126,10 @@
 import gsap from "gsap";
 import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
+import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
 export default {
   name: "Home",
-  components: { ProgressDialog },
+  components: { ProgressDialog, ConfirmationDialog },
   data() {
     return {
       // Fetching flag
@@ -186,7 +190,15 @@ export default {
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" }
       ],
-      kits: []
+      kits: [],
+
+      // Deletion
+      forDeletion: {
+        isDeleteConfirm: false,
+        item: null,
+        title: "Delete Test Kit Entry",
+        message: "Are you sure you want to delete this test kit entry?"
+      }
     };
   },
   computed: {
@@ -258,11 +270,20 @@ export default {
       if (!x) return "0";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
-    deleteItem(item) {
-      let key = item[".key"];
+    confirmDeletion(item) {
+      this.forDeletion.item = item;
+      this.forDeletion.isDeleteConfirm = true;
+    },
+    cancelDeletion() {
+      this.forDeletion.item = null;
+      this.forDeletion.isDeleteConfirm = false;
+    },
+    deleteItem() {
+      let key = this.forDeletion.item[".key"];
       db.collection("kits")
         .doc(key)
         .delete();
+      this.cancelDeletion();
     }
   },
   mounted() {
