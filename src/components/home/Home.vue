@@ -33,8 +33,8 @@
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
-              <span class="figure" v-else>{{animatedPledgedMinTotal}} - {{animatedPledgedMaxTotal}}</span>
-              <p class="label">Test Kits (Pledged + On-Hand)</p>
+              <span class="figure" v-else>{{animatedPledgedMinTotal}} ~ {{animatedPledgedMaxTotal}}</span>
+              <p class="label">Test Kits (Pledged & On-Hand)</p>
             </div>
           </v-col>
         </v-row>

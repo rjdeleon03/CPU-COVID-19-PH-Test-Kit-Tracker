@@ -69,17 +69,63 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+
+    <!-- Display dialog on login success -->
+    <SuccessDialogWithCallback
+      :isSuccess="isLoggedIn"
+      :successMessage="loggedInMessage"
+      :callback="hideLoginAlert"
+    />
+
+    <!-- Display dialog on login error -->
+    <ErrorDialog
+      :isError="isLoginError"
+      :errorMessage="loginErrorMessage"
+      :callback="hideLoginError"
+    />
+
+    <!-- Display dialog on logout success -->
+    <SuccessDialogWithCallback
+      :isSuccess="isLoggedOut"
+      :successMessage="loggedOutMessage"
+      :callback="hideLogoutAlert"
+    />
+
+    <!-- Display dialog on logout error -->
+    <ErrorDialog
+      :isError="isLogoutError"
+      :errorMessage="logoutErrorMessage"
+      :callback="hideLogoutError"
+    />
   </div>
 </template>
 
 <script>
+import SuccessDialogWithCallback from "@/components/dialog/SuccessDialogWithCallback.vue";
+import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 import { firebase } from "@firebase/app";
 import { auth } from "@/firebase/init";
 export default {
   name: "Navbar",
+  components: { SuccessDialogWithCallback, ErrorDialog },
   data() {
     return {
-      isDrawerVisible: false
+      isDrawerVisible: false,
+
+      isLoggedIn: false,
+      loggedInMessage:
+        "You are now logged in. You can update test kits and overall statistics.",
+
+      isLoginError: false,
+      loginErrorMessage:
+        "An error occurred while logging you in. Please contact Computer Professionals' Union for support.",
+
+      isLoggedOut: false,
+      loggedOutMessage: "You are now logged out.",
+
+      isLogoutError: false,
+      logoutErrorMessage:
+        "An error occurred while logging you out. Please try again."
     };
   },
   methods: {
@@ -95,33 +141,56 @@ export default {
     },
     login() {
       const provider = new firebase.auth.GoogleAuthProvider();
+      var _this = this;
       auth
         .signInWithPopup(provider)
-        .then(function(result) {
-          var userData = JSON.parse(result);
-          console.log(userData);
+        .then(() => {
+          // var userData = JSON.parse(result);
+          // console.log(result);
 
-          // TODO: Show dialog that user is logged in
+          // Show dialog that user is logged in
+          _this.isLoggedIn = true;
+          _this.isDrawerVisible = false;
         })
-        .catch(function(error) {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.email;
-          const credential = error.credential;
-          console.log(errorCode, errorMessage, email, credential);
-          // TODO: Show dialog that user failed to log in
+        .catch(() => {
+          // const errorCode = error.code;
+          // const errorMessage = error.message;
+          // const email = error.email;
+          // const credential = error.credential;
+          // console.log(errorCode, errorMessage, email, credential);
+
+          // Show dialog that user failed to log in
+          _this.isLoginError = true;
+          _this.isDrawerVisible = false;
         });
     },
     logout() {
+      var _this = this;
       auth
         .signOut()
-        .then(function() {
+        .then(() => {
           // TODO: Show dialog that user is logged out
+          _this.isLoggedOut = true;
+          _this.isDrawerVisible = false;
         })
-        .catch(function(error) {
-          // TODO: Show dialog that user failed to log in
-          console.log(error);
+        .catch(() => {
+          // TODO: Show dialog that user failed to log out
+          // console.log(error);
+          _this.isLogoutError = true;
+          _this.isDrawerVisible = false;
         });
+    },
+    hideLoginAlert() {
+      this.isLoggedIn = false;
+    },
+    hideLoginError() {
+      this.isLoginError = false;
+    },
+    hideLogoutAlert() {
+      this.isLoggedOut = false;
+    },
+    hideLogoutError() {
+      this.isLogoutError = false;
     }
   }
 };
