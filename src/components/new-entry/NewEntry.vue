@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import { auth } from "@/firebase/init";
 import { db } from "@/firebase/init";
 import { natureOfAcquisition } from "../../constants";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
@@ -218,6 +219,12 @@ export default {
   data() {
     // console.log(this.$route.params.kit_id);
     return {
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      },
+
       // Loading dialog
       isFetching: false,
       fetchingMessage: "Fetching test kit entry...",
@@ -282,6 +289,16 @@ export default {
     };
   },
   mounted() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        // Redirect to login page
+        this.$router.push("/login");
+      }
+      });
+
     if (!this.kitId) return;
     this.isFetching = true;
     this.dbKits()

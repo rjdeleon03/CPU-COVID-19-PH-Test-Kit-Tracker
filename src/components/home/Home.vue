@@ -74,10 +74,22 @@
             hide-details
             class="search-field"
           ></v-text-field>
-          <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
+          <v-btn v-if="authenticated" dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
         </v-card-title>
-        <v-data-table
+        <v-data-table v-if="authenticated"
           :headers="headers"
+          :items="kits"
+          :sort-desc="[false, true]"
+          multi-sort
+          :search="search"
+        >
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
+            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+        <v-data-table v-else
+          :headers="headers_not_authenticated"
           :items="kits"
           :sort-desc="[false, true]"
           multi-sort
@@ -94,12 +106,19 @@
 </template>
 
 <script>
+import { auth } from "@/firebase/init";
 import { db } from "@/firebase/init";
 export default {
   name: "Home",
   components: {},
   data() {
     return {
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      },
+
       // Totals
       casesTotal: "-",
       deathsTotal: "-",
@@ -121,6 +140,17 @@ export default {
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" },
         { text: "Actions", value: "actions", sortable: false }
+      ],
+      headers_not_authenticated: [
+        {
+          text: "Source",
+          align: "start",
+          value: "source"
+        },
+        { text: "Date Received", value: "date_received", align: "end" },
+        { text: "Units Pledged", value: "units_pledged_max", align: "end" },
+        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
+        { text: "Units Used", value: "units_used", align: "end" }
       ],
       kits: []
     };
@@ -167,6 +197,20 @@ export default {
         this.casesTotal = this.numberWithCommas(data.totalCases);
         this.deathsTotal = this.numberWithCommas(data.deaths);
       });
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        this.user.loggedIn = false;
+        this.user.data = {};
+      }
+      });
+  },
+  computed: {
+    authenticated() {
+      return this.user.loggedIn;
+    }
   }
 };
 </script>
