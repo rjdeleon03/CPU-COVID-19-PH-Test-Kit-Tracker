@@ -75,6 +75,7 @@
             class="search-field"
           ></v-text-field>
           <v-btn v-if="authenticated" dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
+          <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn>
         </v-card-title>
         <v-data-table v-if="authenticated"
           :headers="headers"
@@ -161,6 +162,9 @@ export default {
     };
   },
   methods: {
+    navigateToLogin() {
+      this.$router.push("/login");
+    },
     navigateToAddTestKit() {
       this.$router.push("/kits/new");
     },
