@@ -107,7 +107,10 @@ export default {
       let key = item[".key"];
       this.$router.push("/kits/edit/" + key);
     },
-    deleteTestKit() {}
+    deleteItem(item) {
+      let key = item[".key"];
+      db.collection("kits").doc(key).delete();
+    }
   }
 };
 </script>
