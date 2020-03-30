@@ -10,7 +10,13 @@
           src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
           transition="scale-transition"
           width="40"
-      />-->
+      />
+
+        <h2>COVID-19 PH ATM</h2>
+        <v-btn justify="right" v-if="!authenticated" dark class="mb-2" @click="login()" color="amber darken-4">Login</v-btn>
+        <v-btn justify="right" v-else dark class="mb-2" @click="logout()" color="amber darken-4">Logout</v-btn>
+      </div>
+      -->
 
       <v-toolbar-title>COVID-19 PH ATM Tracker</v-toolbar-title>
       <!-- </div> -->
@@ -37,19 +43,19 @@
             </v-list-item-icon>
             <v-list-item-title class="drawer-text">Home</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="login">
+          <v-list-item @click="login" v-if="!authenticated">
             <v-list-item-icon>
               <v-icon>mdi-login</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="logout">
+          <v-list-item @click="logout" v-if="authenticated">
             <v-list-item-icon>
               <v-icon>mdi-logout</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="drawer-text">Logout</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="goToEditStats">
+          <v-list-item @click="goToEditStats" v-if="authenticated">
             <v-list-item-icon>
               <v-icon>mdi-chart-line</v-icon>
             </v-list-item-icon>
@@ -241,6 +247,11 @@ export default {
         this.user.data = {};
       }
     });
+  },
+  computed: {
+    authenticated() {
+      return this.user.loggedIn;
+    }
   }
 };
 </script>
