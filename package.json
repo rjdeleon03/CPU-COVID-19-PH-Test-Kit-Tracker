@@ -13,6 +13,7 @@
     "core-js": "^3.6.4",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.5.0",
+    "gsap": "^3.2.6",
     "http2": "^3.3.7",
     "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.6.11",

@@ -6,7 +6,7 @@
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="5" sm="12">
             <div class="figures-main figures-container">
-              <span class="figure">{{casesTotal}}</span>
+              <span class="figure">{{animatedCasesTotal}}</span>
               <p class="label">Cases</p>
             </div>
           </v-col>
@@ -14,25 +14,26 @@
         <v-row justify="center" no-gutters>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{deathsTotal}}</span>
+              <span class="figure">{{animatedDeathsTotal}}</span>
               <p class="label">Deaths</p>
             </div>
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{usedTotal}}</span>
+              <span class="figure">{{animatedUsedTotal}}</span>
               <p class="label">Test Kits (Used)</p>
             </div>
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{onHandTotal}}</span>
+              <span class="figure">{{animatedOnHandTotal}}</span>
               <p class="label">Test Kits (On-Hand)</p>
             </div>
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{pledgedTotal}}</span>
+              <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
+              <span class="figure" v-else>{{animatedPledgedMinTotal}} - {{animatedPledgedMaxTotal}}</span>
               <p class="label">Test Kits (Pledged + On-Hand)</p>
             </div>
           </v-col>
@@ -74,10 +75,31 @@
             hide-details
             class="search-field"
           ></v-text-field>
-          <v-btn dark class="mb-2" @click="navigateToAddTestKit()" color="amber darken-4">New Entry</v-btn>
+          <v-btn
+            v-if="authenticated"
+            dark
+            class="mb-2"
+            @click="navigateToAddTestKit()"
+            color="amber darken-4"
+          >New Entry</v-btn>
+          <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn>
         </v-card-title>
         <v-data-table
+          v-if="authenticated"
           :headers="headers"
+          :items="kits"
+          :sort-desc="[false, true]"
+          multi-sort
+          :search="search"
+        >
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
+            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+          </template>
+        </v-data-table>
+        <v-data-table
+          v-else
+          :headers="headers_not_authenticated"
           :items="kits"
           :sort-desc="[false, true]"
           multi-sort
@@ -97,8 +119,9 @@
 </template>
 
 <script>
+import gsap from "gsap";
+import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
-import { db } from "@/firebase/init";
 export default {
   name: "Home",
   components: { ProgressDialog },
@@ -108,15 +131,36 @@ export default {
       isFetching: false,
       fetchingMessage: "Loading data...",
 
-      // Totals
-      casesTotal: "0",
-      deathsTotal: "0",
-      onHandTotal: "0",
-      pledgedTotal: "0",
-      pledgedMinTotal: "0",
-      pledgedMaxTotal: "0",
-      usedTotal: "0",
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      },
 
+      // Totals
+      casesTotal: 0,
+      tweenedCasesTotal: 0,
+
+      deathsTotal: 0,
+      tweenedDeathsTotal: 0,
+
+      onHandTotal: 0,
+      tweenedOnHandTotal: 0,
+
+      usesPledgedRange: false,
+      pledgedTotal: 0,
+      tweenedPledgedTotal: 0,
+
+      pledgedMinTotal: 0,
+      tweenedPledgedMinTotal: 0,
+
+      pledgedMaxTotal: 0,
+      tweenedPledgedMaxTotal: 0,
+
+      usedTotal: 0,
+      tweenedUsedTotal: 0,
+
+      // Table data
       search: "",
       headers: [
         {
@@ -130,8 +174,68 @@ export default {
         { text: "Units Used", value: "units_used", align: "end" },
         { text: "Actions", value: "actions", align: "end", sortable: false }
       ],
+      headers_not_authenticated: [
+        {
+          text: "Source",
+          align: "start",
+          value: "source"
+        },
+        { text: "Date Received", value: "date_received", align: "end" },
+        { text: "Units Pledged", value: "units_pledged_max", align: "end" },
+        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
+        { text: "Units Used", value: "units_used", align: "end" }
+      ],
       kits: []
     };
+  },
+  computed: {
+    animatedCasesTotal: function() {
+      return this.numberWithCommas(this.tweenedCasesTotal.toFixed(0));
+    },
+    animatedDeathsTotal: function() {
+      return this.numberWithCommas(this.tweenedDeathsTotal.toFixed(0));
+    },
+    animatedOnHandTotal: function() {
+      return this.numberWithCommas(this.tweenedOnHandTotal.toFixed(0));
+    },
+    animatedPledgedTotal: function() {
+      return this.numberWithCommas(this.tweenedPledgedTotal.toFixed(0));
+    },
+    animatedPledgedMinTotal: function() {
+      return this.numberWithCommas(this.tweenedPledgedMinTotal.toFixed(0));
+    },
+    animatedPledgedMaxTotal: function() {
+      return this.numberWithCommas(this.tweenedPledgedMaxTotal.toFixed(0));
+    },
+    animatedUsedTotal: function() {
+      return this.numberWithCommas(this.tweenedUsedTotal.toFixed(0));
+    },
+    authenticated() {
+      return this.user.loggedIn;
+    }
+  },
+  watch: {
+    casesTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedCasesTotal: newValue });
+    },
+    deathsTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedDeathsTotal: newValue });
+    },
+    onHandTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedOnHandTotal: newValue });
+    },
+    pledgedTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedPledgedTotal: newValue });
+    },
+    pledgedMinTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedPledgedMinTotal: newValue });
+    },
+    pledgedMaxTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedPledgedMaxTotal: newValue });
+    },
+    usedTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedUsedTotal: newValue });
+    }
   },
   firestore() {
     return {
@@ -139,6 +243,9 @@ export default {
     };
   },
   methods: {
+    navigateToLogin() {
+      this.$router.push("/login");
+    },
     navigateToAddTestKit() {
       this.$router.push("/kits/new");
     },
@@ -158,25 +265,31 @@ export default {
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
         const data = doc.data();
-        this.usedTotal = this.numberWithCommas(data.testKitsUsed);
-        this.onHandTotal = this.numberWithCommas(data.testKitsOnHand);
-        this.pledgedMinTotal = this.numberWithCommas(data.testKitsPledgedMin);
-        this.pledgedMaxTotal = this.numberWithCommas(data.testKitsPledgedMax);
-        if (data.testKitsPledgedMax > data.testKitsPledgedMin) {
-          this.pledgedTotal =
-            this.pledgedMinTotal + " - " + this.pledgedMaxTotal;
-        } else {
-          this.pledgedTotal = this.pledgedMaxTotal;
-        }
+        this.usedTotal = data.testKitsUsed;
+        this.onHandTotal = data.testKitsOnHand;
+        this.pledgedMinTotal = data.testKitsPledgedMin;
+        this.pledgedMaxTotal = data.testKitsPledgedMax;
+        this.pledgedTotal = this.pledgedMaxTotal;
+        this.usesPledgedRange =
+          data.testKitsPledgedMax > data.testKitsPledgedMin;
       });
     db.collection("stats-main")
       .doc("EXTERNAL_STATS_ID")
       .onSnapshot(doc => {
         this.isFetching = false;
         const data = doc.data();
-        this.casesTotal = this.numberWithCommas(data.totalCases);
-        this.deathsTotal = this.numberWithCommas(data.deaths);
+        this.casesTotal = data.totalCases;
+        this.deathsTotal = data.deaths;
       });
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        this.user.loggedIn = false;
+        this.user.data = {};
+      }
+    });
   }
 };
 </script>

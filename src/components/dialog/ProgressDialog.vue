@@ -19,10 +19,6 @@ export default {
   props: ["loadingMessage", "isLoading"],
   data() {
     return {};
-  },
-  mounted() {
-    console.log(this.loadingMessage);
-    console.log(this.isLoading);
   }
 };
 </script>

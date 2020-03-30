@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { auth } from "@/firebase/init";
 import { db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
@@ -83,8 +84,14 @@ export default {
   name: "UpdateStats",
   components: { ProgressDialog, SuccessDialog, ErrorDialog },
   data() {
-    console.log(this.$route.params.kit_id);
+    // console.log(this.$route.params.kit_id);
     return {
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      },
+
       positiveCases: 0,
       positiveCasesRules: [
         v => !!v || "Please specify the total number of COVID-19 cases.",
@@ -120,6 +127,16 @@ export default {
     };
   },
   mounted() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        // Redirect to login page
+        this.$router.push("/login");
+      }
+    });
+
     this.isFetching = true;
     this.dbMainStats()
       .doc("EXTERNAL_STATS_ID")
@@ -141,7 +158,6 @@ export default {
       return db.collection("stats-main");
     },
     updateStats() {
-      console.log("Hello");
       if (!this.$refs.form.validate()) return;
 
       this.isSubmitting = true;
