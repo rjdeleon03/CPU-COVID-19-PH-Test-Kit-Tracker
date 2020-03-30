@@ -12,6 +12,8 @@
         />-->
 
         <h2>COVID-19 PH ATM</h2>
+        <v-btn justify="right" v-if="!authenticated" dark class="mb-2" @click="login()" color="amber darken-4">Login</v-btn>
+        <v-btn justify="right" v-else dark class="mb-2" @click="logout()" color="amber darken-4">Logout</v-btn>
       </div>
 
       <v-spacer></v-spacer>
@@ -25,8 +27,61 @@
 </template>
 
 <script>
+import { auth } from "@/firebase/init";
+import { firebase } from "@firebase/app";
 export default {
-  name: "Navbar"
+  name: "Navbar",
+  data() {
+    return {
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      }
+    }
+  },
+  methods: {
+    login() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth
+        .signInWithPopup(provider)
+        .then(function(result) {
+          var userData = JSON.parse(result);
+          console.log(userData);
+        })
+        .catch(function(error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.email;
+          const credential = error.credential;
+          console.log(errorCode, errorMessage, email, credential);
+        });
+    },
+    logout() {
+      auth
+        .signOut()
+        .then(function() {})
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
+  },
+  mounted() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        this.user.loggedIn = false;
+        this.user.data = {};
+      }
+      });
+  },
+  computed: {
+    authenticated() {
+      return this.user.loggedIn;
+    }
+  }
 };
 </script>
 
