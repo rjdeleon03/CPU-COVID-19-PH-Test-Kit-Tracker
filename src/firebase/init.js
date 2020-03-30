@@ -10,6 +10,7 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const db = firebaseApp.firestore();
 export const auth = firebase.auth();
 
+var lastKitsCount = 0;
 db.collection("kits").onSnapshot((snapshot) => {
     let docs = snapshot.docs;
     if (!docs) return;
@@ -45,7 +46,8 @@ db.collection("kits").onSnapshot((snapshot) => {
         }
     });
 
-    if (hasPendingWrites) {
+    console.log("pending: " + hasPendingWrites || docs.length < lastKitsCount);
+    if (hasPendingWrites || docs.length < lastKitsCount) {
         db.collection("stats-main")
             .doc("MAIN_STATS_ID")
             .update({
@@ -55,6 +57,7 @@ db.collection("kits").onSnapshot((snapshot) => {
                 testKitsPledgedMax: pledgedMaxTotal
             });
     }
+    lastKitsCount = docs.length;
 
     // console.log("onHandTotal: " + onHandTotal);
     // console.log("pledgedMinTotal: " + pledgedMinTotal);

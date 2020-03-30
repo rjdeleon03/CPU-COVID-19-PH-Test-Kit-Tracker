@@ -86,26 +86,21 @@
           <!-- <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn> -->
         </v-card-title>
         <v-data-table
-          v-if="authenticated"
-          :headers="headers"
+          :headers="tableHeaders"
           :items="kits"
           :sort-desc="[false, true]"
           multi-sort
           :search="search"
         >
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:item.acquisition="{ item }">{{ getNatureOfAcquisition(item) }}</template>
+          <template v-slot:item.units_pledged="{ item }">{{ getUnitsPledged(item) }}</template>
+          <template v-slot:item.units_on_hand="{ item }">{{ getUnitsOnHand(item) }}</template>
+          <template v-slot:item.units_used="{ item }">{{ getUnitsUsed(item) }}</template>
+          <template v-slot:item.actions="{ item }" v-if="authenticated">
             <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
             <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
           </template>
         </v-data-table>
-        <v-data-table
-          v-else
-          :headers="headers_not_authenticated"
-          :items="kits"
-          :sort-desc="[false, true]"
-          multi-sort
-          :search="search"
-        />
       </v-card>
     </v-container>
 
@@ -125,6 +120,7 @@
 <script>
 import gsap from "gsap";
 import { auth, db } from "@/firebase/init";
+import { natureOfAcquisition } from "../../constants";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
 export default {
@@ -167,14 +163,21 @@ export default {
 
       // Table data
       search: "",
+      tableHeaders: this.headers_not_authenticated,
       headers: [
         {
           text: "Source",
           align: "start",
           value: "source"
         },
+        { text: "Acquired Through", value: "acquisition", align: "start" },
         { text: "Date Received", value: "date_received", align: "end" },
-        { text: "Units Pledged", value: "units_pledged_max", align: "end" },
+        {
+          text: "Units Pledged",
+          value: "units_pledged",
+          align: "end",
+          sortable: false
+        },
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" },
         { text: "Actions", value: "actions", align: "end", sortable: false }
@@ -185,8 +188,14 @@ export default {
           align: "start",
           value: "source"
         },
+        { text: "Acquired Through", value: "acquisition", align: "start" },
         { text: "Date Received", value: "date_received", align: "end" },
-        { text: "Units Pledged", value: "units_pledged_max", align: "end" },
+        {
+          text: "Units Pledged",
+          value: "units_pledged",
+          align: "end",
+          sortable: false
+        },
         { text: "Units On-Hand", value: "units_on_hand", align: "end" },
         { text: "Units Used", value: "units_used", align: "end" }
       ],
@@ -270,6 +279,28 @@ export default {
       if (!x) return "0";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+    getNatureOfAcquisition(item) {
+      return natureOfAcquisition[item.nature_of_acquisition];
+    },
+    getUnitsPledged(item) {
+      if (
+        item.units_pledged_max > item.units_pledged_min &&
+        item.units_pledged_min > 0
+      ) {
+        return (
+          this.numberWithCommas(item.units_pledged_min) +
+          " ~ " +
+          this.numberWithCommas(item.units_pledged_max)
+        );
+      }
+      return this.numberWithCommas(item.units_pledged_max);
+    },
+    getUnitsOnHand(item) {
+      return this.numberWithCommas(item.units_on_hand);
+    },
+    getUnitsUsed(item) {
+      return this.numberWithCommas(item.units_used);
+    },
     confirmDeletion(item) {
       this.forDeletion.item = item;
       this.forDeletion.isDeleteConfirm = true;
@@ -316,6 +347,8 @@ export default {
         this.user.loggedIn = false;
         this.user.data = {};
       }
+
+      this.tableHeaders = user ? this.headers : this.headers_not_authenticated;
     });
   }
 };

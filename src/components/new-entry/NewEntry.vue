@@ -345,22 +345,24 @@ export default {
               return v === this.acquired;
             }),
             source: this.source,
-            timestampModified: new Date(),
-            units_on_hand: this.onHandUnits,
-            units_pledged_max: this.pledgedMaxUnits,
-            units_pledged_min: this.pledgedMinUnits,
-            units_used: this.distributedUnits
+            timestampModified: new Date().getTime() * -1,
+            units_on_hand: parseInt(this.onHandUnits, 10),
+            units_pledged_max: parseInt(this.pledgedMaxUnits, 10),
+            units_pledged_min: parseInt(this.pledgedMinUnits, 10),
+            units_used: parseInt(this.distributedUnits, 10)
           });
       } else {
         task = this.dbKits().add({
           date_received: this.dateReceived,
-          nature_of_acquisition: this.acquired,
+          nature_of_acquisition: this.natureOfAcquisition.findIndex(v => {
+            return v === this.acquired;
+          }),
           source: this.source,
-          timestamp: new Date(),
-          units_on_hand: this.onHandUnits,
-          units_pledged_max: this.pledgedMaxUnits,
-          units_pledged_min: this.pledgedMinUnits,
-          units_used: this.distributedUnits
+          timestamp: new Date().getTime() * -1,
+          units_on_hand: parseInt(this.onHandUnits, 10),
+          units_pledged_max: parseInt(this.pledgedMaxUnits, 10),
+          units_pledged_min: parseInt(this.pledgedMinUnits, 10),
+          units_used: parseInt(this.distributedUnits, 10)
         });
       }
       task
