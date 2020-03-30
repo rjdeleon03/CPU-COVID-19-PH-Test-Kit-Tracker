@@ -295,7 +295,7 @@ export default {
         this.user.data = user;
       } else {
         // Redirect to login page
-        this.$router.push("/");
+        this.$router.push("/").catch(() => {});
       }
     });
 
@@ -320,7 +320,7 @@ export default {
       .catch(() => {
         this.isFetching = false;
         this.isFetchingError = true;
-        this.$router.push("/");
+        this.$router.push("/").catch(() => {});
       });
   },
   methods: {
@@ -374,7 +374,7 @@ export default {
         });
     },
     redirectToHome() {
-      this.$router.push("/");
+      this.$router.push("/").catch(() => {});
     },
     hideSubmittingError() {
       this.isSubmittingError = false;

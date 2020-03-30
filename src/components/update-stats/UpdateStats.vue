@@ -133,7 +133,7 @@ export default {
         this.user.data = user;
       } else {
         // Redirect to login page
-        this.$router.push("/");
+        this.$router.push("/").catch(() => {});
       }
     });
 
@@ -178,7 +178,7 @@ export default {
         });
     },
     redirectToHome() {
-      this.$router.push("/");
+      this.$router.push("/").catch(() => {});
     },
     hideSubmittingError() {
       this.isSubmittingError = false;

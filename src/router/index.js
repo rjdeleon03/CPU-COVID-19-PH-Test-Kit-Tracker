@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Login from "@/components/login/Login";
 import Home from "@/components/home/Home";
 import NewEntry from "@/components/new-entry/NewEntry";
 import UpdateStats from "@/components/update-stats/UpdateStats";
@@ -14,11 +13,6 @@ const router = new Router({
       path: "/",
       name: "Home",
       component: Home
-    },
-    {
-      path: "/login",
-      name: "Login",
-      component: Login
     },
     {
       path: "/kits/new",

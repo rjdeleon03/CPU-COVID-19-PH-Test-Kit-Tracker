@@ -84,17 +84,26 @@
       :errorMessage="logoutErrorMessage"
       :callback="hideLogoutError"
     />
+
+    <!-- Display dialog on new user login -->
+    <GenericInfoDialog
+      :isDisplayed="isNewUser"
+      :title="newUserTitle"
+      :message="newUserMessage"
+      :callback="hideNewUserAlert"
+    />
   </nav>
 </template>
 
 <script>
 import SuccessDialogWithCallback from "@/components/dialog/SuccessDialogWithCallback.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
+import GenericInfoDialog from "@/components/dialog/GenericInfoDialog.vue";
 import { firebase } from "@firebase/app";
 import { auth } from "@/firebase/init";
 export default {
   name: "Navbar",
-  components: { SuccessDialogWithCallback, ErrorDialog },
+  components: { SuccessDialogWithCallback, ErrorDialog, GenericInfoDialog },
   data() {
     return {
       isDrawerVisible: false,
@@ -118,7 +127,12 @@ export default {
 
       isLogoutError: false,
       logoutErrorMessage:
-        "An error occurred while logging you out. Please try again."
+        "An error occurred while logging you out. Please try again.",
+
+      isNewUser: false,
+      newUserTitle: "Verification Required",
+      newUserMessage:
+        "Your account needs to be verified by Computer Professionals' Union before you can successfully log in."
     };
   },
   methods: {
@@ -139,33 +153,44 @@ export default {
       var _this = this;
       auth
         .signInWithPopup(provider)
-        .then(() => {
-          // var userData = JSON.parse(result);
-          // console.log(result);
+        .then(userData => {
+          // console.log(userData.additionalUserInfo.isNewUser);
+          if (userData.additionalUserInfo.isNewUser) {
+            this.performLogout(true);
+            return;
+          }
 
           // Show dialog that user is logged in
           _this.isLoggedIn = true;
           _this.isDrawerVisible = false;
         })
-        .catch(() => {
-          // const errorCode = error.code;
-          // const errorMessage = error.message;
-          // const email = error.email;
-          // const credential = error.credential;
-          // console.log(errorCode, errorMessage, email, credential);
+        .catch(error => {
+          const errorCode = error.code;
+          // console.log(errorCode);
 
           // Show dialog that user failed to log in
-          _this.isLoginError = true;
+          if (errorCode === "auth/user-disabled") {
+            _this.isNewUser = true;
+          } else {
+            _this.isLoginError = true;
+          }
           _this.isDrawerVisible = false;
         });
     },
     logout() {
+      this.performLogout(false);
+    },
+    performLogout(isNewUser) {
       var _this = this;
       auth
         .signOut()
         .then(() => {
-          // TODO: Show dialog that user is logged out
-          _this.isLoggedOut = true;
+          if (isNewUser) {
+            // TODO: Show dialog that user is logged out
+            _this.isNewUser = true;
+          } else {
+            _this.isLoggedOut = true;
+          }
           _this.isDrawerVisible = false;
         })
         .catch(() => {
@@ -186,6 +211,9 @@ export default {
     },
     hideLogoutError() {
       this.isLogoutError = false;
+    },
+    hideNewUserAlert() {
+      this.isNewUser = false;
     }
   },
   mounted() {

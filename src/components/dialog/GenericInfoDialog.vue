@@ -1,10 +1,10 @@
 <template>
-  <v-dialog v-model="isError" max-width="350" persistent>
+  <v-dialog v-model="isDisplayed" max-width="350" persistent>
     <v-card>
-      <v-card-title class="headline">Operation Failed</v-card-title>
+      <v-card-title class="headline">{{title}}</v-card-title>
 
       <v-card-text>
-        <p align="left">{{errorMessage}}</p>
+        <p align="left">{{message}}</p>
       </v-card-text>
 
       <v-card-actions>
@@ -17,9 +17,9 @@
 
 <script>
 export default {
-  name: "ErrorDialog",
+  name: "GenericInfoDialog",
   components: {},
-  props: ["errorMessage", "isError", "callback"],
+  props: ["title", "message", "isDisplayed", "callback"],
   data() {
     return {};
   }
