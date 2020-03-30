@@ -66,6 +66,7 @@
     <v-container id="table-container">
       <v-card>
         <v-card-title>
+          <span class="table-title">Test Kits</span>
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -357,6 +358,14 @@ export default {
   margin-top: -10px;
   font-size: 1em;
   text-transform: uppercase;
+}
+.table-title {
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-right: 20px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  color: #880e4f;
 }
 
 /* Large Screen */

@@ -1,5 +1,5 @@
 <template>
-  <div id="navbar">
+  <nav id="navbar">
     <v-app-bar app color="pink darken-4" dark>
       <v-app-bar-nav-icon @click="isDrawerVisible = true"></v-app-bar-nav-icon>
       <!-- <div class="d-flex align-center"> -->
@@ -28,7 +28,37 @@
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="isDrawerVisible" absolute temporary :width="325">
+    <v-navigation-drawer v-model="isDrawerVisible" :width="325" app temporary>
+      <v-list>
+        <v-list-item-group active-class="pink--text darken-4 text--accent-4">
+          <v-list-item @click="redirectToHome">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text">Home</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="login">
+            <v-list-item-icon>
+              <v-icon>mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-icon>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text">Logout</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="goToEditStats">
+            <v-list-item-icon>
+              <v-icon>mdi-chart-line</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
+    <!-- <v-navigation-drawer v-model="isDrawerVisible" absolute temporary :width="325">
       <div class="navbar-header">
         <img src="@/assets/cpu.png" />
         <p>COVID-19 PH ATM Tracker</p>
@@ -68,7 +98,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer>-->
 
     <!-- Display dialog on login success -->
     <SuccessDialogWithCallback
@@ -97,7 +127,7 @@
       :errorMessage="logoutErrorMessage"
       :callback="hideLogoutError"
     />
-  </div>
+  </nav>
 </template>
 
 <script>
@@ -111,6 +141,12 @@ export default {
   data() {
     return {
       isDrawerVisible: false,
+
+      // User
+      user: {
+        loggedIn: false,
+        data: {}
+      },
 
       isLoggedIn: false,
       loggedInMessage:
@@ -130,11 +166,13 @@ export default {
   },
   methods: {
     redirectToHome() {
+      this.isDrawerVisible = false;
       this.$router.push("/").catch(() => {
         this.isDrawerVisible = false;
       });
     },
     goToEditStats() {
+      this.isDrawerVisible = false;
       this.$router.push("/stats/update").catch(() => {
         this.isDrawerVisible = false;
       });
@@ -192,18 +230,29 @@ export default {
     hideLogoutError() {
       this.isLogoutError = false;
     }
+  },
+  mounted() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.user.loggedIn = true;
+        this.user.data = user;
+      } else {
+        this.user.loggedIn = false;
+        this.user.data = {};
+      }
+    });
   }
 };
 </script>
 
 <style>
-div#navbar {
+nav#navbar {
   background-color: #581845;
 }
-div#navbar h3 {
+nav#navbar h3 {
   text-align: start;
 }
-div#navbar .navbar-header {
+nav#navbar .navbar-header {
   height: 230px;
   background-image: url("~@/assets/header_bg_400h.png");
   background-position: center center;
@@ -211,14 +260,14 @@ div#navbar .navbar-header {
   color: white;
   font-size: 1.4em;
 }
-div#navbar img {
+nav#navbar img {
   height: 150px;
 }
-div#navbar #sub {
+nav#navbar #sub {
   margin-top: -20px;
   font-size: 0.7em;
 }
-div#navbar .drawer-text {
+nav#navbar .drawer-text {
   text-align: left;
 }
 </style>
