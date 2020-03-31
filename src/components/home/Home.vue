@@ -39,16 +39,11 @@
             </div>
           </v-col>
         </v-row>
-        <!-- <v-row justify="center">
-          <v-col cols="12" xl="5" lg="5" sm="12">
-            <Timer />
-          </v-col>
-        </v-row>-->
       </v-container>
       <v-tabs
         v-model="tab"
         background-color="transparent accent-4"
-        slider-color="amber"
+        color="amber accent-2"
         dark
         centered
         class="tabs"
@@ -66,7 +61,7 @@
         <TestKitsTable :authenticated="authenticated" />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
-        <TestKitsTable :authenticated="authenticated" />
+        <AboutTab />
       </v-tab-item>
     </v-tabs-items>
 
@@ -81,10 +76,11 @@ import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import TestKitsTable from "./TestKitsTable.vue";
+import AboutTab from "./AboutTab.vue";
 import Timer from "./Timer.vue";
 export default {
   name: "Home",
-  components: { ProgressDialog, TestKitsTable, Timer },
+  components: { ProgressDialog, TestKitsTable, AboutTab, Timer },
   data() {
     return {
       // Fetching flag

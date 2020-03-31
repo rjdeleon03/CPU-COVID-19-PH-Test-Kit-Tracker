@@ -56,7 +56,7 @@ import { natureOfAcquisition } from "../../constants";
 import { utils } from "../../utils";
 import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
 export default {
-  name: "Home",
+  name: "TestKitsTable",
   components: { ConfirmationDialog },
   props: ["authenticated"],
   data() {
