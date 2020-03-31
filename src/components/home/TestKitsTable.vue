@@ -131,7 +131,7 @@ export default {
     getDateReceived(item) {
       if (!item.date_received || item.date_received === "") {
         {
-          return "-";
+          return "Not Yet Received";
         }
       }
       return item.date_received;
