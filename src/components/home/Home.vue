@@ -318,12 +318,12 @@ export default {
     text-align: center;
   }
   #table-container {
-    margin-top: -190px !important;
+    margin-top: -150px !important;
   }
 }
 #table-container {
   /* margin: 20px 5%; */
-  margin-top: -170px;
+  margin-top: -140px;
   margin-bottom: 70px;
   z-index: 1;
   position: relative;
