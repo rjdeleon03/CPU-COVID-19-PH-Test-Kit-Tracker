@@ -23,6 +23,56 @@ export default {
         "Thursday",
         "Friday",
         "Saturday"
+      ],
+      months: [
+        {
+          abbreviation: "Jan",
+          name: "January"
+        },
+        {
+          abbreviation: "Feb",
+          name: "February"
+        },
+        {
+          abbreviation: "Mar",
+          name: "March"
+        },
+        {
+          abbreviation: "Apr",
+          name: "April"
+        },
+        {
+          abbreviation: "May",
+          name: "May"
+        },
+        {
+          abbreviation: "Jun",
+          name: "June"
+        },
+        {
+          abbreviation: "Jul",
+          name: "July"
+        },
+        {
+          abbreviation: "Aug",
+          name: "August"
+        },
+        {
+          abbreviation: "Sep",
+          name: "September"
+        },
+        {
+          abbreviation: "Oct",
+          name: "October"
+        },
+        {
+          abbreviation: "Nov",
+          name: "November"
+        },
+        {
+          abbreviation: "Dec",
+          name: "December"
+        }
       ]
     };
   },
@@ -32,29 +82,18 @@ export default {
   },
   methods: {
     updateTime() {
-      const date = new Date();
-      const options = {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-        seconds: "numeric"
-      };
-      const time = new Intl.DateTimeFormat("en-US", options).format(date);
-      console.log(time);
-
       var cd = new Date();
-      this.time =
-        this.zeroPadding(cd.getHours(), 2) +
-        ":" +
-        this.zeroPadding(cd.getMinutes(), 2) +
-        ":" +
-        this.zeroPadding(cd.getSeconds(), 2);
+      this.time = cd.toLocaleTimeString(navigator.language, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
       this.date =
-        this.zeroPadding(cd.getFullYear(), 4) +
-        "-" +
-        this.zeroPadding(cd.getMonth() + 1, 2) +
-        "-" +
+        this.months[cd.getMonth()].abbreviation.toUpperCase() +
+        " " +
         this.zeroPadding(cd.getDate(), 2) +
+        " " +
+        this.zeroPadding(cd.getFullYear(), 4) +
         ",";
     },
     zeroPadding(num, digit) {
@@ -69,11 +108,11 @@ export default {
 </script>
 
 <style>
+#clock {
+  margin-top: -20px;
+}
 #clock p {
   font-size: 1.3em;
   margin-top: 10px;
-}
-#clock p span {
-  font-weight: 700;
 }
 </style>

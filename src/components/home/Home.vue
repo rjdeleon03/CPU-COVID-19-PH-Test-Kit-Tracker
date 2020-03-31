@@ -8,6 +8,7 @@
             <div class="figures-main figures-container">
               <span class="figure">{{animatedCasesTotal}}</span>
               <p class="label">Cases</p>
+              <Timer />
             </div>
           </v-col>
         </v-row>
@@ -38,11 +39,11 @@
             </div>
           </v-col>
         </v-row>
-        <v-row justify="center">
+        <!-- <v-row justify="center">
           <v-col cols="12" xl="5" lg="5" sm="12">
             <Timer />
           </v-col>
-        </v-row>
+        </v-row>-->
       </v-container>
     </div>
 
