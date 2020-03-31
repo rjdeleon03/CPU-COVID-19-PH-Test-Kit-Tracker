@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <div class="background"></div> -->
     <div class="top-content figures">
       <v-container>
         <v-row justify="center">
@@ -223,16 +222,6 @@ export default {
 </script>
 
 <style>
-.background {
-  width: 100%;
-  height: 500px;
-  background-image: url("~@/assets/header_bg_400h.png");
-  background-position: bottom center;
-  background-size: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 .container {
   /* width: 100%;
   height: 100%; */

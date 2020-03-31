@@ -22,17 +22,17 @@
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="logout" v-if="authenticated">
-          <v-list-item-icon>
-            <v-icon>mdi-logout</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="drawer-text">Logout</v-list-item-title>
-        </v-list-item>
         <v-list-item @click="goToEditStats" v-if="authenticated">
           <v-list-item-icon>
             <v-icon>mdi-chart-line</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout" v-if="authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Logout</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

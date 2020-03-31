@@ -316,6 +316,10 @@ export default {
         this.onHandUnits = data.units_on_hand;
         this.distributedUnits = data.units_used;
         this.dateReceived = data.date_received;
+
+        const minUnits = parseInt(this.pledgedMinUnits, 10);
+        const maxUnits = parseInt(this.pledgedMaxUnits, 10);
+        this.pledgedUnitsUsesRange = minUnits > 0 && maxUnits > minUnits;
       })
       .catch(() => {
         this.isFetching = false;
