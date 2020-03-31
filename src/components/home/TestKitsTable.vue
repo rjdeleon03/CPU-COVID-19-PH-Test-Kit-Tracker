@@ -1,8 +1,8 @@
 <template>
-  <v-container id="table-container">
+  <v-container>
     <v-card>
       <v-card-title>
-        <span class="table-title">Test Kits</span>
+        <!-- <span class="table-title">Test Kits</span> -->
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -56,7 +56,7 @@ import { natureOfAcquisition } from "../../constants";
 import { utils } from "../../utils";
 import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
 export default {
-  name: "Home",
+  name: "TestKitsTable",
   components: { ConfirmationDialog },
   props: ["authenticated"],
   data() {
@@ -131,7 +131,7 @@ export default {
     getDateReceived(item) {
       if (!item.date_received || item.date_received === "") {
         {
-          return "-";
+          return "Not Yet Received";
         }
       }
       return item.date_received;

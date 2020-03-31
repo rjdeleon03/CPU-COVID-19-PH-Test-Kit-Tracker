@@ -7,7 +7,7 @@
           <v-col cols="12" xl="5" lg="5" sm="12">
             <div class="figures-main figures-container">
               <span class="figure">{{animatedCasesTotal}}</span>
-              <p class="label">Cases</p>
+              <p class="label">Cases in the Philippines</p>
               <Timer />
             </div>
           </v-col>
@@ -39,16 +39,31 @@
             </div>
           </v-col>
         </v-row>
-        <!-- <v-row justify="center">
-          <v-col cols="12" xl="5" lg="5" sm="12">
-            <Timer />
-          </v-col>
-        </v-row>-->
       </v-container>
+      <v-tabs
+        v-model="tab"
+        background-color="transparent accent-4"
+        color="amber accent-2"
+        dark
+        centered
+        class="tabs"
+      >
+        <v-tabs-slider></v-tabs-slider>
+
+        <v-tab :key="items[0].tab">Test Kits</v-tab>
+        <v-tab :key="items[1].tab">About</v-tab>
+      </v-tabs>
     </div>
 
     <!-- Test kits table -->
-    <TestKitsTable :authenticated="authenticated" />
+    <v-tabs-items v-model="tab" id="table-container">
+      <v-tab-item :key="items[0].tab">
+        <TestKitsTable :authenticated="authenticated" />
+      </v-tab-item>
+      <v-tab-item :key="items[1].tab">
+        <AboutTab />
+      </v-tab-item>
+    </v-tabs-items>
 
     <!-- Display dialog when loading -->
     <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
@@ -61,10 +76,11 @@ import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import TestKitsTable from "./TestKitsTable.vue";
+import AboutTab from "./AboutTab.vue";
 import Timer from "./Timer.vue";
 export default {
   name: "Home",
-  components: { ProgressDialog, TestKitsTable, Timer },
+  components: { ProgressDialog, TestKitsTable, AboutTab, Timer },
   data() {
     return {
       // Fetching flag
@@ -98,7 +114,14 @@ export default {
       tweenedPledgedMaxTotal: 0,
 
       usedTotal: 0,
-      tweenedUsedTotal: 0
+      tweenedUsedTotal: 0,
+
+      // Tabs
+      tab: null,
+      items: [
+        { tab: "One", content: "Tab 1 Content" },
+        { tab: "Two", content: "Tab 2 Content" }
+      ]
     };
   },
   computed: {
@@ -250,8 +273,8 @@ export default {
   font-weight: 600;
 }
 .top-content .figures-main.figures-container .label {
-  margin-top: -25px;
-  font-size: 2em;
+  margin-top: -22px;
+  font-size: 1.6em;
   text-transform: uppercase;
 }
 .top-content .figures-container .figure {
@@ -291,7 +314,7 @@ export default {
   }
   .top-content .figures-main.figures-container .label {
     margin-top: -20px;
-    font-size: 1.5em;
+    font-size: 1.3em;
     text-transform: uppercase;
   }
   .top-content .figures-container .figure {
@@ -314,8 +337,8 @@ export default {
     font-weight: 600;
   }
   .top-content .figures-main.figures-container .label {
-    margin-top: -15px;
-    font-size: 1.5em;
+    margin-top: -13px;
+    font-size: 1.3em;
     text-transform: uppercase;
   }
   .top-content .figures-container .figure {
@@ -326,15 +349,19 @@ export default {
     text-align: center;
   }
   #table-container {
-    margin-top: -140px !important;
+    margin-top: -130px !important;
   }
+}
+.tabs {
+  margin-top: 15px;
 }
 #table-container {
   /* margin: 20px 5%; */
-  margin-top: -130px;
+  margin-top: -120px;
   margin-bottom: 70px;
   z-index: 1;
   position: relative;
+  background-color: transparent;
 }
 .search-field {
   margin-top: 0px !important;

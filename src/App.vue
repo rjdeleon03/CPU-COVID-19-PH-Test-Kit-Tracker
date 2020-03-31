@@ -1,6 +1,9 @@
 <template>
   <v-app>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+    />
     <Navbar />
     <v-content id="main-container">
       <router-view />
@@ -34,5 +37,24 @@ export default {
 }
 #main-container {
   background-color: #fafafa !important;
+}
+/* unvisited link */
+.v-application a:link {
+  color: #ffd740;
+}
+
+/* visited link */
+.v-application a:visited {
+  color: #ffab00;
+}
+
+/* mouse over link */
+.v-application a:hover {
+  color: #fb8c00;
+}
+
+/* selected link */
+.v-application a:active {
+  color: #e65100;
 }
 </style>
