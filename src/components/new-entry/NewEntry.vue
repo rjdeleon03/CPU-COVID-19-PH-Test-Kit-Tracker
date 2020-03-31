@@ -145,17 +145,12 @@
 
           <v-row justify="center" no-gutters>
             <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
-              <v-dialog
-                ref="dialog"
-                v-model="datePickerVisible"
-                :return-value.sync="dateReceived"
-                width="290px"
-              >
+              <v-dialog ref="dialog" v-model="datePickerVisible" width="290px">
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     v-model="dateReceived"
+                    :rules="dateReceivedRules"
                     label="Date Received"
-                    readonly
                     v-on="on"
                     required
                     color="pink darken-4"
@@ -285,7 +280,10 @@ export default {
       distributedUnitsRules: [
         v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
       ],
-      dateReceived: new Date().toISOString().slice(0, 10)
+      dateReceived: new Date().toISOString().slice(0, 10),
+      dateReceivedRules: [
+        v => !!v || "Please specify the date the test kits were received."
+      ]
     };
   },
   mounted() {
@@ -327,17 +325,27 @@ export default {
         this.$router.push("/").catch(() => {});
       });
   },
+  watch: {
+    acquired: function(newValue) {
+      if (newValue !== this.natureOfAcquisition[0]) {
+        if (!this.dateReceived) {
+          this.dateReceived = new Date().toISOString().slice(0, 10);
+        }
+      }
+    }
+  },
   methods: {
     dbKits() {
       return db.collection("kits");
     },
     addKit() {
       if (!this.$refs.form.validate()) return;
-      if (this.acquired == "Pledge") {
+      if (this.acquired === this.natureOfAcquisition[0]) {
         this.onHandUnits = 0;
         this.distributedUnits = 0;
         this.dateReceived = null;
       }
+
       this.isSubmitting = true;
       var task = null;
       if (this.kitId) {
