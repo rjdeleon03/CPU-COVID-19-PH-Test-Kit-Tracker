@@ -40,93 +40,23 @@
         </v-row>
       </v-container>
     </div>
-    <div class="share-content">
-      <v-container>
-        <v-row justify="center">
-          <social-sharing url="http://192.168.1.10:8080" inline-template>
-            <div>
-              Share to:
-              <network network="facebook">
-                <i class="fa fa-fw fa-facebook"></i> Facebook
-              </network>
-              <network network="twitter">
-                <i class="fa fa-fw fa-twitter"></i> Twitter
-              </network>
-              <network network="linkedin">
-                <i class="fa fa-fw fa-linkedin"></i> LinkedIn
-              </network>
-              <network network="reddit">
-                <i class="fa fa-fw fa-reddit"></i> Reddit
-              </network>
-            </div>
-          </social-sharing>
-        </v-row>
-      </v-container>
-    </div>
-    <v-container id="table-container">
-      <v-card>
-        <v-card-title>
-          <span class="table-title">Test Kits</span>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            color="pink darken-4"
-            single-line
-            hide-details
-            class="search-field"
-          ></v-text-field>
-          <v-btn
-            v-if="authenticated"
-            dark
-            class="mb-2 new-entry-button"
-            @click="navigateToAddTestKit()"
-            color="amber darken-4"
-          >New Entry</v-btn>
-          <!-- <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn> -->
-        </v-card-title>
-        <v-data-table
-          :headers="tableHeaders"
-          :items="kits"
-          :sort-desc="[false, true]"
-          multi-sort
-          :search="search"
-        >
-          <template v-slot:item.acquisition="{ item }">{{ getNatureOfAcquisition(item) }}</template>
-          <template v-slot:item.date_received="{ item }">{{ getDateReceived(item) }}</template>
-          <template v-slot:item.units_pledged="{ item }">{{ getUnitsPledged(item) }}</template>
-          <template v-slot:item.units_on_hand="{ item }">{{ getUnitsOnHand(item) }}</template>
-          <template v-slot:item.units_used="{ item }">{{ getUnitsUsed(item) }}</template>
-          <template v-slot:item.actions="{ item }" v-if="authenticated">
-            <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
-            <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-container>
+
+    <TestKitsTable :authenticated="authenticated" />
 
     <!-- Display dialog when loading -->
     <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
-
-    <ConfirmationDialog
-      :isDisplayed="forDeletion.isDeleteConfirm"
-      :title="forDeletion.title"
-      :message="forDeletion.message"
-      :callback="deleteItem"
-      :negativeCallback="cancelDeletion"
-    />
   </div>
 </template>
 
 <script>
 import gsap from "gsap";
+import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
-import { natureOfAcquisition } from "../../constants";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
-import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
+import TestKitsTable from "./TestKitsTable.vue";
 export default {
   name: "Home",
-  components: { ProgressDialog, ConfirmationDialog },
+  components: { ProgressDialog, TestKitsTable },
   data() {
     return {
       // Fetching flag
@@ -160,78 +90,30 @@ export default {
       tweenedPledgedMaxTotal: 0,
 
       usedTotal: 0,
-      tweenedUsedTotal: 0,
-
-      // Table data
-      search: "",
-      tableHeaders: this.headers_not_authenticated,
-      headers: [
-        {
-          text: "Source",
-          align: "start",
-          value: "source"
-        },
-        { text: "Acquired Through", value: "acquisition", align: "start" },
-        { text: "Date Received", value: "date_received", align: "end" },
-        {
-          text: "Units Pledged",
-          value: "units_pledged",
-          align: "end",
-          sortable: false
-        },
-        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
-        { text: "Units Used", value: "units_used", align: "end" },
-        { text: "Actions", value: "actions", align: "end", sortable: false }
-      ],
-      headers_not_authenticated: [
-        {
-          text: "Source",
-          align: "start",
-          value: "source"
-        },
-        { text: "Acquired Through", value: "acquisition", align: "start" },
-        { text: "Date Received", value: "date_received", align: "end" },
-        {
-          text: "Units Pledged",
-          value: "units_pledged",
-          align: "end",
-          sortable: false
-        },
-        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
-        { text: "Units Used", value: "units_used", align: "end" }
-      ],
-      kits: [],
-
-      // Deletion
-      forDeletion: {
-        isDeleteConfirm: false,
-        item: null,
-        title: "Delete Test Kit Entry",
-        message: "Are you sure you want to delete this test kit entry?"
-      }
+      tweenedUsedTotal: 0
     };
   },
   computed: {
     animatedCasesTotal: function() {
-      return this.numberWithCommas(this.tweenedCasesTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedCasesTotal.toFixed(0));
     },
     animatedDeathsTotal: function() {
-      return this.numberWithCommas(this.tweenedDeathsTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedDeathsTotal.toFixed(0));
     },
     animatedOnHandTotal: function() {
-      return this.numberWithCommas(this.tweenedOnHandTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedOnHandTotal.toFixed(0));
     },
     animatedPledgedTotal: function() {
-      return this.numberWithCommas(this.tweenedPledgedTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedPledgedTotal.toFixed(0));
     },
     animatedPledgedMinTotal: function() {
-      return this.numberWithCommas(this.tweenedPledgedMinTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedPledgedMinTotal.toFixed(0));
     },
     animatedPledgedMaxTotal: function() {
-      return this.numberWithCommas(this.tweenedPledgedMaxTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedPledgedMaxTotal.toFixed(0));
     },
     animatedUsedTotal: function() {
-      return this.numberWithCommas(this.tweenedUsedTotal.toFixed(0));
+      return utils.numberWithCommas(this.tweenedUsedTotal.toFixed(0));
     },
     authenticated() {
       return this.user.loggedIn;
@@ -260,11 +142,6 @@ export default {
       gsap.to(this.$data, { duration: 1.3, tweenedUsedTotal: newValue });
     }
   },
-  firestore() {
-    return {
-      kits: db.collection("kits").orderBy("timestamp")
-    };
-  },
   methods: {
     navigateToLogin() {
       this.$router.push("/login");
@@ -275,55 +152,6 @@ export default {
     navigateToEditTestKit(item) {
       let key = item[".key"];
       this.$router.push("/kits/edit/" + key);
-    },
-    numberWithCommas(x) {
-      if (!x) return "0";
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-    getNatureOfAcquisition(item) {
-      return natureOfAcquisition[item.nature_of_acquisition];
-    },
-    getDateReceived(item) {
-      if (!item.date_received || item.date_received === "") {
-        {
-          return "-";
-        }
-      }
-      return item.date_received;
-    },
-    getUnitsPledged(item) {
-      if (
-        item.units_pledged_max > item.units_pledged_min &&
-        item.units_pledged_min > 0
-      ) {
-        return (
-          this.numberWithCommas(item.units_pledged_min) +
-          "~" +
-          this.numberWithCommas(item.units_pledged_max)
-        );
-      }
-      return this.numberWithCommas(item.units_pledged_max);
-    },
-    getUnitsOnHand(item) {
-      return this.numberWithCommas(item.units_on_hand);
-    },
-    getUnitsUsed(item) {
-      return this.numberWithCommas(item.units_used);
-    },
-    confirmDeletion(item) {
-      this.forDeletion.item = item;
-      this.forDeletion.isDeleteConfirm = true;
-    },
-    cancelDeletion() {
-      this.forDeletion.item = null;
-      this.forDeletion.isDeleteConfirm = false;
-    },
-    deleteItem() {
-      let key = this.forDeletion.item[".key"];
-      db.collection("kits")
-        .doc(key)
-        .delete();
-      this.cancelDeletion();
     }
   },
   mounted() {
@@ -492,15 +320,6 @@ export default {
   #table-container {
     margin-top: -190px !important;
   }
-}
-.share-content {
-  z-index: 1;
-  position: relative;
-  color: white;
-  text-align: right;
-}
-.share-content div span {
-  cursor: pointer;
 }
 #table-container {
   /* margin: 20px 5%; */
