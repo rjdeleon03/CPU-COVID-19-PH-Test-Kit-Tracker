@@ -7,7 +7,7 @@
           <v-col cols="12" xl="5" lg="5" sm="12">
             <div class="figures-main figures-container">
               <span class="figure">{{animatedCasesTotal}}</span>
-              <p class="label">Cases</p>
+              <p class="label">Cases in the Philippines</p>
               <Timer />
             </div>
           </v-col>
@@ -45,7 +45,14 @@
           </v-col>
         </v-row>-->
       </v-container>
-      <v-tabs v-model="tab" background-color="transparent accent-4" dark centered class="tabs">
+      <v-tabs
+        v-model="tab"
+        background-color="transparent accent-4"
+        slider-color="amber"
+        dark
+        centered
+        class="tabs"
+      >
         <v-tabs-slider></v-tabs-slider>
 
         <v-tab :key="items[0].tab">Test Kits</v-tab>
@@ -270,8 +277,8 @@ export default {
   font-weight: 600;
 }
 .top-content .figures-main.figures-container .label {
-  margin-top: -25px;
-  font-size: 2em;
+  margin-top: -22px;
+  font-size: 1.6em;
   text-transform: uppercase;
 }
 .top-content .figures-container .figure {
@@ -311,7 +318,7 @@ export default {
   }
   .top-content .figures-main.figures-container .label {
     margin-top: -20px;
-    font-size: 1.5em;
+    font-size: 1.3em;
     text-transform: uppercase;
   }
   .top-content .figures-container .figure {
@@ -334,8 +341,8 @@ export default {
     font-weight: 600;
   }
   .top-content .figures-main.figures-container .label {
-    margin-top: -15px;
-    font-size: 1.5em;
+    margin-top: -13px;
+    font-size: 1.3em;
     text-transform: uppercase;
   }
   .top-content .figures-container .figure {

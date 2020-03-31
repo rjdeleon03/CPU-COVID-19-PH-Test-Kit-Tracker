@@ -10,12 +10,26 @@
     <v-card flat tile class="pink darken-4 white--text text-center footer-card">
       <v-card-text>
         <span class="sharing-text mx-2">AGHAM</span>
-        <v-btn v-for="icon in icons_agham" :key="icon.id" class="mx-2 white--text sharing-btn" icon>
+        <v-btn
+          v-for="icon in icons_agham"
+          :key="icon.id"
+          class="mx-2 white--text sharing-btn"
+          icon
+          :href="icon.url"
+          target="_blank"
+        >
           <v-icon size="24px">{{ icon.icon }}</v-icon>
         </v-btn>
         <span class="sharing-text mx-2">|</span>
         <span class="sharing-text mx-2">CPU</span>
-        <v-btn v-for="icon in icons_cpu" :key="icon.id" class="mx-2 white--text sharing-btn" icon>
+        <v-btn
+          v-for="icon in icons_cpu"
+          :key="icon.id"
+          class="mx-2 white--text sharing-btn"
+          icon
+          :href="icon.url"
+          target="_blank"
+        >
           <v-icon size="24px">{{ icon.icon }}</v-icon>
         </v-btn>
       </v-card-text>
