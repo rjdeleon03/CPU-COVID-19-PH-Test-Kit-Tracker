@@ -63,3 +63,4 @@ db.collection("kits").onSnapshot(snapshot => {
   // console.log("pledgedMinTotal: " + pledgedMinTotal);
   // console.log("pledgedMaxTotal: " + pledgedMaxTotal);
 });
+
