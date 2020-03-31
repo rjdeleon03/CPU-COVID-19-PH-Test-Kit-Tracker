@@ -1,8 +1,8 @@
 <template>
-  <v-container id="table-container">
+  <v-container>
     <v-card>
       <v-card-title>
-        <span class="table-title">Test Kits</span>
+        <!-- <span class="table-title">Test Kits</span> -->
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"

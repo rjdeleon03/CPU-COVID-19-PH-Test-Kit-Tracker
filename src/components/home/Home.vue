@@ -45,10 +45,23 @@
           </v-col>
         </v-row>-->
       </v-container>
+      <v-tabs v-model="tab" background-color="transparent accent-4" dark centered class="tabs">
+        <v-tabs-slider></v-tabs-slider>
+
+        <v-tab :key="items[0].tab">Test Kits</v-tab>
+        <v-tab :key="items[1].tab">About</v-tab>
+      </v-tabs>
     </div>
 
     <!-- Test kits table -->
-    <TestKitsTable :authenticated="authenticated" />
+    <v-tabs-items v-model="tab" id="table-container">
+      <v-tab-item :key="items[0].tab">
+        <TestKitsTable :authenticated="authenticated" />
+      </v-tab-item>
+      <v-tab-item :key="items[1].tab">
+        <TestKitsTable :authenticated="authenticated" />
+      </v-tab-item>
+    </v-tabs-items>
 
     <!-- Display dialog when loading -->
     <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
@@ -98,7 +111,14 @@ export default {
       tweenedPledgedMaxTotal: 0,
 
       usedTotal: 0,
-      tweenedUsedTotal: 0
+      tweenedUsedTotal: 0,
+
+      // Tabs
+      tab: null,
+      items: [
+        { tab: "One", content: "Tab 1 Content" },
+        { tab: "Two", content: "Tab 2 Content" }
+      ]
     };
   },
   computed: {
@@ -326,15 +346,19 @@ export default {
     text-align: center;
   }
   #table-container {
-    margin-top: -140px !important;
+    margin-top: -130px !important;
   }
+}
+.tabs {
+  margin-top: 15px;
 }
 #table-container {
   /* margin: 20px 5%; */
-  margin-top: -130px;
+  margin-top: -120px;
   margin-bottom: 70px;
   z-index: 1;
   position: relative;
+  background-color: transparent;
 }
 .search-field {
   margin-top: 0px !important;
