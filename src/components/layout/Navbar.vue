@@ -2,60 +2,11 @@
   <nav id="navbar">
     <v-app-bar app color="pink darken-4" dark>
       <v-app-bar-nav-icon @click="isDrawerVisible = true"></v-app-bar-nav-icon>
-      <!-- <div class="d-flex align-center"> -->
-      <!-- <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-      />
-
-        <h2>COVID-19 PH ATM</h2>
-        <v-btn justify="right" v-if="!authenticated" dark class="mb-2" @click="login()" color="amber darken-4">Login</v-btn>
-        <v-btn justify="right" v-else dark class="mb-2" @click="logout()" color="amber darken-4">Logout</v-btn>
-      </div>
-      -->
 
       <v-toolbar-title>COVID-19 PH ATM Tracker</v-toolbar-title>
-      <!-- </div> -->
       <v-spacer></v-spacer>
 
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <!-- <v-btn
-          color="primary"
-          dark
-          v-on="on"
-        >
-          Dropdown
-          </v-btn>-->
-          <v-btn icon v-on="on">
-            <v-icon>mdi-share-variant</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item @click="redirectToHome">
-            <v-list-item-icon>
-              <v-icon>mdi-facebook</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text-right">Share to Facebook</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="redirectToHome">
-            <v-list-item-icon>
-              <v-icon>mdi-twitter</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text-right">Share to Twitter</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="redirectToHome">
-            <v-list-item-icon>
-              <v-icon>mdi-reddit</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text-right">Share to Reddit</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <SharingMenu />
     </v-app-bar>
     <v-navigation-drawer v-model="isDrawerVisible" :width="325" app temporary>
       <v-list>
@@ -128,11 +79,17 @@
 import SuccessDialogWithCallback from "@/components/dialog/SuccessDialogWithCallback.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 import GenericInfoDialog from "@/components/dialog/GenericInfoDialog.vue";
+import SharingMenu from "@/components/layout/SharingMenu.vue";
 import { firebase } from "@firebase/app";
 import { auth } from "@/firebase/init";
 export default {
   name: "Navbar",
-  components: { SuccessDialogWithCallback, ErrorDialog, GenericInfoDialog },
+  components: {
+    SuccessDialogWithCallback,
+    ErrorDialog,
+    GenericInfoDialog,
+    SharingMenu
+  },
   data() {
     return {
       isDrawerVisible: false,
@@ -215,7 +172,7 @@ export default {
         .signOut()
         .then(() => {
           if (isNewUser) {
-            // TODO: Show dialog that user is logged out
+            //Show dialog that user is logged out
             _this.isNewUser = true;
           } else {
             _this.isLoggedOut = true;
@@ -223,7 +180,7 @@ export default {
           _this.isDrawerVisible = false;
         })
         .catch(() => {
-          // TODO: Show dialog that user failed to log out
+          // Show dialog that user failed to log out
           // console.log(error);
           _this.isLogoutError = true;
           _this.isDrawerVisible = false;
@@ -246,7 +203,6 @@ export default {
     }
   },
   mounted() {
-    console.log(window.location.pathname);
     auth.onAuthStateChanged(user => {
       if (user) {
         this.user.loggedIn = true;
@@ -292,5 +248,8 @@ nav#navbar .drawer-text {
 }
 nav#navbar .drawer-text-right {
   text-align: left !important;
+}
+nav#navbar .drawer-text-right span {
+  cursor: pointer !important;
 }
 </style>

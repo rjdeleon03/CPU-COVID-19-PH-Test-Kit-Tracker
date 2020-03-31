@@ -134,7 +134,7 @@
               <v-text-field
                 v-model="distributedUnits"
                 :rules="distributedUnitsRules"
-                label="No. of Distributed Units"
+                label="No. of Used Units"
                 type="number"
                 min="0"
                 required
