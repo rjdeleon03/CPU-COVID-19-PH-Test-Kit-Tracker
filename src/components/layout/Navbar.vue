@@ -22,38 +22,67 @@
       <!-- </div> -->
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-share-variant</v-icon>
-      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <!-- <v-btn
+          color="primary"
+          dark
+          v-on="on"
+        >
+          Dropdown
+          </v-btn>-->
+          <v-btn icon v-on="on">
+            <v-icon>mdi-share-variant</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="redirectToHome">
+            <v-list-item-icon>
+              <v-icon>mdi-facebook</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text-right">Share to Facebook</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="redirectToHome">
+            <v-list-item-icon>
+              <v-icon>mdi-twitter</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text-right">Share to Twitter</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="redirectToHome">
+            <v-list-item-icon>
+              <v-icon>mdi-reddit</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="drawer-text-right">Share to Reddit</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
     <v-navigation-drawer v-model="isDrawerVisible" :width="325" app temporary>
       <v-list>
-        <v-list-item-group active-class="pink--text darken-4 text--accent-4">
-          <v-list-item @click="redirectToHome">
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Home</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="login" v-if="!authenticated">
-            <v-list-item-icon>
-              <v-icon>mdi-login</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout" v-if="authenticated">
-            <v-list-item-icon>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Logout</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="goToEditStats" v-if="authenticated">
-            <v-list-item-icon>
-              <v-icon>mdi-chart-line</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item @click="redirectToHome">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Home</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="login" v-if="!authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-login</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout" v-if="authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Logout</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="goToEditStats" v-if="authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-line</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -217,6 +246,7 @@ export default {
     }
   },
   mounted() {
+    console.log(window.location.pathname);
     auth.onAuthStateChanged(user => {
       if (user) {
         this.user.loggedIn = true;
@@ -259,5 +289,8 @@ nav#navbar #sub {
 }
 nav#navbar .drawer-text {
   text-align: left;
+}
+nav#navbar .drawer-text-right {
+  text-align: left !important;
 }
 </style>

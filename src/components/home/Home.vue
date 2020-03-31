@@ -33,7 +33,7 @@
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
-              <span class="figure" v-else>{{animatedPledgedMinTotal}} ~ {{animatedPledgedMaxTotal}}</span>
+              <span class="figure" v-else>{{animatedPledgedMinTotal}}~{{animatedPledgedMaxTotal}}</span>
               <p class="label">Test Kits (Pledged & On-Hand)</p>
             </div>
           </v-col>
@@ -93,6 +93,7 @@
           :search="search"
         >
           <template v-slot:item.acquisition="{ item }">{{ getNatureOfAcquisition(item) }}</template>
+          <template v-slot:item.date_received="{ item }">{{ getDateReceived(item) }}</template>
           <template v-slot:item.units_pledged="{ item }">{{ getUnitsPledged(item) }}</template>
           <template v-slot:item.units_on_hand="{ item }">{{ getUnitsOnHand(item) }}</template>
           <template v-slot:item.units_used="{ item }">{{ getUnitsUsed(item) }}</template>
@@ -282,6 +283,14 @@ export default {
     getNatureOfAcquisition(item) {
       return natureOfAcquisition[item.nature_of_acquisition];
     },
+    getDateReceived(item) {
+      if (!item.date_received || item.date_received === "") {
+        {
+          return "-";
+        }
+      }
+      return item.date_received;
+    },
     getUnitsPledged(item) {
       if (
         item.units_pledged_max > item.units_pledged_min &&
@@ -289,7 +298,7 @@ export default {
       ) {
         return (
           this.numberWithCommas(item.units_pledged_min) +
-          " ~ " +
+          "~" +
           this.numberWithCommas(item.units_pledged_max)
         );
       }
