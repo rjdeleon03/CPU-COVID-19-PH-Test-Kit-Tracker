@@ -106,7 +106,7 @@ export default {
 
       isLoginError: false,
       loginErrorMessage:
-        "An error occurred while logging you in. Please contact Computer Professionals' Union for support.",
+        "An error occurred while logging you in. Please contact Computer Professionals' Union or AGHAM for support.",
 
       isLoggedOut: false,
       loggedOutMessage: "You are now logged out.",
@@ -118,7 +118,7 @@ export default {
       isNewUser: false,
       newUserTitle: "Verification Required",
       newUserMessage:
-        "Your account needs to be verified by Computer Professionals' Union before you can successfully log in."
+        "Your account needs to be verified by Computer Professionals' Union or AGHAM before you can successfully log in."
     };
   },
   methods: {
