@@ -166,7 +166,8 @@ export default {
         .doc("EXTERNAL_STATS_ID")
         .update({
           deaths: this.deaths,
-          totalCases: this.positiveCases
+          totalCases: this.positiveCases,
+          lastModified: new Date()
         })
         .then(() => {
           this.isSubmitting = false;

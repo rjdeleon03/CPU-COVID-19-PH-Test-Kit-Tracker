@@ -8,6 +8,7 @@
             <div class="figures-main figures-container">
               <span class="figure">{{animatedCasesTotal}}</span>
               <p class="label">Cases</p>
+              <Timer />
             </div>
           </v-col>
         </v-row>
@@ -38,9 +39,15 @@
             </div>
           </v-col>
         </v-row>
+        <!-- <v-row justify="center">
+          <v-col cols="12" xl="5" lg="5" sm="12">
+            <Timer />
+          </v-col>
+        </v-row>-->
       </v-container>
     </div>
 
+    <!-- Test kits table -->
     <TestKitsTable :authenticated="authenticated" />
 
     <!-- Display dialog when loading -->
@@ -54,9 +61,10 @@ import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import TestKitsTable from "./TestKitsTable.vue";
+import Timer from "./Timer.vue";
 export default {
   name: "Home",
-  components: { ProgressDialog, TestKitsTable },
+  components: { ProgressDialog, TestKitsTable, Timer },
   data() {
     return {
       // Fetching flag
