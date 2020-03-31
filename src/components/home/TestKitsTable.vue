@@ -28,6 +28,9 @@
         multi-sort
         :search="search"
       >
+        <template v-slot:item.source="{ item }">
+          <strong>{{ item.source }}</strong>
+        </template>
         <template v-slot:item.acquisition="{ item }">{{ getNatureOfAcquisition(item) }}</template>
         <template v-slot:item.date_received="{ item }">{{ getDateReceived(item) }}</template>
         <template v-slot:item.units_pledged="{ item }">{{ getUnitsPledged(item) }}</template>
@@ -109,11 +112,6 @@ export default {
       }
     };
   },
-  firestore() {
-    return {
-      kits: db.collection("kits").orderBy("timestamp")
-    };
-  },
   methods: {
     navigateToLogin() {
       this.$router.push("/login");
@@ -173,6 +171,7 @@ export default {
   },
   mounted() {
     this.isFetching = true;
+
     db.collection("stats-main")
       .doc("EXTERNAL_STATS_ID")
       .onSnapshot(doc => {
@@ -180,6 +179,17 @@ export default {
         const data = doc.data();
         this.casesTotal = data.totalCases;
         this.deathsTotal = data.deaths;
+      });
+
+    var transformedKits = [];
+    db.collection("kits")
+      .orderBy("timestamp")
+      .onSnapshot(snapshot => {
+        snapshot.docs.forEach(kit => {
+          transformedKits.push(kit.data());
+        });
+        console.log(transformedKits);
+        this.kits = transformedKits;
       });
   },
   computed: {
