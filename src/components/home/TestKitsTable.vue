@@ -19,7 +19,6 @@
           @click="navigateToAddTestKit()"
           color="amber darken-4"
         >New Entry</v-btn>
-        <!-- <v-btn v-else dark class="mb-2" @click="navigateToLogin()" color="amber darken-4">Login</v-btn> -->
       </v-card-title>
       <v-data-table
         :headers="tableHeaders"
@@ -31,11 +30,6 @@
         <template v-slot:item.source="{ item }">
           <strong>{{ item.source }}</strong>
         </template>
-        <template v-slot:item.acquisition="{ item }">{{ getNatureOfAcquisition(item) }}</template>
-        <template v-slot:item.date_received="{ item }">{{ getDateReceived(item) }}</template>
-        <template v-slot:item.units_pledged="{ item }">{{ getUnitsPledged(item) }}</template>
-        <template v-slot:item.units_on_hand="{ item }">{{ getUnitsOnHand(item) }}</template>
-        <template v-slot:item.units_used="{ item }">{{ getUnitsUsed(item) }}</template>
         <template v-slot:item.actions="{ item }" v-if="authenticated">
           <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
           <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
@@ -72,16 +66,20 @@ export default {
           align: "start",
           value: "source"
         },
-        { text: "Acquired Through", value: "acquisition", align: "start" },
-        { text: "Date Received", value: "date_received", align: "end" },
+        {
+          text: "Acquired Through",
+          value: "t_natureOfAcquisition",
+          align: "start"
+        },
+        { text: "Date Received", value: "t_dateReceived", align: "end" },
         {
           text: "Units Pledged",
-          value: "units_pledged",
+          value: "t_unitsPledged",
           align: "end",
           sortable: false
         },
-        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
-        { text: "Units Used", value: "units_used", align: "end" },
+        { text: "Units On-Hand", value: "t_unitsOnHand", align: "end" },
+        { text: "Units Used", value: "t_unitsUsed", align: "end" },
         { text: "Actions", value: "actions", align: "end", sortable: false }
       ],
       headers_not_authenticated: [
@@ -90,16 +88,20 @@ export default {
           align: "start",
           value: "source"
         },
-        { text: "Acquired Through", value: "acquisition", align: "start" },
-        { text: "Date Received", value: "date_received", align: "end" },
+        {
+          text: "Acquired Through",
+          value: "t_natureOfAcquisition",
+          align: "start"
+        },
+        { text: "Date Received", value: "t_dateReceived", align: "end" },
         {
           text: "Units Pledged",
-          value: "units_pledged",
+          value: "t_unitsPledged",
           align: "end",
           sortable: false
         },
-        { text: "Units On-Hand", value: "units_on_hand", align: "end" },
-        { text: "Units Used", value: "units_used", align: "end" }
+        { text: "Units On-Hand", value: "t_unitsOnHand", align: "end" },
+        { text: "Units Used", value: "t_unitsUsed", align: "end" }
       ],
       kits: [],
 
@@ -186,7 +188,13 @@ export default {
       .orderBy("timestamp")
       .onSnapshot(snapshot => {
         snapshot.docs.forEach(kit => {
-          transformedKits.push(kit.data());
+          const data = kit.data();
+          data.t_natureOfAcquisition = this.getNatureOfAcquisition(data);
+          data.t_dateReceived = this.getDateReceived(data);
+          data.t_unitsPledged = this.getUnitsPledged(data);
+          data.t_unitsOnHand = this.getUnitsOnHand(data);
+          data.t_unitsUsed = this.getUnitsUsed(data);
+          transformedKits.push(data);
         });
         console.log(transformedKits);
         this.kits = transformedKits;
