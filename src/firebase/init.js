@@ -2,10 +2,13 @@ import { firebase } from "@firebase/app";
 import "@firebase/firestore";
 import "@firebase/auth";
 
-import { firebaseConfig } from "./config";
+import { firebaseConfigDev } from "./config-dev";
+import { firebaseConfigProd } from "./config-prod";
 
-// Initialize Firebase
+// Initialize Firebase depending on env
+const firebaseConfig = (process.env.NODE_ENV === "production") ? firebaseConfigDev : firebaseConfigProd;
 const firebaseApp = firebase.initializeApp(firebaseConfig);
+
 // firebase.analytics();
 export const db = firebaseApp.firestore();
 export const auth = firebase.auth();
