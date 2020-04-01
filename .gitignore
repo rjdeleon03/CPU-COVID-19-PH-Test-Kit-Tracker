@@ -22,3 +22,4 @@ yarn-error.log*
 src/firebase/config.js
 src/firebase/config-dev.js
 src/firebase/config-prod.js
+.firebase/hosting.ZGlzdA.cache
