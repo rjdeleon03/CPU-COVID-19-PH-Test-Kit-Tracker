@@ -122,7 +122,7 @@ export default {
       this.$router.push("/kits/new");
     },
     navigateToEditTestKit(item) {
-      let key = item[".key"];
+      let key = item.id;
       this.$router.push("/kits/edit/" + key);
     },
     getNatureOfAcquisition(item) {
@@ -164,7 +164,7 @@ export default {
       this.forDeletion.isDeleteConfirm = false;
     },
     deleteItem() {
-      let key = this.forDeletion.item[".key"];
+      let key = this.forDeletion.item.id;
       db.collection("kits")
         .doc(key)
         .delete();
@@ -189,6 +189,7 @@ export default {
       .onSnapshot(snapshot => {
         snapshot.docs.forEach(kit => {
           const data = kit.data();
+          data.id = kit.id;
           data.t_natureOfAcquisition = this.getNatureOfAcquisition(data);
           data.t_dateReceived = this.getDateReceived(data);
           data.t_unitsPledged = this.getUnitsPledged(data);

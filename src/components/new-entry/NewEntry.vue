@@ -227,7 +227,7 @@ export default {
       // Loading error dialog
       isFetchingError: false,
       fetchingErrorMessage:
-        "An error occurred while fetching COVID-19 statistics.",
+        "An error occurred while fetching the test kit entry.",
 
       // Submitting dialog
       isSubmitting: false,
