@@ -322,7 +322,6 @@ export default {
       .catch(() => {
         this.isFetching = false;
         this.isFetchingError = true;
-        this.$router.push("/").catch(() => {});
       });
   },
   watch: {
