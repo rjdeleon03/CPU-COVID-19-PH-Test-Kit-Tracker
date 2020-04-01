@@ -6,7 +6,7 @@ import { firebaseConfigDev } from "./config-dev";
 import { firebaseConfigProd } from "./config-prod";
 
 // Initialize Firebase depending on env
-const firebaseConfig = (process.env.NODE_ENV === "production") ? firebaseConfigDev : firebaseConfigProd;
+const firebaseConfig = (process.env.NODE_ENV === "production") ? firebaseConfigProd : firebaseConfigDev;
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 // firebase.analytics();
