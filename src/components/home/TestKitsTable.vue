@@ -196,7 +196,6 @@ export default {
           data.t_unitsUsed = this.getUnitsUsed(data);
           transformedKits.push(data);
         });
-        console.log(transformedKits);
         this.kits = transformedKits;
       });
   },
