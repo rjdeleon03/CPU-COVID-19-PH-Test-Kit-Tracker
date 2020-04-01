@@ -3,7 +3,7 @@
     <v-app-bar app color="pink darken-4" dark>
       <v-app-bar-nav-icon @click="isDrawerVisible = true"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>COVID-19 PH ATM Tracker</v-toolbar-title>
+      <v-toolbar-title>COVID-19 PH Testing Tracker</v-toolbar-title>
       <v-spacer></v-spacer>
 
       <SharingMenu />

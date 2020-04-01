@@ -13,19 +13,19 @@
         <v-btn
           v-for="icon in icons_agham"
           :key="icon.id"
-          class="mx-1 white--text sharing-btn"
+          class="white--text sharing-btn"
           icon
           :href="icon.url"
           target="_blank"
         >
           <v-icon size="24px">{{ icon.icon }}</v-icon>
         </v-btn>
-        <span class="sharing-text mx-1">|</span>
-        <span class="sharing-text mx-1">CPU</span>
+        <span class="sharing-text mx-2">|</span>
+        <span class="sharing-text">CPU</span>
         <v-btn
           v-for="icon in icons_cpu"
           :key="icon.id"
-          class="mx-1 white--text sharing-btn"
+          class="white--text sharing-btn"
           icon
           :href="icon.url"
           target="_blank"
@@ -63,15 +63,17 @@ export default {
           icon: "mdi-facebook",
           url: "https://fb.me"
         },
-        { id: 2, icon: "mdi-twitter", url: "https://twitter.com" }
+        { id: 2, icon: "mdi-twitter", url: "https://twitter.com" },
+        { id: 3, icon: "mdi-instagram", url: "https://instagram.com" }
       ],
       icons_cpu: [
         {
-          id: 3,
+          id: 4,
           icon: "mdi-facebook",
           url: "http://fb.com/cpunion"
         },
-        { id: 4, icon: "mdi-twitter", url: "https://twitter.com/CP_Union" }
+        { id: 5, icon: "mdi-twitter", url: "https://twitter.com/CP_Union" },
+        { id: 6, icon: "mdi-instagram", url: "https://instagram.com/cpu_ph" }
       ]
     };
   }
@@ -81,7 +83,7 @@ export default {
 <style>
 .sharing-text {
   color: white;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 .sharing-btn {
   margin-top: -3px;
