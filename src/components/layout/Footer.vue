@@ -37,8 +37,8 @@
       <v-card-text class="white--text pt-0">
         For inquiries, you may reach us through our social media accounts or via email at
         <a
-          href="mailto:abc@example.com"
-        >abc@example.com</a> or
+          href="mailto:aghamdiliman@agham.org"
+        >aghamdiliman@agham.org</a> or
         <a href="mailto:secretariat@cp-union.com">secretariat@cp-union.com</a>.
       </v-card-text>
 
@@ -61,19 +61,18 @@ export default {
         {
           id: 1,
           icon: "mdi-facebook",
-          url: "https://fb.me"
+          url: "https://fb.com/agham.org"
         },
-        { id: 2, icon: "mdi-twitter", url: "https://twitter.com" },
-        { id: 3, icon: "mdi-instagram", url: "https://instagram.com" }
+        { id: 2, icon: "mdi-twitter", url: "https://twitter.com/aghamdiliman" }
       ],
       icons_cpu: [
         {
-          id: 4,
+          id: 3,
           icon: "mdi-facebook",
           url: "http://fb.com/cpunion"
         },
-        { id: 5, icon: "mdi-twitter", url: "https://twitter.com/CP_Union" },
-        { id: 6, icon: "mdi-instagram", url: "https://instagram.com/cpu_ph" }
+        { id: 4, icon: "mdi-twitter", url: "https://twitter.com/CP_Union" },
+        { id: 5, icon: "mdi-instagram", url: "https://instagram.com/cpu_ph" }
       ]
     };
   }

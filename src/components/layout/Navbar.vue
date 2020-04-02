@@ -152,12 +152,11 @@ export default {
         })
         .catch(error => {
           const errorCode = error.code;
-          // console.log(errorCode);
 
           // Show dialog that user failed to log in
           if (errorCode === "auth/user-disabled") {
             _this.isNewUser = true;
-          } else {
+          } else if (errorCode !== "auth/popup-closed-by-user") {
             _this.isLoginError = true;
           }
           _this.isDrawerVisible = false;
