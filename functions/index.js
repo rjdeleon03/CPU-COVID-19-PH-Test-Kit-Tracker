@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-
+const axios = require('axios');
 
 // Initialize app
 admin.initializeApp();
@@ -12,6 +12,31 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
         disabled: true
     })
 });
+
+// Update external statistics every 10 mins
+exports.scheduledExternalStatsUpdate = functions.pubsub
+    .schedule('every 10 minutes').onRun(() => {
+
+        axios
+            .get("https://ncovph.com/api/counts")
+            .then(response => {
+                if (response.status == 200) {
+                    const data = response.data;
+                    db.collection("stats-main")
+                        .doc("EXTERNAL_STATS_ID")
+                        .update({
+                            deaths: data.deceased,
+                            totalCases: data.confirmed,
+                            pui: data.pui,
+                            pum: data.pum,
+                            recovered: data.recovered,
+                            tests: data.tests,
+                            lastModified: new Date()
+                        });
+                }
+            })
+            .catch(() => { });
+    });
 
 // Automatically update test kit totals upon updating of the kits collection
 // exports.updateTestKitTotals = functions.firestore
