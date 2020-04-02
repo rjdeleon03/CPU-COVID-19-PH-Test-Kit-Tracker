@@ -4,6 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "covid19phtesting",
     "public": "dist",
     "ignore": [
       "firebase.json",
