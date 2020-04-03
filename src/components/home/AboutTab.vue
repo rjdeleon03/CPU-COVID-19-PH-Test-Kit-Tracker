@@ -1,7 +1,15 @@
 <template>
   <v-container id="about">
     <v-card min-height="200">
-      <v-card-text>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</v-card-text>
+      <v-card-text>
+        <p>
+          This website aims to consolidate and present data regarding the state of COVID-19 PH testing in the Philippines, in line with the call to implement
+          <strong>#MassTestingNow</strong> in the Philippines. We, members and volunteers of
+          <strong>AGHAM - Advocates of Science and Technology for the People</strong> and
+          <strong>Computer Professionals' Union (CPU)</strong>, truly believe that mass testing is vital in winning the battle against COVID-19.
+        </p>
+        <p>The data presented in this website are gathered from the Department of Health (DOH) and various reliable sources on test kits donation and overall testing. These information are monitored and updated regularly.</p>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
