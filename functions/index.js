@@ -17,9 +17,10 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
 exports.scheduledExternalStatsUpdate = functions.pubsub
     .schedule('every 10 minutes').onRun(() => {
 
-        axios
+        return axios
             .get("https://ncovph.com/api/counts")
             .then(response => {
+                console.log(response.status);
                 if (response.status == 200) {
                     const data = response.data;
                     db.collection("stats-main")
@@ -35,7 +36,9 @@ exports.scheduledExternalStatsUpdate = functions.pubsub
                         });
                 }
             })
-            .catch(() => { });
+            .catch(err => {
+                console.log(err);
+            });
     });
 
 // Automatically update test kit totals upon updating of the kits collection

@@ -22,7 +22,7 @@
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="goToEditStats" v-if="authenticated">
+        <v-list-item @click="updateStatsManually" v-if="authenticated">
           <v-list-item-icon>
             <v-icon>mdi-chart-line</v-icon>
           </v-list-item-icon>
@@ -72,21 +72,41 @@
       :message="newUserMessage"
       :callback="hideNewUserAlert"
     />
+
+    <!-- Display dialog when updating statistics -->
+    <ProgressDialog :isLoading="isUpdatingStats" :loadingMessage="updatingStatsMessage" />
+
+    <!-- Display dialog on statistics update -->
+    <SuccessDialogWithCallback
+      :isSuccess="areStatsUpdated"
+      :successMessage="statsUpdatedMessage"
+      :callback="hideStatsUpdatedSuccess"
+    />
+
+    <!-- Display dialog on statistics update error -->
+    <ErrorDialog
+      :isError="areStatsUpdatedError"
+      :errorMessage="statsUpdatedErrorMessage"
+      :callback="hideStatsUpdatedError"
+    />
   </nav>
 </template>
 
 <script>
 import SuccessDialogWithCallback from "@/components/dialog/SuccessDialogWithCallback.vue";
+import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 import GenericInfoDialog from "@/components/dialog/GenericInfoDialog.vue";
 import SharingMenu from "@/components/layout/SharingMenu.vue";
 import { firebase } from "@firebase/app";
-import { auth } from "@/firebase/init";
+import { auth, db } from "@/firebase/init";
+import axios from "axios";
 export default {
   name: "Navbar",
   components: {
     SuccessDialogWithCallback,
     ErrorDialog,
+    ProgressDialog,
     GenericInfoDialog,
     SharingMenu
   },
@@ -103,6 +123,16 @@ export default {
       isLoggedIn: false,
       loggedInMessage:
         "You are now logged in. You can update test kits and overall statistics.",
+
+      isUpdatingStats: false,
+      updatingStatsMessage: "Fetching updated statistics...",
+
+      areStatsUpdated: false,
+      statsUpdatedMessage: "Statistics have been updated.",
+
+      areStatsUpdatedError: false,
+      statsUpdatedErrorMessage:
+        "An error occurred while updating statistics. Please try again.",
 
       isLoginError: false,
       loginErrorMessage:
@@ -199,6 +229,42 @@ export default {
     },
     hideNewUserAlert() {
       this.isNewUser = false;
+    },
+    hideStatsUpdatedSuccess() {
+      this.areStatsUpdated = false;
+    },
+    hideStatsUpdatedError() {
+      this.areStatsUpdatedError = false;
+    },
+    updateStatsManually() {
+      this.isUpdatingStats = true;
+      axios
+        .get("https://ncovph.com/api/counts")
+        .then(response => {
+          this.isUpdatingStats = false;
+
+          if (response.status == 200) {
+            const data = response.data;
+            // console.log(data);
+            db.collection("stats-main")
+              .doc("EXTERNAL_STATS_ID")
+              .update({
+                deaths: data.deceased,
+                totalCases: data.confirmed,
+                pui: data.pui,
+                pum: data.pum,
+                recovered: data.recovered,
+                tests: data.tests,
+                lastModified: new Date()
+              });
+            this.areStatsUpdated = true;
+          } else {
+            this.areStatsUpdatedError = true;
+          }
+        })
+        .catch(() => {
+          this.areStatsUpdatedError = true;
+        });
     }
   },
   mounted() {
@@ -229,7 +295,7 @@ nav#navbar h3 {
 }
 nav#navbar .navbar-header {
   height: 230px;
-  background-image: url("~@/assets/header_bg_400h.png");
+  background-image: url("~@/assets/header_bg_400h.jpg");
   background-position: center center;
   background-size: cover;
   color: white;

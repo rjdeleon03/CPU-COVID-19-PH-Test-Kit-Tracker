@@ -236,7 +236,7 @@ export default {
   padding-bottom: 150px;
   position: relative;
   z-index: 1;
-  background-image: url("~@/assets/header_bg_400h.png");
+  background-image: url("~@/assets/header_bg_400h.jpg");
   background-color: #880e4f;
   background-position: bottom center;
   background-size: cover;
