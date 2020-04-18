@@ -173,20 +173,10 @@ export default {
   },
   mounted() {
     this.isFetching = true;
-
-    db.collection("stats-main")
-      .doc("EXTERNAL_STATS_ID")
-      .onSnapshot(doc => {
-        this.isFetching = false;
-        const data = doc.data();
-        this.casesTotal = data.totalCases;
-        this.deathsTotal = data.deaths;
-      });
-
-    var transformedKits = [];
     db.collection("kits")
       .orderBy("timestamp")
       .onSnapshot(snapshot => {
+        var transformedKits = [];
         snapshot.docs.forEach(kit => {
           const data = kit.data();
           data.id = kit.id;

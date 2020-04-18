@@ -13,9 +13,9 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
     })
 });
 
-// Update external statistics every 10 mins
+// Update external statistics every 30 mins
 exports.scheduledExternalStatsUpdate = functions.pubsub
-    .schedule('every 10 minutes').onRun(() => {
+    .schedule("every 10 minutes from 16:00 to 18:00").onRun(() => {
 
         return axios
             .get("https://ncovph.com/api/counts")
@@ -23,6 +23,11 @@ exports.scheduledExternalStatsUpdate = functions.pubsub
                 console.log(response.status);
                 if (response.status == 200) {
                     const data = response.data;
+                    console.log("totalCases: " + data.confirmed + ", deaths: " + data.deceased);
+
+                    if (data.confirmed === 0 || data.deceased === 0) {
+                        return;
+                    }
                     db.collection("stats-main")
                         .doc("EXTERNAL_STATS_ID")
                         .update({

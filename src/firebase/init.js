@@ -44,7 +44,7 @@ db.collection("kits").onSnapshot(snapshot => {
     // console.log(doc.metadata.hasPendingWrites)
 
     if (doc.metadata.hasPendingWrites) {
-      console.log(doc);
+      // console.log(doc);
       hasPendingWrites = true;
     }
   });
