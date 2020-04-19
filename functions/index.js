@@ -15,35 +15,40 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
 
 // Update external statistics every 30 mins
 exports.scheduledExternalStatsUpdate = functions.pubsub
-    .schedule("every 10 minutes from 16:00 to 18:00").onRun(() => {
+    .schedule("every 10 minutes from 16:00 to 18:00").onRun(async () => {
 
-        return axios
-            .get("https://ncovph.com/api/counts")
-            .then(response => {
-                console.log(response.status);
-                if (response.status == 200) {
-                    const data = response.data;
-                    console.log("totalCases: " + data.confirmed + ", deaths: " + data.deceased);
 
-                    if (data.confirmed === 0 || data.deceased === 0) {
-                        return;
-                    }
-                    db.collection("stats-main")
-                        .doc("EXTERNAL_STATS_ID")
-                        .update({
-                            deaths: data.deceased,
-                            totalCases: data.confirmed,
-                            pui: data.pui,
-                            pum: data.pum,
-                            recovered: data.recovered,
-                            tests: data.tests,
-                            lastModified: new Date()
-                        });
-                }
-            })
-            .catch(err => {
-                console.log(err);
+        const res = await axios.post("https://ncovph.com/graphql", {
+            query: `{
+                countConfirmedCases,
+                countAdmitted,
+                countRecoveries,
+                countDeaths
+            }`
+        });
+        const data = res.data.data
+        if (!data
+            || data.countConfirmedCases === 0
+            || data.countDeaths === 0
+            || data.countRecoveries === 0) {
+            console.log("Error: Values are 0.")
+            return null;
+        }
+
+        console.log("totalCases: " + data.countConfirmedCases
+            + ", deaths: " + data.countDeaths
+            + ", recoveries: " + data.countRecoveries);
+
+        db.collection("stats-main")
+            .doc("EXTERNAL_STATS_ID")
+            .update({
+                deaths: data.countDeaths,
+                totalCases: data.countConfirmedCases,
+                admitted: data.countAdmitted,
+                recovered: data.countRecoveries,
+                lastModified: new Date()
             });
+        return null;
     });
 
 // Automatically update test kit totals upon updating of the kits collection

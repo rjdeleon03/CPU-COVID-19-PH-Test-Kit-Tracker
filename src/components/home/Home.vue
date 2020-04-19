@@ -3,15 +3,21 @@
     <div class="top-content figures">
       <v-container>
         <v-row justify="center">
-          <v-col cols="12" xl="5" lg="5" sm="12">
+          <v-col cols="12" xl="6" lg="6" sm="12">
             <div class="figures-main figures-container">
               <span class="figure">{{animatedCasesTotal}}</span>
-              <p class="label">Cases in the Philippines</p>
+              <p class="label">Confirmed Cases in the Philippines</p>
               <Timer />
             </div>
           </v-col>
         </v-row>
         <v-row justify="center" no-gutters>
+          <v-col cols="12" lg="auto" md="6" sm="6">
+            <div class="figures-container">
+              <span class="figure">{{animatedUsedTotal}}</span>
+              <p class="label">Recoveries</p>
+            </div>
+          </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{animatedDeathsTotal}}</span>
@@ -20,21 +26,15 @@
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{animatedUsedTotal}}</span>
-              <p class="label">Test Kits (Used)</p>
-            </div>
-          </v-col>
-          <v-col cols="12" lg="auto" md="6" sm="6">
-            <div class="figures-container">
               <span class="figure">{{animatedOnHandTotal}}</span>
-              <p class="label">Test Kits (On-Hand)</p>
+              <p class="label">Individuals Tested (Nth in the World)</p>
             </div>
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
               <span class="figure" v-else>{{animatedPledgedMinTotal}}~{{animatedPledgedMaxTotal}}</span>
-              <p class="label">Test Kits (Pledged & On-Hand)</p>
+              <p class="label">Infection Rate (Nth in the World)</p>
             </div>
           </v-col>
         </v-row>
@@ -223,13 +223,7 @@ export default {
 
 <style>
 .container {
-  /* width: 100%;
-  height: 100%; */
   z-index: 1;
-  /* position: absolute;
-  top: 0;
-  left: 0;
-  right: 0; */
 }
 .top-content {
   color: white;
