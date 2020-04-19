@@ -50,7 +50,7 @@
         <v-tabs-slider></v-tabs-slider>
 
         <v-tab :key="items[0].tab">Test Kits</v-tab>
-        <v-tab :key="items[1].tab">Cases vs. Tests</v-tab>
+        <v-tab :key="items[1].tab">Test Coverage</v-tab>
         <v-tab :key="items[2].tab">About</v-tab>
       </v-tabs>
     </div>
@@ -61,7 +61,7 @@
         <TestKitsTable :authenticated="authenticated" />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
-        <CasesVsTestsTab />
+        <TestCoverageTab />
       </v-tab-item>
       <v-tab-item :key="items[2].tab">
         <AboutTab />
@@ -79,8 +79,8 @@ import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import TestKitsTable from "./TestKitsTable.vue";
+import TestCoverageTab from "./TestCoverageTab.vue";
 import AboutTab from "./AboutTab.vue";
-import CasesVsTestsTab from "./CasesVsTestsTab.vue";
 import Timer from "./Timer.vue";
 export default {
   name: "Home",
@@ -88,7 +88,7 @@ export default {
     ProgressDialog,
     TestKitsTable,
     AboutTab,
-    CasesVsTestsTab,
+    TestCoverageTab,
     Timer
   },
   data() {
