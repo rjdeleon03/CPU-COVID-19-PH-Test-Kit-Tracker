@@ -13,9 +13,9 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
     })
 });
 
-// Update external statistics every 30 mins
+// Update external statistics every 20 mins from 5PM to 6PM everyday
 exports.scheduledExternalStatsUpdate = functions.pubsub
-    .schedule("every 10 minutes from 16:00 to 18:00").onRun(async () => {
+    .schedule("every 20 minutes from 17:00 to 18:00").onRun(async () => {
 
 
         const res = await axios.post("https://ncovph.com/graphql", {
