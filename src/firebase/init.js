@@ -4,7 +4,6 @@ import "@firebase/auth";
 
 import { firebaseConfigDev } from "./config-dev";
 import { firebaseConfigProd } from "./config-prod";
-import axios from 'axios'
 
 // Initialize Firebase depending on env
 const firebaseConfig = (process.env.NODE_ENV === "production") ? firebaseConfigProd : firebaseConfigDev;
@@ -66,17 +65,6 @@ db.collection("kits").onSnapshot(async snapshot => {
   // console.log("onHandTotal: " + onHandTotal);
   // console.log("pledgedMinTotal: " + pledgedMinTotal);
   // console.log("pledgedMaxTotal: " + pledgedMaxTotal);
-
-
-  const res = await axios.post("https://ncovph.com/graphql", {
-    query: `{
-        countConfirmedCases,
-        countAdmitted,
-        countRecoveries,
-        countDeaths
-    }`
-  });
-  console.log(res.data.data)
 });
 
 

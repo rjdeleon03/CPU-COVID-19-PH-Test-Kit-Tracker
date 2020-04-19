@@ -14,7 +14,7 @@
         <v-row justify="center" no-gutters>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{animatedUsedTotal}}</span>
+              <span class="figure">{{animatedRecoveredTotal}}</span>
               <p class="label">Recoveries</p>
             </div>
           </v-col>
@@ -112,8 +112,8 @@ export default {
       pledgedMaxTotal: 0,
       tweenedPledgedMaxTotal: 0,
 
-      usedTotal: 0,
-      tweenedUsedTotal: 0,
+      recoveredTotal: 0,
+      tweenedRecoveredTotal: 0,
 
       // Tabs
       tab: null,
@@ -142,8 +142,8 @@ export default {
     animatedPledgedMaxTotal: function() {
       return utils.numberWithCommas(this.tweenedPledgedMaxTotal.toFixed(0));
     },
-    animatedUsedTotal: function() {
-      return utils.numberWithCommas(this.tweenedUsedTotal.toFixed(0));
+    animatedRecoveredTotal: function() {
+      return utils.numberWithCommas(this.tweenedRecoveredTotal.toFixed(0));
     },
     authenticated() {
       return this.user.loggedIn;
@@ -168,8 +168,8 @@ export default {
     pledgedMaxTotal: function(newValue) {
       gsap.to(this.$data, { duration: 1.3, tweenedPledgedMaxTotal: newValue });
     },
-    usedTotal: function(newValue) {
-      gsap.to(this.$data, { duration: 1.3, tweenedUsedTotal: newValue });
+    recoveredTotal: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedRecoveredTotal: newValue });
     }
   },
   methods: {
@@ -190,7 +190,6 @@ export default {
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
         const data = doc.data();
-        this.usedTotal = data.testKitsUsed;
         this.onHandTotal = data.testKitsOnHand;
         this.pledgedMinTotal = data.testKitsPledgedMin;
         this.pledgedMaxTotal = data.testKitsPledgedMax;
@@ -205,6 +204,7 @@ export default {
         const data = doc.data();
         this.casesTotal = data.totalCases;
         this.deathsTotal = data.deaths;
+        this.recoveredTotal = data.recovered;
       });
     auth.onAuthStateChanged(user => {
       if (user) {
