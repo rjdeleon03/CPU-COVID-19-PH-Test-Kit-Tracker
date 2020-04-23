@@ -26,7 +26,7 @@
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure">{{animatedOnHandTotal}}</span>
+              <span class="figure">{{animatedIndivsTested}}</span>
               <p class="label">Individuals Tested (Nth in the World)</p>
             </div>
           </v-col>
@@ -115,6 +115,9 @@ export default {
       recoveredTotal: 0,
       tweenedRecoveredTotal: 0,
 
+      indivsTested: 0,
+      tweenedIndivsTested: 0,
+
       // Tabs
       tab: null,
       items: [
@@ -145,6 +148,9 @@ export default {
     animatedRecoveredTotal: function() {
       return utils.numberWithCommas(this.tweenedRecoveredTotal.toFixed(0));
     },
+    animatedIndivsTested: function() {
+      return utils.numberWithCommas(this.tweenedIndivsTested.toFixed(0));
+    },
     authenticated() {
       return this.user.loggedIn;
     }
@@ -170,6 +176,9 @@ export default {
     },
     recoveredTotal: function(newValue) {
       gsap.to(this.$data, { duration: 1.3, tweenedRecoveredTotal: newValue });
+    },
+    indivsTested: function(newValue) {
+      gsap.to(this.$data, { duration: 1.3, tweenedIndivsTested: newValue });
     }
   },
   methods: {
@@ -205,6 +214,7 @@ export default {
         this.casesTotal = data.totalCases;
         this.deathsTotal = data.deaths;
         this.recoveredTotal = data.recovered;
+        this.indivsTested = data.indivsTested;
       });
     auth.onAuthStateChanged(user => {
       if (user) {

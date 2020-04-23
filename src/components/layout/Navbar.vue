@@ -240,12 +240,16 @@ export default {
       this.isUpdatingStats = true;
 
       const res = await axios.post("https://ncovph.com/graphql", {
-        query: `{ cases {
-                countConfirmedCases,
-                countAdmitted,
-                countRecoveries,
-                countDeaths
-                }
+        query: `{ 
+                  cases {
+                    countConfirmedCases,
+                    countAdmitted,
+                    countRecoveries,
+                    countDeaths
+                  },
+                  testing {
+                    countUniqueInd
+                  }
             }`
       });
       const data = res.data.data;
@@ -253,9 +257,11 @@ export default {
       if (
         !data ||
         !data.cases ||
+        !data.testing ||
         data.cases.countConfirmedCases === 0 ||
         data.cases.countDeaths === 0 ||
-        data.cases.countRecoveries === 0
+        data.cases.countRecoveries === 0 ||
+        data.testing.countUniqueInd === 0
       ) {
         this.areStatsUpdatedError = true;
         return;
@@ -268,6 +274,7 @@ export default {
           totalCases: data.cases.countConfirmedCases,
           admitted: data.cases.countAdmitted,
           recovered: data.cases.countRecoveries,
+          indivsTested: data.testing.countUniqueInd,
           lastModified: new Date()
         });
       this.areStatsUpdated = true;
