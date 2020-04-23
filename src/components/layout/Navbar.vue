@@ -22,11 +22,11 @@
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Login with Google</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="updateStatsManually" v-if="authenticated">
+        <v-list-item @click="pullDOHData" v-if="authenticated">
           <v-list-item-icon>
             <v-icon>mdi-chart-line</v-icon>
           </v-list-item-icon>
-          <v-list-item-title class="drawer-text">Update Statistics</v-list-item-title>
+          <v-list-item-title class="drawer-text">Pull Latest DOH Data</v-list-item-title>
         </v-list-item>
         <v-list-item @click="logout" v-if="authenticated">
           <v-list-item-icon>
@@ -236,35 +236,41 @@ export default {
     hideStatsUpdatedError() {
       this.areStatsUpdatedError = false;
     },
-    updateStatsManually() {
+    async pullDOHData() {
       this.isUpdatingStats = true;
-      axios
-        .get("https://ncovph.com/api/counts")
-        .then(response => {
-          this.isUpdatingStats = false;
 
-          if (response.status == 200) {
-            const data = response.data;
-            // console.log(data);
-            db.collection("stats-main")
-              .doc("EXTERNAL_STATS_ID")
-              .update({
-                deaths: data.deceased,
-                totalCases: data.confirmed,
-                pui: data.pui,
-                pum: data.pum,
-                recovered: data.recovered,
-                tests: data.tests,
-                lastModified: new Date()
-              });
-            this.areStatsUpdated = true;
-          } else {
-            this.areStatsUpdatedError = true;
-          }
-        })
-        .catch(() => {
-          this.areStatsUpdatedError = true;
+      const res = await axios.post("https://ncovph.com/graphql", {
+        query: `{ cases {
+                countConfirmedCases,
+                countAdmitted,
+                countRecoveries,
+                countDeaths
+                }
+            }`
+      });
+      const data = res.data.data;
+      this.isUpdatingStats = false;
+      if (
+        !data ||
+        !data.cases ||
+        data.cases.countConfirmedCases === 0 ||
+        data.cases.countDeaths === 0 ||
+        data.cases.countRecoveries === 0
+      ) {
+        this.areStatsUpdatedError = true;
+        return;
+      }
+
+      db.collection("stats-main")
+        .doc("EXTERNAL_STATS_ID")
+        .update({
+          deaths: data.cases.countDeaths,
+          totalCases: data.cases.countConfirmedCases,
+          admitted: data.cases.countAdmitted,
+          recovered: data.cases.countRecoveries,
+          lastModified: new Date()
         });
+      this.areStatsUpdated = true;
     }
   },
   mounted() {

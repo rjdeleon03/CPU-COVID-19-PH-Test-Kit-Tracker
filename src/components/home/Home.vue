@@ -185,7 +185,7 @@ export default {
     }
   },
   mounted() {
-    this.isFetching = true;
+    // this.isFetching = true;
     db.collection("stats-main")
       .doc("MAIN_STATS_ID")
       .onSnapshot(doc => {
