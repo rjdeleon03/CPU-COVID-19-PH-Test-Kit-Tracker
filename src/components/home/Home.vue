@@ -73,10 +73,12 @@
 import gsap from "gsap";
 import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
-import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
-import TestKitsTable from "./TestKitsTable.vue";
-import AboutTab from "./AboutTab.vue";
-import Timer from "./Timer.vue";
+
+const TestKitsTable = () => import("./TestKitsTable.vue");
+const AboutTab = () => import("./AboutTab.vue");
+const Timer = () => import("./Timer.vue");
+const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
+
 export default {
   name: "Home",
   components: { ProgressDialog, TestKitsTable, AboutTab, Timer },

@@ -13,9 +13,8 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import Navbar from "./components/layout/Navbar.vue";
-import Footer from "./components/layout/Footer.vue";
+const Navbar = () => import("./components/layout/Navbar.vue");
+const Footer = () => import("./components/layout/Footer.vue");
 
 export default {
   name: "App",

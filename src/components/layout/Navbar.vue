@@ -93,14 +93,18 @@
 </template>
 
 <script>
-import SuccessDialogWithCallback from "@/components/dialog/SuccessDialogWithCallback.vue";
-import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
-import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
-import GenericInfoDialog from "@/components/dialog/GenericInfoDialog.vue";
-import SharingMenu from "@/components/layout/SharingMenu.vue";
 import { firebase } from "@firebase/app";
 import { auth, db } from "@/firebase/init";
 import axios from "axios";
+
+const SuccessDialogWithCallback = () =>
+  import("@/components/dialog/SuccessDialogWithCallback.vue");
+const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
+const ErrorDialog = () => import("@/components/dialog/ErrorDialog.vue");
+const GenericInfoDialog = () =>
+  import("@/components/dialog/GenericInfoDialog.vue");
+const SharingMenu = () => import("@/components/layout/SharingMenu.vue");
+
 export default {
   name: "Navbar",
   components: {

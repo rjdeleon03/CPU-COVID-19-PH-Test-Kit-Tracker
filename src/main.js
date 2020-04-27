@@ -9,9 +9,6 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 Vue.config.productionTip = false;
 Vue.use(VueFirestore);
 
-var SocialSharing = require("vue-social-sharing");
-Vue.use(SocialSharing);
-
 new Vue({
   render: h => h(App),
   vuetify,
