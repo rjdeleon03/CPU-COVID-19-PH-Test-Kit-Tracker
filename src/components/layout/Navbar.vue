@@ -28,6 +28,12 @@
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Pull Latest DOH Data</v-list-item-title>
         </v-list-item>
+        <v-list-item @click="updateCasesAndRankings" v-if="authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-line</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Update Cases and Rankings</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="logout" v-if="authenticated">
           <v-list-item-icon>
             <v-icon>mdi-logout</v-icon>
@@ -96,6 +102,7 @@
 import { firebase } from "@firebase/app";
 import { auth, db } from "@/firebase/init";
 import axios from "axios";
+import { caseParser } from "@/parser/cases-parser";
 
 const SuccessDialogWithCallback = () =>
   import("@/components/dialog/SuccessDialogWithCallback.vue");
@@ -282,6 +289,9 @@ export default {
           lastModified: new Date()
         });
       this.areStatsUpdated = true;
+    },
+    updateCasesAndRankings() {
+      caseParser.updateCasesAndRankings();
     }
   },
   mounted() {
