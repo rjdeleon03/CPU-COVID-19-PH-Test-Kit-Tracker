@@ -27,14 +27,14 @@
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{animatedIndivsTested}}</span>
-              <p class="label">Individuals Tested (Nth in the World)</p>
+              <p class="label">Individuals Tested</p>
             </div>
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
               <span class="figure" v-else>{{animatedPledgedMinTotal}}~{{animatedPledgedMaxTotal}}</span>
-              <p class="label">Infection Rate (Nth in the World)</p>
+              <p class="label">Infection Rate</p>
             </div>
           </v-col>
         </v-row>
@@ -49,15 +49,15 @@
       >
         <v-tabs-slider></v-tabs-slider>
 
-        <v-tab :key="items[0].tab">Test Kits</v-tab>
+        <v-tab :key="items[0].tab">Cases</v-tab>
         <v-tab :key="items[1].tab">About</v-tab>
       </v-tabs>
     </div>
 
-    <!-- Test kits table -->
+    <!-- Cases Information -->
     <v-tabs-items v-model="tab" id="table-container">
       <v-tab-item :key="items[0].tab">
-        <TestKitsTable :authenticated="authenticated" />
+        <CasesTab />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
         <AboutTab />
@@ -74,14 +74,14 @@ import gsap from "gsap";
 import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 
-const TestKitsTable = () => import("./TestKitsTable.vue");
+const CasesTab = () => import("./CasesTab.vue");
 const AboutTab = () => import("./AboutTab.vue");
 const Timer = () => import("./Timer.vue");
 const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
 
 export default {
   name: "Home",
-  components: { ProgressDialog, TestKitsTable, AboutTab, Timer },
+  components: { ProgressDialog, CasesTab, AboutTab, Timer },
   data() {
     return {
       // Fetching flag
