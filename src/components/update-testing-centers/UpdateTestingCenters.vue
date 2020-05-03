@@ -112,7 +112,6 @@ export default {
       storageRef.put(this.source).on(
         `state_changed`,
         snapshot => {
-          console.log(snapshot);
           // console.log(this.source.size + " ::" + snapshot.totalBytes);
           if (
             this.source.size === snapshot.totalBytes &&
@@ -132,7 +131,7 @@ export default {
                   }
                 }
               );
-              console.log(res.data);
+              // console.log(res.data);
               if (
                 res.status == 200 &&
                 res.data != null &&
