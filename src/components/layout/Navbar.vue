@@ -193,6 +193,8 @@ export default {
         .catch(error => {
           const errorCode = error.code;
 
+          // console.log(error)
+
           // Show dialog that user failed to log in
           if (errorCode === "auth/user-disabled") {
             _this.isNewUser = true;

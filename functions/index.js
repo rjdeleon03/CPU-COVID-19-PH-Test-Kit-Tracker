@@ -59,25 +59,26 @@ const express = require("express");
 const Papa = require("papaparse");
 const SortedMap = require("collections/sorted-map");
 const https = require('https')
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 app.post("/testing-centers", async (req, res, error) => {
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.fileUrl == null || req.body.fileUrl === "") {
-        res.end(error);
+        res.json({ error: error });
         return;
     }
     try {
         var streamHttp = await new Promise((resolve, reject) =>
             https.get(req.body.fileUrl, (res) => {
-                console.log(res);
+                // console.log(res);
                 resolve(res);
             })
         );
     } catch (e) {
-        console.log(e);
-        res.end(JSON.stringify({ "testing-centers": [] }));
+        res.json({ "testing-centers": [] });
     }
 
     var testingCentersMap = new SortedMap();
@@ -106,13 +107,21 @@ app.post("/testing-centers", async (req, res, error) => {
             })
             const entries = Array.from(testingCentersMap.values());
             // console.log(entries);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ "testing-centers": entries }));
+            res.json({ "testing-centers": entries });
         }
     }
     Papa.parse(streamHttp, config);
 
 });
+
+function setHeaders(res) {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'POST');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Content-Type', 'application/json');
+}
 
 exports.app = functions.https.onRequest(app);
 

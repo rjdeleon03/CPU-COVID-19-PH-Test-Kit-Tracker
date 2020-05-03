@@ -41,16 +41,6 @@
       </v-container>
     </v-form>
 
-    <!-- Display dialog when loading -->
-    <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
-
-    <!-- Display dialog on fetch error -->
-    <ErrorDialog
-      :isError="isFetchingError"
-      :errorMessage="fetchingErrorMessage"
-      :callback="redirectToHome"
-    />
-
     <!-- Display dialog when submitting -->
     <ProgressDialog :isLoading="isSubmitting" :loadingMessage="submittingMessage" />
 
@@ -67,7 +57,8 @@
 </template>
 
 <script>
-import { auth, storage } from "@/firebase/init";
+import { auth, storage, functionsUrl } from "@/firebase/init";
+import axios from "axios";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
@@ -83,27 +74,19 @@ export default {
         data: {}
       },
 
-      // Loading dialog
-      isFetching: false,
-      fetchingMessage: "Fetching test kit entry...",
-
-      // Loading error dialog
-      isFetchingError: false,
-      fetchingErrorMessage:
-        "An error occurred while fetching the test kit entry.",
-
       // Submitting dialog
       isSubmitting: false,
-      submittingMessage: "Saving the test kit entry...",
+      submittingMessage:
+        "Uploading the CSV file and updating the data on testing centers...",
 
       // Success dialog
       isSuccess: false,
-      successMessage: "The test kit entry has been saved.",
+      successMessage: "Testing centers have been updated.",
 
       // Failure dialog
       isSubmittingError: false,
       submittingErrorMessage:
-        "An error occurred while saving the test kit entry. Please try again.",
+        "An error occurred while updating the testing center data. Please try again.",
 
       kitId: this.$route.params.kit_id,
       source: null
@@ -135,8 +118,32 @@ export default {
             this.source.size === snapshot.totalBytes &&
             snapshot.metadata != null
           ) {
-            storageRef.getDownloadURL().then(url => {
-              console.log(url);
+            storageRef.getDownloadURL().then(async url => {
+              // console.log(url);
+              const postParams = {
+                fileUrl: url
+              };
+              const res = await axios.post(
+                functionsUrl + "/testing-centers",
+                postParams,
+                {
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                }
+              );
+              console.log(res.data);
+              if (
+                res.status == 200 &&
+                res.data != null &&
+                res.data["testing-centers"].length > 0
+              ) {
+                this.isSubmitting = false;
+                this.isSuccess = true;
+              } else {
+                this.isSubmitting = false;
+                this.isSubmittingError = true;
+              }
             });
           }
         },
@@ -152,15 +159,6 @@ export default {
     hideSubmittingError() {
       this.isSubmittingError = false;
     }
-    // task
-    //   .then(() => {
-    //     this.isSubmitting = false;
-    //     this.isSuccess = true;
-    //   })
-    //   .catch(() => {
-    //     this.isSubmitting = false;
-    //     this.isSubmittingError = false;
-    //   });
   }
 };
 </script>
