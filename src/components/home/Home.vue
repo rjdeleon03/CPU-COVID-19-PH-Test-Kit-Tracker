@@ -49,7 +49,8 @@
         <v-tabs-slider></v-tabs-slider>
 
         <v-tab :key="items[0].tab">Cases</v-tab>
-        <v-tab :key="items[1].tab">About</v-tab>
+        <v-tab :key="items[1].tab">Testing Centers</v-tab>
+        <v-tab :key="items[2].tab">About</v-tab>
       </v-tabs>
     </div>
 
@@ -59,6 +60,9 @@
         <CasesTab />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
+        <TestingCentersTab />
+      </v-tab-item>
+      <v-tab-item :key="items[2].tab">
         <AboutTab />
       </v-tab-item>
     </v-tabs-items>
@@ -74,13 +78,14 @@ import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 
 const CasesTab = () => import("./CasesTab.vue");
+const TestingCentersTab = () => import("./TestingCentersTab.vue");
 const AboutTab = () => import("./AboutTab.vue");
 const Timer = () => import("./Timer.vue");
 const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
 
 export default {
   name: "Home",
-  components: { ProgressDialog, CasesTab, AboutTab, Timer },
+  components: { ProgressDialog, CasesTab, TestingCentersTab, AboutTab, Timer },
   data() {
     return {
       // Fetching flag
@@ -126,7 +131,8 @@ export default {
       tab: null,
       items: [
         { tab: "One", content: "Tab 1 Content" },
-        { tab: "Two", content: "Tab 2 Content" }
+        { tab: "Two", content: "Tab 2 Content" },
+        { tab: "Three", content: "Tab 3 Content" }
       ]
     };
   },
