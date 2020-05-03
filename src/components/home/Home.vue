@@ -32,9 +32,8 @@
           </v-col>
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
-              <span class="figure" v-if="!usesPledgedRange">{{animatedPledgedTotal}}</span>
-              <span class="figure" v-else>{{animatedPledgedMinTotal}}~{{animatedPledgedMaxTotal}}</span>
-              <p class="label">Infection Rate</p>
+              <span class="figure">{{animatedIndivsTestedPositive}}%</span>
+              <p class="label">Detection Rate</p>
             </div>
           </v-col>
         </v-row>
@@ -120,6 +119,9 @@ export default {
       indivsTested: 0,
       tweenedIndivsTested: 0,
 
+      indivsTestedPositive: 0,
+      tweenedIndivsTestedPositive: 0,
+
       // Tabs
       tab: null,
       items: [
@@ -153,6 +155,11 @@ export default {
     animatedIndivsTested: function() {
       return utils.numberWithCommas(this.tweenedIndivsTested.toFixed(0));
     },
+    animatedIndivsTestedPositive: function() {
+      return utils.numberWithCommas(
+        this.tweenedIndivsTestedPositive.toFixed(2)
+      );
+    },
     authenticated() {
       return this.user.loggedIn;
     }
@@ -181,6 +188,12 @@ export default {
     },
     indivsTested: function(newValue) {
       gsap.to(this.$data, { duration: 1.3, tweenedIndivsTested: newValue });
+    },
+    indivsTestedPositive: function(newValue) {
+      gsap.to(this.$data, {
+        duration: 1.3,
+        tweenedIndivsTestedPositive: newValue
+      });
     }
   },
   methods: {
@@ -197,17 +210,17 @@ export default {
   },
   mounted() {
     // this.isFetching = true;
-    db.collection("stats-main")
-      .doc("MAIN_STATS_ID")
-      .onSnapshot(doc => {
-        const data = doc.data();
-        this.onHandTotal = data.testKitsOnHand;
-        this.pledgedMinTotal = data.testKitsPledgedMin;
-        this.pledgedMaxTotal = data.testKitsPledgedMax;
-        this.pledgedTotal = this.pledgedMaxTotal;
-        this.usesPledgedRange =
-          data.testKitsPledgedMax > data.testKitsPledgedMin;
-      });
+    // db.collection("stats-main")
+    //   .doc("MAIN_STATS_ID")
+    //   .onSnapshot(doc => {
+    //     const data = doc.data();
+    //     this.onHandTotal = data.testKitsOnHand;
+    //     this.pledgedMinTotal = data.testKitsPledgedMin;
+    //     this.pledgedMaxTotal = data.testKitsPledgedMax;
+    //     this.pledgedTotal = this.pledgedMaxTotal;
+    //     this.usesPledgedRange =
+    //       data.testKitsPledgedMax > data.testKitsPledgedMin;
+    //   });
     db.collection("stats-main")
       .doc("EXTERNAL_STATS_ID")
       .onSnapshot(doc => {
@@ -217,6 +230,8 @@ export default {
         this.deathsTotal = data.deaths;
         this.recoveredTotal = data.recovered;
         this.indivsTested = data.indivsTested;
+        this.indivsTestedPositive =
+          (data.indivsTestedPositive / this.indivsTested) * 100;
       });
     auth.onAuthStateChanged(user => {
       if (user) {

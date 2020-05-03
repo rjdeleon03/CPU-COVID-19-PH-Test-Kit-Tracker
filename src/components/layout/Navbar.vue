@@ -252,7 +252,8 @@ export default {
                     countDeaths
                   },
                   testing {
-                    countUniqueInd
+                    countUniqueInd,
+                    countPositiveInd
                   }
             }`
       });
@@ -265,7 +266,8 @@ export default {
         data.cases.countConfirmedCases === 0 ||
         data.cases.countDeaths === 0 ||
         data.cases.countRecoveries === 0 ||
-        data.testing.countUniqueInd === 0
+        data.testing.countUniqueInd === 0 ||
+        data.testing.countPositiveInd === 0
       ) {
         this.areStatsUpdatedError = true;
         return;
@@ -279,6 +281,7 @@ export default {
           admitted: data.cases.countAdmitted,
           recovered: data.cases.countRecoveries,
           indivsTested: data.testing.countUniqueInd,
+          indivsTestedPositive: data.testing.countPositiveInd,
           lastModified: new Date()
         });
       this.areStatsUpdated = true;
