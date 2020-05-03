@@ -1,10 +1,11 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "@/components/home/Home";
-import NewEntry from "@/components/new-entry/NewEntry";
-import UpdateStats from "@/components/update-stats/UpdateStats";
 
 Vue.use(Router);
+
+const Home = () => import("@/components/home/Home");
+const UpdateTestingCenters = () => import("@/components/update-testing-centers/UpdateTestingCenters");
+const UpdateStats = () => import("@/components/update-stats/UpdateStats");
 
 const router = new Router({
   mode: "history",
@@ -14,16 +15,21 @@ const router = new Router({
       name: "Home",
       component: Home
     },
+    // {
+    //   path: "/kits/new",
+    //   name: "NewEntry",
+    //   component: NewEntry
+    // },
+    // {
+    //   path: "/kits/edit/:kit_id",
+    //   name: "EditEntry",
+    //   component: NewEntry,
+    //   props: true
+    // },
     {
-      path: "/kits/new",
-      name: "NewEntry",
-      component: NewEntry
-    },
-    {
-      path: "/kits/edit/:kit_id",
-      name: "EditEntry",
-      component: NewEntry,
-      props: true
+      path: "/testing-centers/update",
+      name: "UpdateTestingCenters",
+      component: UpdateTestingCenters
     },
     {
       path: "/stats/update",

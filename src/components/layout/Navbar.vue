@@ -28,6 +28,12 @@
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Pull Latest DOH Data</v-list-item-title>
         </v-list-item>
+        <v-list-item @click="updateTestingCenters" v-if="authenticated">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-line</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="drawer-text">Update Testing Centers</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="logout" v-if="authenticated">
           <v-list-item-icon>
             <v-icon>mdi-logout</v-icon>
@@ -239,6 +245,9 @@ export default {
     },
     hideStatsUpdatedError() {
       this.areStatsUpdatedError = false;
+    },
+    updateTestingCenters() {
+      this.$router.push("/testing-centers/update");
     },
     async pullDOHData() {
       this.isUpdatingStats = true;
