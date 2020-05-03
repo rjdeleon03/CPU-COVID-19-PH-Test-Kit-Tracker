@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
+const testingCentersApp = require("./src/testing-centers")
 
 // Initialize app
 admin.initializeApp();
@@ -55,73 +56,5 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
 
 
 // Read data drop file for testing
-const express = require("express");
-const Papa = require("papaparse");
-const SortedMap = require("collections/sorted-map");
-const https = require('https')
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-
-app.post("/testing-centers", async (req, res, error) => {
-    // console.log(req.body);
-    if (req.body.fileUrl == null || req.body.fileUrl === "") {
-        res.json({ error: error });
-        return;
-    }
-    try {
-        var streamHttp = await new Promise((resolve, reject) =>
-            https.get(req.body.fileUrl, (res) => {
-                // console.log(res);
-                resolve(res);
-            })
-        );
-    } catch (e) {
-        res.json({ "testing-centers": [] });
-    }
-
-    var testingCentersMap = new SortedMap();
-
-    let config = {
-        delimiter: ",",
-        complete: (result) => {
-            result.data.forEach(item => {
-                const testingCenter = {
-                    name: item[0],
-                    code: item[1],
-                    // dailyOutputPositiveIndivs: item[2],
-                    // dailyOutputPositiveIndivs: item[3],
-                    testedIndivs: parseInt(item[5].replace(",", "")),
-                    testedIndivsPositive: parseInt(item[6].replace(",", "")),
-                    testedIndivsPositivePercent: item[7],
-                    testedIndivsNegative: parseInt(item[8].replace(",", "")),
-                    testedIndivsNegativePercent: item[9],
-                    testsConducted: parseInt(item[14].replace(",", "")),
-                    testsRemaining: parseInt(item[16].replace(",", "")),
-                    dateLastUpdated: item[18],
-
-                }
-                testingCentersMap.set(testingCenter.name, testingCenter);
-                // console.log(item);
-            })
-            const entries = Array.from(testingCentersMap.values());
-            // console.log(entries);
-            res.json({ "testing-centers": entries });
-        }
-    }
-    Papa.parse(streamHttp, config);
-
-});
-
-function setHeaders(res) {
-
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'POST');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Content-Type', 'application/json');
-}
-
-exports.app = functions.https.onRequest(app);
+exports.app = functions.https.onRequest(testingCentersApp);
 

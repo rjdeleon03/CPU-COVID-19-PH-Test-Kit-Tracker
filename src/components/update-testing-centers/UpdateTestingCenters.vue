@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { auth, storage, functionsUrl } from "@/firebase/init";
+import { auth, db, storage, functionsUrl } from "@/firebase/init";
 import axios from "axios";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
@@ -118,31 +118,7 @@ export default {
             snapshot.metadata != null
           ) {
             storageRef.getDownloadURL().then(async url => {
-              // console.log(url);
-              const postParams = {
-                fileUrl: url
-              };
-              const res = await axios.post(
-                functionsUrl + "/testing-centers",
-                postParams,
-                {
-                  headers: {
-                    "Content-Type": "application/json"
-                  }
-                }
-              );
-              // console.log(res.data);
-              if (
-                res.status == 200 &&
-                res.data != null &&
-                res.data["testing-centers"].length > 0
-              ) {
-                this.isSubmitting = false;
-                this.isSuccess = true;
-              } else {
-                this.isSubmitting = false;
-                this.isSubmittingError = true;
-              }
+              this.getTestingCenters(url);
             });
           }
         },
@@ -151,6 +127,55 @@ export default {
           this.isSubmittingError = false;
         }
       );
+    },
+    async getTestingCenters(csvFileUrl) {
+      const postParams = {
+        fileUrl: csvFileUrl
+      };
+      const res = await axios.post(
+        functionsUrl + "/testing-centers",
+        postParams,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      // console.log(res.data);
+      if (
+        res.status == 200 &&
+        res.data != null &&
+        res.data["testing-centers"].length > 0
+      ) {
+        this.updateTestingCentersInDB(res.data["testing-centers"]);
+      } else {
+        this.isSubmitting = false;
+        this.isSubmittingError = true;
+      }
+    },
+    updateTestingCentersInDB(testingCenters) {
+      console.log(db);
+
+      var batch = db.batch();
+      var collection = db.collection("testingCenters");
+
+      testingCenters.forEach(testingCenter => {
+        // console.log(testingCenter);
+
+        var ref = collection.doc(testingCenter.name);
+        batch.set(ref, testingCenter);
+      });
+
+      batch
+        .commit()
+        .then(() => {
+          this.isSubmitting = false;
+          this.isSuccess = true;
+        })
+        .catch(() => {
+          this.isSubmitting = false;
+          this.isSubmittingError = true;
+        });
     },
     redirectToHome() {
       this.$router.push("/");

@@ -16,6 +16,7 @@ export const auth = firebase.auth();
 export const db = firebaseApp.firestore();
 export const storage = firebaseApp.storage();
 export const functions = firebaseApp.functions();
+export const functionsUrl = "https://" + functions.region_ + "-" + firebaseApp.options.projectId + ".cloudfunctions.net/app";
 
 var lastKitsCount = 0;
 db.collection("kits").onSnapshot(async snapshot => {
