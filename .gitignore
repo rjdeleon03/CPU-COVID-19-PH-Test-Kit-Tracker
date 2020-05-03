@@ -24,3 +24,4 @@ src/firebase/config-dev.js
 src/firebase/config-prod.js
 .firebase/hosting.ZGlzdA.cache
 firebase-debug.log
+*.log

@@ -14,74 +14,105 @@ exports.disableUserOnCreate = functions.auth.user().onCreate((user) => {
 });
 
 // Update external statistics every 20 mins from 5PM to 6PM everyday
-exports.scheduledExternalStatsUpdate = functions.pubsub
-    .schedule("every 20 minutes from 17:20 to 18:30").onRun(async () => {
+// exports.scheduledExternalStatsUpdate = functions.pubsub
+//     .schedule("every 20 minutes from 17:20 to 18:30").onRun(async () => {
 
 
-        const res = await axios.post("https://ncovph.com/graphql", {
-            query: `{ cases {
-                countConfirmedCases,
-                countAdmitted,
-                countRecoveries,
-                countDeaths
-                }
-            }`
-        });
-        const data = res.data.data
-        if (!data
-            || !data.cases
-            || data.cases.countConfirmedCases === 0
-            || data.cases.countDeaths === 0
-            || data.cases.countRecoveries === 0) {
-            console.log("Error: Values are 0.")
-            return null;
-        }
-
-        console.log("totalCases: " + data.cases.countConfirmedCases
-            + ", deaths: " + data.cases.countDeaths
-            + ", recoveries: " + data.cases.countRecoveries);
-
-        db.collection("stats-main")
-            .doc("EXTERNAL_STATS_ID")
-            .update({
-                deaths: data.cases.countDeaths,
-                totalCases: data.cases.countConfirmedCases,
-                admitted: data.cases.countAdmitted,
-                recovered: data.cases.countRecoveries,
-                lastModified: new Date()
-            });
-        return null;
-    });
-
-// Automatically update test kit totals upon updating of the kits collection
-// exports.updateTestKitTotals = functions.firestore
-//     .document('kits/{kitId}').onWrite((snapshot, context) => {
-//         let docs = snapshot.docs;
-//         if (!docs) return;
-
-//         var onHandTotal = 0;
-//         var pledgedMinTotal = 0;
-//         var pledgedMaxTotal = 0;
-
-//         docs.forEach(doc => {
-//             let kit = doc.data();
-//             if (kit.units_on_hand) {
-//                 onHandTotal += parseInt(kit.units_on_hand, 10);
-//             }
-//             if (kit.units_pledged_max) {
-//                 pledgedMaxTotal += parseInt(kit.units_pledged_max, 10);
-//             }
-//             if (kit.units_pledged_min) {
-//                 pledgedMinTotal += parseInt(kit.units_pledged_min, 10);
-//             } else if (kit.units_pledged_max) {
-//                 pledgedMinTotal += parseInt(kit.units_pledged_max, 10);
-//             }
-//             db.collection("stats-main")
-//                 .doc("MAIN_STATS_ID")
-//                 .update({
-//                     testKitsOnHand: onHandTotal,
-//                     testKitsPledgedMin: pledgedMinTotal,
-//                     testKitsPledgedMax: pledgedMaxTotal
-//                 });
+//         const res = await axios.post("https://ncovph.com/graphql", {
+//             query: `{ cases {
+//                 countConfirmedCases,
+//                 countAdmitted,
+//                 countRecoveries,
+//                 countDeaths
+//                 }
+//             }`
 //         });
+//         const data = res.data.data
+//         if (!data
+//             || !data.cases
+//             || data.cases.countConfirmedCases === 0
+//             || data.cases.countDeaths === 0
+//             || data.cases.countRecoveries === 0) {
+//             console.log("Error: Values are 0.")
+//             return null;
+//         }
+
+//         console.log("totalCases: " + data.cases.countConfirmedCases
+//             + ", deaths: " + data.cases.countDeaths
+//             + ", recoveries: " + data.cases.countRecoveries);
+
+//         db.collection("stats-main")
+//             .doc("EXTERNAL_STATS_ID")
+//             .update({
+//                 deaths: data.cases.countDeaths,
+//                 totalCases: data.cases.countConfirmedCases,
+//                 admitted: data.cases.countAdmitted,
+//                 recovered: data.cases.countRecoveries,
+//                 lastModified: new Date()
+//             });
+//         return null;
 //     });
+
+
+// Read data drop file for testing
+const express = require("express");
+const Papa = require("papaparse");
+const SortedMap = require("collections/sorted-map");
+const https = require('https')
+
+const app = express();
+
+app.post("/testing-centers", async (req, res, error) => {
+    console.log(req.body);
+    if (req.body.fileUrl == null || req.body.fileUrl === "") {
+        res.end(error);
+        return;
+    }
+    try {
+        var streamHttp = await new Promise((resolve, reject) =>
+            https.get(req.body.fileUrl, (res) => {
+                console.log(res);
+                resolve(res);
+            })
+        );
+    } catch (e) {
+        console.log(e);
+        res.end(JSON.stringify({ "testing-centers": [] }));
+    }
+
+    var testingCentersMap = new SortedMap();
+
+    let config = {
+        delimiter: ",",
+        complete: (result) => {
+            result.data.forEach(item => {
+                const testingCenter = {
+                    name: item[0],
+                    code: item[1],
+                    // dailyOutputPositiveIndivs: item[2],
+                    // dailyOutputPositiveIndivs: item[3],
+                    testedIndivs: parseInt(item[5].replace(",", "")),
+                    testedIndivsPositive: parseInt(item[6].replace(",", "")),
+                    testedIndivsPositivePercent: item[7],
+                    testedIndivsNegative: parseInt(item[8].replace(",", "")),
+                    testedIndivsNegativePercent: item[9],
+                    testsConducted: parseInt(item[14].replace(",", "")),
+                    testsRemaining: parseInt(item[16].replace(",", "")),
+                    dateLastUpdated: item[18],
+
+                }
+                testingCentersMap.set(testingCenter.name, testingCenter);
+                // console.log(item);
+            })
+            const entries = Array.from(testingCentersMap.values());
+            // console.log(entries);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ "testing-centers": entries }));
+        }
+    }
+    Papa.parse(streamHttp, config);
+
+});
+
+exports.app = functions.https.onRequest(app);
+
