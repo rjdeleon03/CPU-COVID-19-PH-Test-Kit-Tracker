@@ -1,6 +1,8 @@
 import { firebase } from "@firebase/app";
-import "@firebase/firestore";
 import "@firebase/auth";
+import "@firebase/firestore";
+import "@firebase/storage";
+import "@firebase/functions";
 
 import { firebaseConfigDev } from "./config-dev";
 import { firebaseConfigProd } from "./config-prod";
@@ -10,8 +12,10 @@ const firebaseConfig = (process.env.NODE_ENV === "production") ? firebaseConfigP
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 // firebase.analytics();
-export const db = firebaseApp.firestore();
 export const auth = firebase.auth();
+export const db = firebaseApp.firestore();
+export const storage = firebaseApp.storage();
+export const functions = firebaseApp.functions();
 
 var lastKitsCount = 0;
 db.collection("kits").onSnapshot(async snapshot => {

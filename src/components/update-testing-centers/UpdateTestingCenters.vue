@@ -21,13 +21,19 @@
               >DOH Data Drop</a>. Its filename should be of the format
               <strong>DOH COVID Data Drop_ YYYYMMDD - 08 Testing Aggregates.csv</strong>.
             </p>
-            <v-file-input v-model="source" label="Source File" required color="pink darken-4"></v-file-input>
+            <v-file-input
+              v-model="source"
+              label="Source File"
+              required
+              color="pink darken-4"
+              prepend-icon="mdi-file-table-outline"
+            ></v-file-input>
           </v-col>
         </v-row>
 
         <v-row justify="center">
           <v-col cols="12" xs="2">
-            <v-btn class="default-button" @click="addKit" color="amber darken-3">
+            <v-btn class="default-button" @click="uploadFile" color="amber darken-3">
               <span class="button-text">Submit</span>
             </v-btn>
           </v-col>
@@ -61,9 +67,7 @@
 </template>
 
 <script>
-import { auth } from "@/firebase/init";
-import { db } from "@/firebase/init";
-import { natureOfAcquisition } from "../../constants";
+import { auth, storage } from "@/firebase/init";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
@@ -102,47 +106,7 @@ export default {
         "An error occurred while saving the test kit entry. Please try again.",
 
       kitId: this.$route.params.kit_id,
-      source: "",
-      sourceRules: [
-        v => !!v || "Please specify the source.",
-        v =>
-          (v && v.length <= 50) ||
-          "Source must be not longer than 50 characters."
-      ],
-      pledgedUnitsUsesRange: false,
-      datePickerVisible: false,
-      natureOfAcquisition: natureOfAcquisition,
-      acquired: "",
-      acquiredRules: [v => !!v || "Please select the nature of acquisition."],
-      onHandUnits: 0,
-      onHandUnitsRules: [
-        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
-      ],
-      pledgedMinUnits: 0,
-      pledgedMinUnitsRules: [
-        v =>
-          parseInt(v) < parseInt(this.pledgedMaxUnits) ||
-          "Minimum no. of pledged units must be less than the maximum.",
-        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
-      ],
-      pledgedMaxUnits: 0,
-      pledgedMaxUnitsRules: [
-        v =>
-          parseInt(v) > parseInt(this.pledgedMinUnits) ||
-          "Maximum no. of pledged units must be greater than the minimum.",
-        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
-      ],
-      pledgedMaxUnitsNonRangeRules: [
-        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
-      ],
-      distributedUnits: 0,
-      distributedUnitsRules: [
-        v => parseInt(v) >= 0 || "Input must be greater than or equal to zero."
-      ],
-      dateReceived: new Date().toISOString().slice(0, 10),
-      dateReceivedRules: [
-        v => !!v || "Please specify the date the test kits were received."
-      ]
+      source: null
     };
   },
   mounted() {
@@ -155,102 +119,48 @@ export default {
         this.$router.push("/").catch(() => {});
       }
     });
-
-    if (!this.kitId) return;
-    this.isFetching = true;
-    this.dbKits()
-      .doc(this.kitId)
-      .get()
-      .then(doc => {
-        // console.log(doc.data());
-        const data = doc.data();
-
-        this.isFetching = false;
-        this.source = data.source;
-        this.acquired = this.natureOfAcquisition[data.nature_of_acquisition];
-        this.pledgedMinUnits = data.units_pledged_min;
-        this.pledgedMaxUnits = data.units_pledged_max;
-        this.onHandUnits = data.units_on_hand;
-        this.distributedUnits = data.units_used;
-        this.dateReceived = data.date_received;
-
-        const minUnits = parseInt(this.pledgedMinUnits, 10);
-        const maxUnits = parseInt(this.pledgedMaxUnits, 10);
-        this.pledgedUnitsUsesRange = minUnits > 0 && maxUnits > minUnits;
-      })
-      .catch(() => {
-        this.isFetching = false;
-        this.isFetchingError = true;
-      });
   },
-  watch: {
-    acquired: function(newValue) {
-      if (newValue !== this.natureOfAcquisition[0]) {
-        if (!this.dateReceived) {
-          this.dateReceived = new Date().toISOString().slice(0, 10);
-        }
-      }
-    }
-  },
+  watch: {},
   methods: {
-    dbKits() {
-      return db.collection("kits");
-    },
-    addKit() {
-      if (!this.$refs.form.validate()) return;
-      if (this.acquired === this.natureOfAcquisition[0]) {
-        this.onHandUnits = 0;
-        this.distributedUnits = 0;
-        this.dateReceived = null;
-      }
-
+    uploadFile() {
+      // console.log(this.source);
       this.isSubmitting = true;
-      var task = null;
-      if (this.kitId) {
-        task = this.dbKits()
-          .doc(this.kitId)
-          .update({
-            date_received: this.dateReceived,
-            nature_of_acquisition: this.natureOfAcquisition.findIndex(v => {
-              return v === this.acquired;
-            }),
-            source: this.source,
-            timestampModified: new Date().getTime() * -1,
-            units_on_hand: parseInt(this.onHandUnits, 10),
-            units_pledged_max: parseInt(this.pledgedMaxUnits, 10),
-            units_pledged_min: parseInt(this.pledgedMinUnits, 10),
-            units_used: parseInt(this.distributedUnits, 10)
-          });
-      } else {
-        task = this.dbKits().add({
-          date_received: this.dateReceived,
-          nature_of_acquisition: this.natureOfAcquisition.findIndex(v => {
-            return v === this.acquired;
-          }),
-          source: this.source,
-          timestamp: new Date().getTime() * -1,
-          units_on_hand: parseInt(this.onHandUnits, 10),
-          units_pledged_max: parseInt(this.pledgedMaxUnits, 10),
-          units_pledged_min: parseInt(this.pledgedMinUnits, 10),
-          units_used: parseInt(this.distributedUnits, 10)
-        });
-      }
-      task
-        .then(() => {
-          this.isSubmitting = false;
-          this.isSuccess = true;
-        })
-        .catch(() => {
+      const storageRef = storage.ref("DOH-Testing-Aggregates.csv");
+      storageRef.put(this.source).on(
+        `state_changed`,
+        snapshot => {
+          console.log(snapshot);
+          // console.log(this.source.size + " ::" + snapshot.totalBytes);
+          if (
+            this.source.size === snapshot.totalBytes &&
+            snapshot.metadata != null
+          ) {
+            storageRef.getDownloadURL().then(url => {
+              console.log(url);
+            });
+          }
+        },
+        () => {
           this.isSubmitting = false;
           this.isSubmittingError = false;
-        });
+        }
+      );
     },
     redirectToHome() {
-      this.$router.push("/").catch(() => {});
+      this.$router.push("/");
     },
     hideSubmittingError() {
       this.isSubmittingError = false;
     }
+    // task
+    //   .then(() => {
+    //     this.isSubmitting = false;
+    //     this.isSuccess = true;
+    //   })
+    //   .catch(() => {
+    //     this.isSubmitting = false;
+    //     this.isSubmittingError = false;
+    //   });
   }
 };
 </script>
