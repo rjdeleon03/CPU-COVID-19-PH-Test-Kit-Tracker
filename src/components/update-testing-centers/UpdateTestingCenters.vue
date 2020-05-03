@@ -57,7 +57,8 @@
 </template>
 
 <script>
-import { auth, db, storage, functionsUrl } from "@/firebase/init";
+import { auth, db, functionsUrl } from "@/firebase/init";
+import testingCentersUtils from "@/utils/testing-centers-utils";
 import axios from "axios";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
@@ -88,7 +89,6 @@ export default {
       submittingErrorMessage:
         "An error occurred while updating the testing center data. Please try again.",
 
-      kitId: this.$route.params.kit_id,
       source: null
     };
   },
@@ -107,26 +107,28 @@ export default {
   methods: {
     uploadFile() {
       // console.log(this.source);
-      this.isSubmitting = true;
-      const storageRef = storage.ref("DOH-Testing-Aggregates.csv");
-      storageRef.put(this.source).on(
-        `state_changed`,
-        snapshot => {
-          // console.log(this.source.size + " ::" + snapshot.totalBytes);
-          if (
-            this.source.size === snapshot.totalBytes &&
-            snapshot.metadata != null
-          ) {
-            storageRef.getDownloadURL().then(async url => {
-              this.getTestingCenters(url);
-            });
-          }
-        },
-        () => {
-          this.isSubmitting = false;
-          this.isSubmittingError = false;
-        }
-      );
+      const result = testingCentersUtils.get(this.$papa, this.source);
+      console.log(result);
+      // this.isSubmitting = true;
+      // const storageRef = storage.ref("DOH-Testing-Aggregates.csv");
+      // storageRef.put(this.source).on(
+      //   `state_changed`,
+      //   snapshot => {
+      //     console.log(this.source.size + " ::" + snapshot.totalBytes);
+      //     if (
+      //       this.source.size === snapshot.totalBytes &&
+      //       snapshot.metadata != null
+      //     ) {
+      //       storageRef.getDownloadURL().then(async url => {
+      //         this.getTestingCenters(url);
+      //       });
+      //     }
+      //   },
+      //   () => {
+      //     this.isSubmitting = false;
+      //     this.isSubmittingError = false;
+      //   }
+      // );
     },
     async getTestingCenters(csvFileUrl) {
       const postParams = {
@@ -141,7 +143,7 @@ export default {
           }
         }
       );
-      // console.log(res.data);
+      console.log(res.data);
       if (
         res.status == 200 &&
         res.data != null &&
