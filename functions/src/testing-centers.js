@@ -42,6 +42,7 @@ app.post("/testing-centers", async (req, res, error) => {
                 testedIndivsNegativePercent: headerArray.indexOf("% negative/ unique individuals"),
                 testsConducted: headerArray.indexOf("TOTAL TESTS CONDUCTED"),
                 testsRemaining: headerArray.indexOf("REMAINING AVAILABLE TESTS"),
+                region: headerArray.indexOf("Region"),
                 dateLastUpdated: headerArray.indexOf("Date"),
             }
 
@@ -59,6 +60,9 @@ app.post("/testing-centers", async (req, res, error) => {
                     testedIndivsNegativePercent: item[indices.testedIndivsNegativePercent],
                     testsConducted: parseInt(item[indices.testsConducted].replace(",", "")),
                     testsRemaining: parseInt(item[indices.testsRemaining].replace(",", "")),
+                    location: {
+                        region: item[indices.region].replace("/r", ""),
+                    },
                     dateLastUpdated: item[indices.dateLastUpdated],
 
                 }
@@ -199,8 +203,10 @@ function addRegionsAndCoords(testingCenter) {
             }
             break;
         default:
-            testingCenter.location = {
-                "region": "Luzon"
+            if (testingCenter.location == null || testingCenter.location.region == null) {
+                testingCenter.location = {
+                    "region": "Luzon"
+                }
             }
     }
 }
