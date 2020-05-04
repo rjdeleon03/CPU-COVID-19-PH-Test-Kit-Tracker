@@ -83,7 +83,7 @@ export default {
           value: "location.region",
         },
       ],
-
+      regionBreakdown: null,
       chartsLib: null,
       regionChartData: [
         // [
@@ -144,6 +144,11 @@ export default {
           ["", "Luzon", "Visayas", "Mindanao"],
           ["No. of Testing Centers", luzonCount, visayasCount, mindanaoCount],
         ];
+        this.regionBreakdown = {
+          luzon: luzonCount,
+          visayas: visayasCount,
+          mindanao: mindanaoCount,
+        };
       });
   },
   methods: {
