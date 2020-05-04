@@ -1,8 +1,9 @@
 const express = require("express");
 const Papa = require("papaparse");
 const SortedMap = require("collections/sorted-map");
-const https = require('https')
+const https = require('https');
 const cors = require('cors');
+const functions = require('firebase-functions');
 
 const app = express();
 app.use(cors());

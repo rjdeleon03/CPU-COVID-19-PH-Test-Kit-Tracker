@@ -4,6 +4,9 @@
       <v-card-title>
         <div>
           <p>Breakdown by Region</p>
+          <p>Luzon: {{ regionBreakdown.luzon }}</p>
+          <p>Visayas: {{ regionBreakdown.visayas }}</p>
+          <p>Mindanao: {{ regionBreakdown.mindanao }}</p>
         </div>
       </v-card-title>
       <v-data-table
@@ -32,6 +35,7 @@ export default {
   data() {
     return {
       testingCenters: [],
+      regionBreakdown: {},
       tableSearch: "",
       tableHeaders: [
         {
@@ -81,10 +85,35 @@ export default {
     db.collection("testingCenters")
       .orderBy("name")
       .onSnapshot(snapshot => {
+        var luzonCount = 0;
+        var visayasCount = 0;
+        var mindanaoCount = 0;
+
         snapshot.docs.forEach(doc => {
           let data = doc.data();
           this.testingCenters.push(data);
+
+          switch (data.location.region) {
+            case "Luzon":
+              luzonCount++;
+              break;
+            case "Visayas":
+              visayasCount++;
+              break;
+            case "Mindanao":
+              mindanaoCount++;
+              break;
+          }
         });
+        this.regionChartData = [
+          ["", "Luzon", "Visayas", "Mindanao"],
+          ["No. of Testing Centers", luzonCount, visayasCount, mindanaoCount]
+        ];
+        this.regionBreakdown = {
+          luzon: luzonCount,
+          visayas: visayasCount,
+          mindanao: mindanaoCount
+        };
       });
   }
 };
