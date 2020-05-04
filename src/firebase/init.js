@@ -1,7 +1,6 @@
 import { firebase } from "@firebase/app";
 import "@firebase/auth";
 import "@firebase/firestore";
-import "@firebase/storage";
 
 import { firebaseConfigDev } from "./config-dev";
 // import { firebaseConfigProd } from "./config-prod";
@@ -13,7 +12,6 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 // firebase.analytics();
 export const auth = firebase.auth();
 export const db = firebaseApp.firestore();
-export const storage = firebaseApp.storage();
 
 var lastKitsCount = 0;
 db.collection("kits").onSnapshot(async (snapshot) => {
