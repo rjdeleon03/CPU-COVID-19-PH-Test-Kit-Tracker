@@ -57,9 +57,8 @@
 </template>
 
 <script>
-import { auth, db, functionsUrl } from "@/firebase/init";
+import { auth, db } from "@/firebase/init";
 import testingCentersUtils from "@/utils/testing-centers-utils";
-import axios from "axios";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
@@ -107,53 +106,16 @@ export default {
   methods: {
     uploadFile() {
       // console.log(this.source);
-      const result = testingCentersUtils.get(this.$papa, this.source);
-      console.log(result);
-      // this.isSubmitting = true;
-      // const storageRef = storage.ref("DOH-Testing-Aggregates.csv");
-      // storageRef.put(this.source).on(
-      //   `state_changed`,
-      //   snapshot => {
-      //     console.log(this.source.size + " ::" + snapshot.totalBytes);
-      //     if (
-      //       this.source.size === snapshot.totalBytes &&
-      //       snapshot.metadata != null
-      //     ) {
-      //       storageRef.getDownloadURL().then(async url => {
-      //         this.getTestingCenters(url);
-      //       });
-      //     }
-      //   },
-      //   () => {
-      //     this.isSubmitting = false;
-      //     this.isSubmittingError = false;
-      //   }
-      // );
-    },
-    async getTestingCenters(csvFileUrl) {
-      const postParams = {
-        fileUrl: csvFileUrl
+      this.isSubmitting = true;
+      const complete = testingCenters => {
+        console.log(testingCenters);
+        this.updateTestingCentersInDB(testingCenters);
       };
-      const res = await axios.post(
-        functionsUrl + "/testing-centers",
-        postParams,
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      console.log(res.data);
-      if (
-        res.status == 200 &&
-        res.data != null &&
-        res.data["testing-centers"].length > 0
-      ) {
-        this.updateTestingCentersInDB(res.data["testing-centers"]);
-      } else {
+      const error = () => {
         this.isSubmitting = false;
         this.isSubmittingError = true;
-      }
+      };
+      testingCentersUtils.get(this.$papa, this.source, complete, error);
     },
     updateTestingCentersInDB(testingCenters) {
       console.log(db);

@@ -2,7 +2,6 @@ import { firebase } from "@firebase/app";
 import "@firebase/auth";
 import "@firebase/firestore";
 import "@firebase/storage";
-import "@firebase/functions";
 
 import { firebaseConfigDev } from "./config-dev";
 // import { firebaseConfigProd } from "./config-prod";
@@ -15,11 +14,9 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const db = firebaseApp.firestore();
 export const storage = firebaseApp.storage();
-export const functions = firebaseApp.functions();
-export const functionsUrl = "https://" + functions.region_ + "-" + firebaseApp.options.projectId + ".cloudfunctions.net/app";
 
 var lastKitsCount = 0;
-db.collection("kits").onSnapshot(async snapshot => {
+db.collection("kits").onSnapshot(async (snapshot) => {
   let docs = snapshot.docs;
   if (!docs) return;
 
@@ -29,7 +26,7 @@ db.collection("kits").onSnapshot(async snapshot => {
   var usedTotal = 0;
   var hasPendingWrites = false;
 
-  docs.forEach(doc => {
+  docs.forEach((doc) => {
     let kit = doc.data();
     if (kit.units_on_hand) {
       onHandTotal += parseInt(kit.units_on_hand, 10);
@@ -62,7 +59,7 @@ db.collection("kits").onSnapshot(async snapshot => {
         testKitsUsed: usedTotal,
         testKitsOnHand: onHandTotal,
         testKitsPledgedMin: pledgedMinTotal,
-        testKitsPledgedMax: pledgedMaxTotal
+        testKitsPledgedMax: pledgedMaxTotal,
       });
   }
   lastKitsCount = docs.length;
@@ -71,6 +68,3 @@ db.collection("kits").onSnapshot(async snapshot => {
   // console.log("pledgedMinTotal: " + pledgedMinTotal);
   // console.log("pledgedMaxTotal: " + pledgedMaxTotal);
 });
-
-
-
