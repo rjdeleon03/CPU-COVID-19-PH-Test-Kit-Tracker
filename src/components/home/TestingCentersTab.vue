@@ -5,9 +5,12 @@
         <div>
           <p>Breakdown by Region</p>
           <GChart
-            type="ColumnChart"
+            type="BarChart"
             :data="regionChartData"
             :options="regionChartOptions"
+            :settings="{ packages: ['bar'] }"
+            :createChart="(el, google) => new google.charts.Bar(el)"
+            @ready="onChartReady"
           />
         </div>
       </v-card-title>
@@ -80,6 +83,8 @@ export default {
           value: "location.region",
         },
       ],
+
+      chartsLib: null,
       regionChartData: [
         // [
         //   "Genre",
@@ -93,12 +98,23 @@ export default {
         // ],
         // ["", 10, 24, 20, 32, 18, 5, ""],
       ],
-      regionChartOptions: {
-        isStacked: "relative",
-        bar: { groupWidth: "75%" },
-        orientation: "horizontal",
-      },
     };
+  },
+  computed: {
+    regionChartOptions() {
+      if (!this.chartsLib) return null;
+      return this.chartsLib.charts.Bar.convertOptions({
+        chart: {
+          title: "Breakdown by Region",
+        },
+        bars: "horizontal", // Required for Material Bar Charts.
+        hAxis: { format: "decimal" },
+        height: 200,
+        width: 500,
+        isStacked: true,
+        colors: ["#1b9e77", "#d95f02", "#7570b3"],
+      });
+    },
   },
   mounted() {
     db.collection("testingCenters")
@@ -125,10 +141,15 @@ export default {
           }
         });
         this.regionChartData = [
-          ["", "", "", ""],
-          ["1", luzonCount, visayasCount, mindanaoCount],
+          ["", "Luzon", "Visayas", "Mindanao"],
+          ["No. of Testing Centers", luzonCount, visayasCount, mindanaoCount],
         ];
       });
+  },
+  methods: {
+    onChartReady(chart, google) {
+      this.chartsLib = google;
+    },
   },
 };
 </script>
