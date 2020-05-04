@@ -85,19 +85,7 @@ export default {
       ],
       regionBreakdown: null,
       chartsLib: null,
-      regionChartData: [
-        // [
-        //   "Genre",
-        //   "Fantasy & Sci Fi",
-        //   "Romance",
-        //   "Mystery/Crime",
-        //   "General",
-        //   "Western",
-        //   "Literature",
-        //   { role: "annotation" },
-        // ],
-        // ["", 10, 24, 20, 32, 18, 5, ""],
-      ],
+      regionChartData: [],
     };
   },
   computed: {
