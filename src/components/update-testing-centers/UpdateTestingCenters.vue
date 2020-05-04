@@ -18,7 +18,7 @@
               <a
                 href="https://bit.ly/dohcovid19data"
                 target="_"
-              >DOH Data Drop</a>. Its filename should be of the format
+              >DOH Data Drop</a>. Its filename is usually of the format
               <strong>DOH COVID Data Drop_ YYYYMMDD - 08 Testing Aggregates.csv</strong>.
             </p>
             <v-file-input

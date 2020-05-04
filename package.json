@@ -20,6 +20,7 @@
     "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.6.11",
     "vue-firestore": "^0.3.30",
+    "vue-google-charts": "^0.3.2",
     "vue-papa-parse": "^1.3.0",
     "vue-router": "^3.1.6",
     "vue-social-sharing": "^2.4.7",

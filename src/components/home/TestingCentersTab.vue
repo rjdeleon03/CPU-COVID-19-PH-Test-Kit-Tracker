@@ -4,6 +4,11 @@
       <v-card-title>
         <div>
           <p>Breakdown by Region</p>
+          <GChart
+            type="ColumnChart"
+            :data="regionChartData"
+            :options="regionChartOptions"
+          />
         </div>
       </v-card-title>
       <v-data-table
@@ -37,17 +42,17 @@ export default {
         {
           text: "Name",
           align: "start",
-          value: "name"
+          value: "name",
         },
         {
           text: "Individuals Tested",
           align: "end",
-          value: "testedIndivs"
+          value: "testedIndivs",
         },
         {
           text: "Positive Results",
           align: "end",
-          value: "testedIndivsPositive"
+          value: "testedIndivsPositive",
         },
         // {
         //   text: "Positive Results %",
@@ -57,7 +62,7 @@ export default {
         {
           text: "Negative Results",
           align: "end",
-          value: "testedIndivsNegative"
+          value: "testedIndivsNegative",
         },
         // {
         //   text: "Negative Results %",
@@ -67,28 +72,65 @@ export default {
         {
           text: "Remaining Tests",
           align: "end",
-          value: "testsRemaining"
+          value: "testsRemaining",
         },
         {
           text: "Region",
           align: "end",
-          value: "location.region"
-        }
-      ]
+          value: "location.region",
+        },
+      ],
+      regionChartData: [
+        // [
+        //   "Genre",
+        //   "Fantasy & Sci Fi",
+        //   "Romance",
+        //   "Mystery/Crime",
+        //   "General",
+        //   "Western",
+        //   "Literature",
+        //   { role: "annotation" },
+        // ],
+        // ["", 10, 24, 20, 32, 18, 5, ""],
+      ],
+      regionChartOptions: {
+        isStacked: "relative",
+        bar: { groupWidth: "75%" },
+        orientation: "horizontal",
+      },
     };
   },
   mounted() {
     db.collection("testingCenters")
       .orderBy("name")
-      .onSnapshot(snapshot => {
-        snapshot.docs.forEach(doc => {
+      .onSnapshot((snapshot) => {
+        var luzonCount = 0;
+        var visayasCount = 0;
+        var mindanaoCount = 0;
+
+        snapshot.docs.forEach((doc) => {
           let data = doc.data();
           this.testingCenters.push(data);
+
+          switch (data.location.region) {
+            case "Luzon":
+              luzonCount++;
+              break;
+            case "Visayas":
+              visayasCount++;
+              break;
+            case "Mindanao":
+              mindanaoCount++;
+              break;
+          }
         });
+        this.regionChartData = [
+          ["", "", "", ""],
+          ["1", luzonCount, visayasCount, mindanaoCount],
+        ];
       });
-  }
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>
