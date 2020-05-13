@@ -2,12 +2,36 @@
   <v-container>
     <v-card>
       <v-card-title>
-        <div>
-          <p>Breakdown by Region</p>
-          <p>Luzon: {{ regionBreakdown.luzon }}</p>
-          <p>Visayas: {{ regionBreakdown.visayas }}</p>
-          <p>Mindanao: {{ regionBreakdown.mindanao }}</p>
-        </div>
+        <v-row justify="center" no-gutters>
+          <v-col cols="12">
+            <p align="center">Breakdown by Region</p>
+            <!-- <p>Luzon: {{ regionBreakdown.luzon }}</p>
+            <p>Visayas: {{ regionBreakdown.visayas }}</p>
+            <p>Mindanao: {{ regionBreakdown.mindanao }}</p>-->
+          </v-col>
+        </v-row>
+        <v-container>
+          <v-row justify="center" no-gutters>
+            <v-col cols="4" xl="4" lg="4" md="4" sm="12" xs="12">Luzon: {{ regionBreakdown.luzon }}</v-col>
+            <v-col
+              cols="4"
+              xl="4"
+              lg="4"
+              md="4"
+              sm="12"
+              xs="12"
+            >Visayas: {{ regionBreakdown.visayas }}</v-col>
+            <v-col
+              cols="4"
+              xl="4"
+              lg="4"
+              md="4"
+              sm="12"
+              xs="12"
+            >Mindanao: {{ regionBreakdown.mindanao }}</v-col>
+          </v-row>
+        </v-container>
+        <div></div>
       </v-card-title>
       <v-data-table
         :headers="tableHeaders"
