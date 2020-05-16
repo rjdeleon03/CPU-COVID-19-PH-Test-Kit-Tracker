@@ -2,33 +2,44 @@
   <v-container>
     <v-card>
       <v-card-title>
-        <v-row justify="center" no-gutters>
+        <!-- <v-row justify="center" no-gutters>
           <v-col cols="12">
             <p align="center">Breakdown by Region</p>
-            <!-- <p>Luzon: {{ regionBreakdown.luzon }}</p>
-            <p>Visayas: {{ regionBreakdown.visayas }}</p>
-            <p>Mindanao: {{ regionBreakdown.mindanao }}</p>-->
           </v-col>
-        </v-row>
+        </v-row>-->
         <v-container>
           <v-row justify="center" no-gutters>
-            <v-col cols="4" xl="4" lg="4" md="4" sm="12" xs="12">Luzon: {{ regionBreakdown.luzon }}</v-col>
+            <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col>
+            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">Luzon: {{ regionBreakdown.luzon }}</v-col>
             <v-col
-              cols="4"
-              xl="4"
-              lg="4"
+              cols="12"
+              xl="3"
+              lg="3"
               md="4"
               sm="12"
               xs="12"
             >Visayas: {{ regionBreakdown.visayas }}</v-col>
             <v-col
-              cols="4"
-              xl="4"
-              lg="4"
+              cols="12"
+              xl="3"
+              lg="3"
               md="4"
               sm="12"
               xs="12"
             >Mindanao: {{ regionBreakdown.mindanao }}</v-col>
+          </v-row>
+        </v-container>
+        <v-container>
+          <v-row>
+            <v-text-field
+              v-model="tableSearch"
+              append-icon="mdi-magnify"
+              label="Search"
+              color="pink darken-4"
+              single-line
+              hide-details
+              class="search-field"
+            ></v-text-field>
           </v-row>
         </v-container>
         <div></div>
@@ -40,13 +51,18 @@
         :search="tableSearch"
         multi-sort
       >
-        <!-- <template v-slot:item.source="{ item }">
-          <strong>{{ item.source }}</strong>
+        <template v-slot:item.testedIndivs="{ item }">
+          <span>{{utils.numberWithCommas(item.testedIndivs)}}</span>
         </template>
-        <template v-slot:item.actions="{ item }" v-if="authenticated">
-          <v-icon small class="mr-2" @click="navigateToEditTestKit(item)">mdi-pencil</v-icon>
-          <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
-        </template>-->
+        <template v-slot:item.testedIndivsPositive="{ item }">
+          <span>{{utils.numberWithCommas(item.testedIndivsPositive)}}</span>
+        </template>
+        <template v-slot:item.testedIndivsNegative="{ item }">
+          <span>{{utils.numberWithCommas(item.testedIndivsNegative)}}</span>
+        </template>
+        <template v-slot:item.testsRemaining="{ item }">
+          <span>{{utils.numberWithCommas(item.testsRemaining)}}</span>
+        </template>
       </v-data-table>
     </v-card>
   </v-container>
@@ -54,12 +70,18 @@
 
 <script>
 import { db } from "@/firebase/init";
+import { utils } from "../../utils";
 export default {
   name: "TestingCentersTab",
   data() {
     return {
+      utils: utils,
       testingCenters: [],
-      regionBreakdown: {},
+      regionBreakdown: {
+        luzon: 0,
+        visayas: 0,
+        mindanao: 0
+      },
       tableSearch: "",
       tableHeaders: [
         {
