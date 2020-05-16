@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container id="testing-centers">
     <v-card>
       <v-card-title>
         <!-- <v-row justify="center" no-gutters>
@@ -8,29 +8,47 @@
           </v-col>
         </v-row>-->
         <v-container>
-          <v-row justify="center" no-gutters>
-            <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col>
-            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">Luzon: {{ regionBreakdown.luzon }}</v-col>
-            <v-col
-              cols="12"
-              xl="3"
-              lg="3"
-              md="4"
-              sm="12"
-              xs="12"
-            >Visayas: {{ regionBreakdown.visayas }}</v-col>
-            <v-col
-              cols="12"
-              xl="3"
-              lg="3"
-              md="4"
-              sm="12"
-              xs="12"
-            >Mindanao: {{ regionBreakdown.mindanao }}</v-col>
+          <v-row justify="center" no-gutters class="primary--text">
+            <!-- <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col> -->
+            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+              <div class="figures-container" v-ripple="{ center: true }" v-on:click="searchLuzon">
+                <span class="figure">{{ regionBreakdown.luzon }}</span>
+                <p class="label">Luzon</p>
+              </div>
+            </v-col>
+            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+              <div class="figures-container" v-ripple="{ center: true }" v-on:click="searchVisayas">
+                <span class="figure">{{ regionBreakdown.visayas }}</span>
+                <p class="label">Visayas</p>
+              </div>
+            </v-col>
+            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+              <div
+                class="figures-container"
+                v-ripple="{ center: true }"
+                v-on:click="searchMindanao"
+              >
+                <span class="figure">{{ regionBreakdown.mindanao }}</span>
+                <p class="label">Mindanao</p>
+              </div>
+            </v-col>
           </v-row>
         </v-container>
+        <div></div>
+      </v-card-title>
+      <v-divider></v-divider>
+      <v-card-title>
         <v-container>
           <v-row>
+            <v-btn
+              icon="true"
+              id="search-clear-button"
+              color="primary"
+              v-on:click="searchClear"
+              v-if="tableSearch!=''"
+            >
+              <v-icon>close</v-icon>
+            </v-btn>
             <v-text-field
               v-model="tableSearch"
               append-icon="mdi-magnify"
@@ -42,7 +60,6 @@
             ></v-text-field>
           </v-row>
         </v-container>
-        <div></div>
       </v-card-title>
       <v-data-table
         :headers="tableHeaders"
@@ -127,6 +144,20 @@ export default {
       ]
     };
   },
+  methods: {
+    searchLuzon() {
+      this.tableSearch = "Luzon";
+    },
+    searchVisayas() {
+      this.tableSearch = "Visayas";
+    },
+    searchMindanao() {
+      this.tableSearch = "Mindanao";
+    },
+    searchClear() {
+      this.tableSearch = "";
+    }
+  },
   mounted() {
     db.collection("testingCenters")
       .orderBy("name")
@@ -166,4 +197,30 @@ export default {
 </script>
 
 <style>
+#testing-centers .figures-main.figures-container .figure {
+  font-size: 2em;
+  font-weight: 600;
+}
+#testing-centers .figures-main.figures-container .figure {
+  font-size: 2.5em;
+  font-weight: 600;
+}
+#testing-centers .label {
+  margin-bottom: 0px !important;
+  text-transform: uppercase;
+}
+#testing-centers .figures-container .figure {
+  font-size: 1.8em;
+  font-weight: 600;
+}
+#testing-centers .figures-container {
+  text-align: center;
+  padding-top: 10px;
+}
+#testing-centers #search-clear-button {
+  margin-right: 10px;
+}
+#table-container {
+  margin-top: -130px !important;
+}
 </style>
