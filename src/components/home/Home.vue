@@ -48,21 +48,25 @@
       >
         <v-tabs-slider></v-tabs-slider>
 
-        <v-tab :key="items[0].tab">Cases</v-tab>
-        <v-tab :key="items[1].tab">Testing Centers</v-tab>
-        <v-tab :key="items[2].tab">About</v-tab>
+        <v-tab :key="items[0].tab">Testing Centers</v-tab>
+        <v-tab :key="items[1].tab">Tests per 1000 (SEA)</v-tab>
+        <v-tab :key="items[2].tab">Tests per 1000 (Worldwide)</v-tab>
+        <v-tab :key="items[3].tab">About</v-tab>
       </v-tabs>
     </div>
 
     <!-- Cases Information -->
     <v-tabs-items v-model="tab" id="table-container">
       <v-tab-item :key="items[0].tab">
-        <CasesTab />
-      </v-tab-item>
-      <v-tab-item :key="items[1].tab">
         <TestingCentersTab />
       </v-tab-item>
+      <v-tab-item :key="items[1].tab">
+        <TestingInfoTab />
+      </v-tab-item>
       <v-tab-item :key="items[2].tab">
+        <TestingInfoWorldwideTab />
+      </v-tab-item>
+      <v-tab-item :key="items[3].tab">
         <AboutTab />
       </v-tab-item>
     </v-tabs-items>
@@ -77,7 +81,8 @@ import gsap from "gsap";
 import { utils } from "../../utils";
 import { auth, db } from "@/firebase/init";
 
-const CasesTab = () => import("./CasesTab.vue");
+const TestingInfoTab = () => import("./TestingInfoTab.vue");
+const TestingInfoWorldwideTab = () => import("./TestingInfoWorldwideTab.vue");
 const TestingCentersTab = () => import("./TestingCentersTab.vue");
 const AboutTab = () => import("./AboutTab.vue");
 const Timer = () => import("./Timer.vue");
@@ -85,7 +90,14 @@ const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
 
 export default {
   name: "Home",
-  components: { ProgressDialog, CasesTab, TestingCentersTab, AboutTab, Timer },
+  components: {
+    ProgressDialog,
+    TestingInfoTab,
+    TestingInfoWorldwideTab,
+    TestingCentersTab,
+    AboutTab,
+    Timer
+  },
   data() {
     return {
       // Fetching flag
@@ -132,7 +144,8 @@ export default {
       items: [
         { tab: "One", content: "Tab 1 Content" },
         { tab: "Two", content: "Tab 2 Content" },
-        { tab: "Three", content: "Tab 3 Content" }
+        { tab: "Three", content: "Tab 3 Content" },
+        { tab: "Four", content: "Tab 4 Content" }
       ]
     };
   },
