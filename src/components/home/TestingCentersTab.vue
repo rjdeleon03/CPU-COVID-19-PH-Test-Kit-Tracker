@@ -10,19 +10,19 @@
         <v-container>
           <v-row justify="center" no-gutters class="primary--text">
             <!-- <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col> -->
-            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+            <v-col cols="12" xl="3" lg="3" md="4" sm="4" xs="12">
               <div class="figures-container" v-ripple="{ center: true }" v-on:click="searchLuzon">
                 <span class="figure">{{ regionBreakdown.luzon }}</span>
                 <p class="label">Luzon</p>
               </div>
             </v-col>
-            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+            <v-col cols="12" xl="3" lg="3" md="4" sm="4" xs="12">
               <div class="figures-container" v-ripple="{ center: true }" v-on:click="searchVisayas">
                 <span class="figure">{{ regionBreakdown.visayas }}</span>
                 <p class="label">Visayas</p>
               </div>
             </v-col>
-            <v-col cols="12" xl="3" lg="3" md="4" sm="12" xs="12">
+            <v-col cols="12" xl="3" lg="3" md="4" sm="4" xs="12">
               <div
                 class="figures-container"
                 v-ripple="{ center: true }"

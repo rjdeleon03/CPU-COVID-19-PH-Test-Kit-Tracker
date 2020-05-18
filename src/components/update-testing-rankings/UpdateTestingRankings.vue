@@ -119,9 +119,9 @@ export default {
       // console.log(db);
 
       var batch = db.batch();
-      var collection = db.collection("testingRankings");
+      var collection = db.collection("stats-main");
 
-      var ref = collection.doc("TESTING_RANKINGS_MAIN");
+      var ref = collection.doc("TESTING_RANKINGS_MAIN_ID");
       batch.set(ref, testingRankings);
 
       batch

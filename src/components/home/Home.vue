@@ -61,10 +61,10 @@
         <TestingCentersTab />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
-        <TestingInfoTab />
+        <TestingInfoTab :rankingsInfo="rankingsInfo" />
       </v-tab-item>
       <v-tab-item :key="items[2].tab">
-        <TestingInfoWorldwideTab />
+        <TestingInfoWorldwideTab :rankingsInfo="rankingsInfo" />
       </v-tab-item>
       <v-tab-item :key="items[3].tab">
         <AboutTab />
@@ -138,6 +138,8 @@ export default {
 
       indivsTestedPositive: 0,
       tweenedIndivsTestedPositive: 0,
+
+      rankingsInfo: null,
 
       // Tabs
       tab: null,
@@ -229,29 +231,23 @@ export default {
   },
   mounted() {
     // this.isFetching = true;
-    // db.collection("stats-main")
-    //   .doc("MAIN_STATS_ID")
-    //   .onSnapshot(doc => {
-    //     const data = doc.data();
-    //     this.onHandTotal = data.testKitsOnHand;
-    //     this.pledgedMinTotal = data.testKitsPledgedMin;
-    //     this.pledgedMaxTotal = data.testKitsPledgedMax;
-    //     this.pledgedTotal = this.pledgedMaxTotal;
-    //     this.usesPledgedRange =
-    //       data.testKitsPledgedMax > data.testKitsPledgedMin;
-    //   });
-    db.collection("stats-main")
-      .doc("EXTERNAL_STATS_ID")
-      .onSnapshot(doc => {
-        this.isFetching = false;
+    db.collection("stats-main").onSnapshot(coll => {
+      // console.log(coll.docs);
+      coll.docs.forEach(doc => {
         const data = doc.data();
-        this.casesTotal = data.totalCases;
-        this.deathsTotal = data.deaths;
-        this.recoveredTotal = data.recovered;
-        this.indivsTested = data.indivsTested;
-        this.indivsTestedPositive =
-          (data.indivsTestedPositive / this.indivsTested) * 100;
+        if (doc.id === "EXTERNAL_STATS_ID") {
+          this.isFetching = false;
+          this.casesTotal = data.totalCases;
+          this.deathsTotal = data.deaths;
+          this.recoveredTotal = data.recovered;
+          this.indivsTested = data.indivsTested;
+          this.indivsTestedPositive =
+            (data.indivsTestedPositive / this.indivsTested) * 100;
+        } else if (doc.id === "TESTING_RANKINGS_MAIN_ID") {
+          this.rankingsInfo = data;
+        }
       });
+    });
     auth.onAuthStateChanged(user => {
       if (user) {
         this.user.loggedIn = true;

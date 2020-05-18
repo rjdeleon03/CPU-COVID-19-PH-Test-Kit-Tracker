@@ -54,7 +54,7 @@ const testingRankingsUtils = {
         const sortedSEAList = Array.from(testingCountriesMapSEA.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
         const sortedWorldList = Array.from(testingCountriesMap.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
 
-        // console.log(sortedSEAList);
+        console.log(sortedSEAList);
         // console.log(sortedWorldList);
 
         // const entries = Array.from(testingCountriesMap.values());
@@ -68,7 +68,9 @@ const testingRankingsUtils = {
         // });
         complete({
           rankingSEA: rankingSEA + 1,
+          totalSEA: sortedSEAList.length,
           rankingWorldWide: rankingWorldWide + 1,
+          totalWorldWide: sortedWorldList.length,
           dateLastUpdated: sortedSEAList[rankingSEA].dateLastUpdated,
           topFiveWorldWide: sortedWorldList.slice(0, 5)
         });
