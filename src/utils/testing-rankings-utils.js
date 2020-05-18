@@ -13,7 +13,7 @@ const testingRankingsUtils = {
         }
 
         const headerArray = result.data[0];
-        console.log(headerArray);
+        // console.log(headerArray);
 
         const indices = {
           isocode: headerArray.indexOf("iso_code"),
@@ -54,17 +54,28 @@ const testingRankingsUtils = {
         const sortedSEAList = Array.from(testingCountriesMapSEA.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
         const sortedWorldList = Array.from(testingCountriesMap.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
 
-        console.log(sortedSEAList);
-        console.log(sortedWorldList);
+        // console.log(sortedSEAList);
+        // console.log(sortedWorldList);
 
-        const entries = Array.from(testingCountriesMap.values());
+        // const entries = Array.from(testingCountriesMap.values());
+
+        const rankingSEA = sortedSEAList.findIndex((a) => a.isocode === "PHL");
+        // console.log(rankingSEA + " / " + sortedSEAList.length);
+        const rankingWorldWide = sortedWorldList.findIndex((a) => a.isocode === "PHL");
+        // console.log(rankingWorldWide + " / " + sortedWorldList.length);
         // entries.forEach((entry) => {
         //   console.log(entry)
         // });
-        complete(entries);
+        complete({
+          rankingSEA: rankingSEA + 1,
+          rankingWorldWide: rankingWorldWide + 1,
+          dateLastUpdated: sortedSEAList[rankingSEA].dateLastUpdated,
+          topFiveWorldWide: sortedWorldList.slice(0, 5)
+        });
       },
     });
   },
 };
 
 module.exports = testingRankingsUtils;
+

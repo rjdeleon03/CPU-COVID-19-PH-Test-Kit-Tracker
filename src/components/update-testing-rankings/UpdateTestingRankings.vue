@@ -14,12 +14,12 @@
         <v-row justify="center" no-gutters>
           <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
             <p align="justify">
-              Please import the latest Testing Aggregate CSV file from the
+              Please import the latest COVID-19 worldwide data from
               <a
-                href="https://bit.ly/dohcovid19data"
+                href="https://ourworldindata.org/coronavirus-data"
                 target="_"
-              >DOH Data Drop</a>. Its filename should be of the format
-              <strong>DOH COVID Data Drop_ YYYYMMDD - 08 Testing Aggregates.csv</strong>.
+              >Our World in Data</a>. Its filename should be of the format
+              <strong>owid-covid-data.csv</strong>.
             </p>
             <v-file-input
               v-model="source"
@@ -106,8 +106,8 @@ export default {
       // console.log(this.source);
       this.isSubmitting = true;
       const complete = testingRankings => {
-        console.log(testingRankings);
-        // this.updateTestingCentersInDB(testingCenters);
+        // console.log(testingRankings);
+        this.updateTestingRankingsInDB(testingRankings);
       };
       const error = () => {
         this.isSubmitting = false;
@@ -116,27 +116,24 @@ export default {
       testingRankingsUtils.get(this.$papa, this.source, complete, error);
     },
     updateTestingRankingsInDB(testingRankings) {
-      console.log(db);
+      // console.log(db);
 
-      // var batch = db.batch();
-      // var collection = db.collection("testingRankings");
+      var batch = db.batch();
+      var collection = db.collection("testingRankings");
 
-      testingRankings.forEach(testingRankingCountry => {
-        console.log(testingRankingCountry);
-        // var ref = collection.doc(testingRankingCountry.name);
-        // batch.set(ref, testingRankingCountry);
-      });
+      var ref = collection.doc("TESTING_RANKINGS_MAIN");
+      batch.set(ref, testingRankings);
 
-      // batch
-      //   .commit()
-      //   .then(() => {
-      //     this.isSubmitting = false;
-      //     this.isSuccess = true;
-      //   })
-      //   .catch(() => {
-      //     this.isSubmitting = false;
-      //     this.isSubmittingError = true;
-      //   });
+      batch
+        .commit()
+        .then(() => {
+          this.isSubmitting = false;
+          this.isSuccess = true;
+        })
+        .catch(() => {
+          this.isSubmitting = false;
+          this.isSubmittingError = true;
+        });
     },
     redirectToHome() {
       this.$router.push("/");
