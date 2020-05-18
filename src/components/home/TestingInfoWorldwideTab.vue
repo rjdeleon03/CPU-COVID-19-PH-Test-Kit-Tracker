@@ -7,7 +7,7 @@
           style="width: 100%; height: 2000px; border: 0px none;"
         ></iframe>-->
         <iframe
-          src="https://ourworldindata.org/grapher/full-list-cumulative-total-tests-per-thousand?time=latest&country=CUB+IDN+JPN+MYS+MMR+PHL+SGP+KOR+THA+VNM+ISL+BHR+LUX+LTU+DNK"
+          src="https://ourworldindata.org/grapher/full-list-cumulative-total-tests-per-thousand?time=latest&country=CUB+JPN+KOR+ISL+BHR+LUX+LTU+DNK+IDN+MYS+MMR+PHL+SGP+THA+VNM+BRN+LAO+TLS+KHM"
           style="width: 100%; height: 700px; border: 0px none;"
         ></iframe>
       </div>

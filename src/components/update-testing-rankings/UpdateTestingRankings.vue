@@ -5,7 +5,7 @@
         <v-row justify="center">
           <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
             <div class="title">
-              <h2>Update Testing Centers</h2>
+              <h2>Update Testing Rankings</h2>
               <v-divider />
             </div>
           </v-col>
@@ -44,16 +44,16 @@
     <!-- Display dialog when submitting -->
     <ProgressDialog
       :isLoading="isSubmitting"
-      loadingMessage="Uploading the CSV file and updating the data on testing centers..."
+      loadingMessage="Uploading the CSV file and updating the data on testing rankings..."
     />
 
     <!-- Display dialog on success -->
-    <SuccessDialog :isSuccess="isSuccess" successMessage="Testing centers have been updated." />
+    <SuccessDialog :isSuccess="isSuccess" successMessage="Testing rankings have been updated." />
 
     <!-- Display dialog on submission error -->
     <ErrorDialog
       :isError="isSubmittingError"
-      errorMessage="An error occurred while updating the testing center data. Please try again."
+      errorMessage="An error occurred while updating the testing rankings data. Please try again."
       :callback="hideSubmittingError"
     />
   </div>
@@ -61,12 +61,12 @@
 
 <script>
 import { auth, db } from "@/firebase/init";
-import testingCentersUtils from "@/utils/testing-centers-utils";
+import testingRankingsUtils from "@/utils/testing-rankings-utils";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 export default {
-  name: "UpdateTestingCenters",
+  name: "UpdateTestingRankings",
   components: { ProgressDialog, SuccessDialog, ErrorDialog },
   data() {
     // console.log(this.$route.params.kit_id);
@@ -105,39 +105,38 @@ export default {
     uploadFile() {
       // console.log(this.source);
       this.isSubmitting = true;
-      const complete = testingCenters => {
-        console.log(testingCenters);
-        this.updateTestingCentersInDB(testingCenters);
+      const complete = testingRankings => {
+        console.log(testingRankings);
+        // this.updateTestingCentersInDB(testingCenters);
       };
       const error = () => {
         this.isSubmitting = false;
         this.isSubmittingError = true;
       };
-      testingCentersUtils.get(this.$papa, this.source, complete, error);
+      testingRankingsUtils.get(this.$papa, this.source, complete, error);
     },
-    updateTestingCentersInDB(testingCenters) {
+    updateTestingRankingsInDB(testingRankings) {
       console.log(db);
 
-      var batch = db.batch();
-      var collection = db.collection("testingCenters");
+      // var batch = db.batch();
+      // var collection = db.collection("testingRankings");
 
-      testingCenters.forEach(testingCenter => {
-        // console.log(testingCenter);
-
-        var ref = collection.doc(testingCenter.name);
-        batch.set(ref, testingCenter);
+      testingRankings.forEach(testingRankingCountry => {
+        console.log(testingRankingCountry);
+        // var ref = collection.doc(testingRankingCountry.name);
+        // batch.set(ref, testingRankingCountry);
       });
 
-      batch
-        .commit()
-        .then(() => {
-          this.isSubmitting = false;
-          this.isSuccess = true;
-        })
-        .catch(() => {
-          this.isSubmitting = false;
-          this.isSubmittingError = true;
-        });
+      // batch
+      //   .commit()
+      //   .then(() => {
+      //     this.isSubmitting = false;
+      //     this.isSuccess = true;
+      //   })
+      //   .catch(() => {
+      //     this.isSubmitting = false;
+      //     this.isSubmittingError = true;
+      //   });
     },
     redirectToHome() {
       this.$router.push("/");

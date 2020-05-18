@@ -5,6 +5,7 @@ Vue.use(Router);
 
 const Home = () => import("@/components/home/Home");
 const UpdateTestingCenters = () => import("@/components/update-testing-centers/UpdateTestingCenters");
+const UpdateTestingRankings = () => import("@/components/update-testing-rankings/UpdateTestingRankings");
 const UpdateStats = () => import("@/components/update-stats/UpdateStats");
 
 const router = new Router({
@@ -30,6 +31,11 @@ const router = new Router({
       path: "/testing-centers/update",
       name: "UpdateTestingCenters",
       component: UpdateTestingCenters
+    },
+    {
+      path: "/testing-rankings/update",
+      name: "UpdateTestingRankings",
+      component: UpdateTestingRankings
     },
     {
       path: "/stats/update",
