@@ -16,10 +16,10 @@
             <p align="justify">
               Please import the latest Testing Aggregate CSV file from the
               <a
-                href="https://bit.ly/dohcovid19data"
+                href="https://bit.ly/DataDropPH"
                 target="_"
               >DOH Data Drop</a>. Its filename should be of the format
-              <strong>DOH COVID Data Drop_ YYYYMMDD - 08 Testing Aggregates.csv</strong>.
+              <strong>DOH COVID Data Drop_ YYYYMMDD - 07 Testing Aggregates.csv</strong>.
             </p>
             <v-file-input
               v-model="source"
@@ -34,6 +34,55 @@
         <v-row justify="center">
           <v-col cols="12" xs="2">
             <v-btn class="default-button" @click="uploadFile" color="amber darken-3">
+              <span class="button-text">Submit</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-form ref="form-2">
+      <v-container class="grey lighten-5">
+        <v-row justify="center">
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <div class="title">
+              <h2>Update Testing Rankings</h2>
+              <v-divider />
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" xl="5" lg="6" md="7" sm="8" xs="8">
+            <p align="justify">
+              Please import the latest COVID-19 worldwide data from
+              <a
+                href="https://ourworldindata.org/coronavirus-data"
+                target="_"
+              >Our World in Data</a>. Its filename should be of the format
+              <strong>owid-covid-data.csv</strong>.
+            </p>
+            <v-file-input
+              v-model="rankingsSource"
+              label="Source File"
+              required
+              color="pink darken-4"
+              prepend-icon="mdi-file-table-outline"
+            ></v-file-input>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center">
+          <v-col cols="12" xs="2">
+            <v-btn class="default-button" @click="uploadRankingsFile" color="amber darken-3">
               <span class="button-text">Submit</span>
             </v-btn>
           </v-col>
@@ -62,6 +111,7 @@
 <script>
 import { auth, db } from "@/firebase/init";
 import testingCentersUtils from "@/utils/testing-centers-utils";
+import testingRankingsUtils from "@/utils/testing-rankings-utils";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
 import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
@@ -86,7 +136,8 @@ export default {
       // Failure dialog
       isSubmittingError: false,
 
-      source: null
+      source: null,
+      rankingsSource: null
     };
   },
   mounted() {
@@ -144,6 +195,44 @@ export default {
     },
     hideSubmittingError() {
       this.isSubmittingError = false;
+    },
+    uploadRankingsFile() {
+      // console.log(this.source);
+      this.isSubmitting = true;
+      const complete = testingRankings => {
+        // console.log(testingRankings);
+        this.updateTestingRankingsInDB(testingRankings);
+      };
+      const error = () => {
+        this.isSubmitting = false;
+        this.isSubmittingError = true;
+      };
+      testingRankingsUtils.get(
+        this.$papa,
+        this.rankingsSource,
+        complete,
+        error
+      );
+    },
+    updateTestingRankingsInDB(testingRankings) {
+      // console.log(db);
+
+      var batch = db.batch();
+      var collection = db.collection("stats-main");
+
+      var ref = collection.doc("TESTING_RANKINGS_MAIN_ID");
+      batch.set(ref, testingRankings);
+
+      batch
+        .commit()
+        .then(() => {
+          this.isSubmitting = false;
+          this.isSuccess = true;
+        })
+        .catch(() => {
+          this.isSubmitting = false;
+          this.isSubmittingError = true;
+        });
     }
   }
 };

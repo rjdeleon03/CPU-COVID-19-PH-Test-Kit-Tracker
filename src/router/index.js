@@ -28,7 +28,7 @@ const router = new Router({
     //   props: true
     // },
     {
-      path: "/testing-centers/update",
+      path: "/testing-data/update",
       name: "UpdateTestingCenters",
       component: UpdateTestingCenters
     },

@@ -10,6 +10,16 @@
         <v-container>
           <v-row justify="center" no-gutters class="primary--text">
             <!-- <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col> -->
+            <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">
+              <div
+                class="figures-container total"
+                v-ripple="{ center: true }"
+                v-on:click="searchClear"
+              >
+                <span class="figure">{{ regionBreakdown.total }}</span>
+                <p class="label">Total</p>
+              </div>
+            </v-col>
             <v-col cols="12" xl="3" lg="3" md="4" sm="4" xs="12">
               <div class="figures-container" v-ripple="{ center: true }" v-on:click="searchLuzon">
                 <span class="figure">{{ regionBreakdown.luzon }}</span>
@@ -80,6 +90,9 @@
         <template v-slot:item.testsRemaining="{ item }">
           <span>{{utils.numberWithCommas(item.testsRemaining)}}</span>
         </template>
+        <template v-slot:item.backlogs="{ item }">
+          <span>{{utils.numberWithCommas(item.backlogs)}}</span>
+        </template>
       </v-data-table>
     </v-card>
   </v-container>
@@ -95,6 +108,7 @@ export default {
       utils: utils,
       testingCenters: [],
       regionBreakdown: {
+        total: 0,
         luzon: 0,
         visayas: 0,
         mindanao: 0
@@ -135,6 +149,11 @@ export default {
           text: "Remaining Tests",
           align: "end",
           value: "testsRemaining"
+        },
+        {
+          text: "Backlogs",
+          align: "end",
+          value: "backlogs"
         },
         {
           text: "Region",
@@ -189,7 +208,8 @@ export default {
         this.regionBreakdown = {
           luzon: luzonCount,
           visayas: visayasCount,
-          mindanao: mindanaoCount
+          mindanao: mindanaoCount,
+          total: luzonCount + visayasCount + mindanaoCount
         };
       });
   }
@@ -211,7 +231,16 @@ export default {
 }
 #testing-centers .figures-container .figure {
   font-size: 1.8em;
-  font-weight: 600;
+  font-weight: 700;
+}
+#testing-centers .figures-container.total .label {
+  font-weight: 700;
+  color: #f50057;
+}
+#testing-centers .figures-container.total .figure {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #f50057;
 }
 #testing-centers .figures-container {
   text-align: center;

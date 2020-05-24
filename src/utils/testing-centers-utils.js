@@ -14,22 +14,25 @@ const testingCentersUtils = {
         const headerArray = result.data[0];
 
         const indices = {
-          name: headerArray.indexOf("Name of Health Facility/Laboratory"),
-          code: headerArray.indexOf("Abbrev of Health Facility"),
-          testedIndivs: headerArray.indexOf("UNIQUE INDIVIDUALS TESTED"),
-          testedIndivsPositive: headerArray.indexOf("POSITIVE INDIVIDUALS"),
+          name: headerArray.indexOf("facility_name"),
+          // code: headerArray.indexOf("Abbrev of Health Facility"),
+          testedIndivs: headerArray.indexOf("cumulative_unique_individuals"),
+          testedIndivsPositive: headerArray.indexOf("cumulative_positive_individuals"),
           testedIndivsPositivePercent: headerArray.indexOf(
-            "% positive/ unique individuals"
+            "pct_positive_cumulative"
           ),
-          testedIndivsNegative: headerArray.indexOf("NEGATIVE INDIVIDUALS"),
+          testedIndivsNegative: headerArray.indexOf("cumulative_negative_individuals"),
           testedIndivsNegativePercent: headerArray.indexOf(
-            "% negative/ unique individuals"
+            "pct_negative_cumulative"
           ),
-          testsConducted: headerArray.indexOf("TOTAL TESTS CONDUCTED"),
-          testsRemaining: headerArray.indexOf("REMAINING AVAILABLE TESTS"),
+          testsConducted: headerArray.indexOf("cumulative_samples_tested"),
+          testsRemaining: headerArray.indexOf("remaining_available_tests"),
+          backlogs: headerArray.indexOf("backlogs"),
           region: headerArray.indexOf("Region"),
-          dateLastUpdated: headerArray.indexOf("Date"),
+          dateLastUpdated: headerArray.indexOf("report_date"),
         };
+
+        console.log(indices);
 
         // Remove first item
         result.data.shift();
@@ -41,7 +44,10 @@ const testingCentersUtils = {
           //   console.log(item);
           const testingCenter = {
             name: item[indices.name],
-            code: item[indices.code],
+            // code: item[indices.code],
+            backlogs: parseInt(
+              item[indices.backlogs].replace(",", "")
+            ),
             testedIndivs: parseInt(item[indices.testedIndivs].replace(",", "")),
             testedIndivsPositive: parseInt(
               item[indices.testedIndivsPositive].replace(",", "")
@@ -67,10 +73,16 @@ const testingCentersUtils = {
             },
             dateLastUpdated: item[indices.dateLastUpdated],
           };
+
+          if (isNaN(testingCenter.backlogs)) {
+            testingCenter.backlogs = 0;
+          }
+
           // addRegionsAndCoords(testingCenter);
           testingCentersMap.set(testingCenter.name, testingCenter);
         });
         const entries = Array.from(testingCentersMap.values());
+        console.log(entries);
         entries.forEach((entry) => {
           addRegionsAndCoords(entry);
         });
@@ -206,9 +218,19 @@ function addRegionsAndCoords(testingCenter) {
         testingCenter.location == null ||
         testingCenter.location.region == null
       ) {
-        testingCenter.location = {
-          region: "Luzon",
-        };
+        if (testingCenter.name.toUpperCase().indexOf("VISAYAS") != -1) {
+          testingCenter.location = {
+            region: "Visayas",
+          };
+        } else if (testingCenter.name.toUpperCase().indexOf("MINDANAO") != -1) {
+          testingCenter.location = {
+            region: "Mindanao",
+          };
+        } else {
+          testingCenter.location = {
+            region: "Luzon",
+          };
+        }
       }
   }
 }

@@ -32,13 +32,7 @@
           <v-list-item-icon>
             <v-icon>mdi-chart-line</v-icon>
           </v-list-item-icon>
-          <v-list-item-title class="drawer-text">Update Testing Centers</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="updateTestingRankings" v-if="authenticated">
-          <v-list-item-icon>
-            <v-icon>mdi-chart-line</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="drawer-text">Update Testing Rankings</v-list-item-title>
+          <v-list-item-title class="drawer-text">Update Testing Data</v-list-item-title>
         </v-list-item>
         <v-list-item @click="logout" v-if="authenticated">
           <v-list-item-icon>
@@ -255,7 +249,7 @@ export default {
       this.areStatsUpdatedError = false;
     },
     updateTestingCenters() {
-      this.$router.push("/testing-centers/update");
+      this.$router.push("/testing-data/update");
     },
     updateTestingRankings() {
       this.$router.push("/testing-rankings/update");
