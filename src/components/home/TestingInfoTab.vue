@@ -7,7 +7,7 @@
           <strong>{{ rankingsInfo.rankingSEA }}</strong>
           out of
           <strong>{{ rankingsInfo.totalSEA }}</strong>
-          countries in the Southeast Asia region that have released data on the number of individual tests conducted in their respective countries. The non-inclusion of some countries mean that no data on tests conducted per 1,000 individuals are not available from their countries.
+          countries in the Southeast Asia region that have released data on the number of tests conducted in their respective countries. The non-inclusion of some countries mean that no data on tests conducted per 1,000 individuals are not available from their countries.
         </v-container>
       </v-card-text>
       <v-divider></v-divider>

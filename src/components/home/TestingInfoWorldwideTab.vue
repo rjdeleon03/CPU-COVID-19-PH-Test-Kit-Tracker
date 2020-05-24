@@ -7,7 +7,7 @@
           <strong>{{ rankingsInfo.rankingWorldWide }}</strong>
           out of
           <strong>{{ rankingsInfo.totalWorldWide }}</strong>
-          countries in the world that have released data on the number of individual tests conducted in their respective countries.
+          countries in the world that have released data on the number of tests conducted in their respective countries.
           <br />
           <br />
           The chart below presents the number of tests per 1,000 people in the Philippines in comparison with the five leading countries ({{topCountriesString}}) in terms of the said metric along with South Korea, Japan, Cuba, and neighboring Southeast Asian countries.
