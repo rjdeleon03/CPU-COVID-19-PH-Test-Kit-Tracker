@@ -1,10 +1,12 @@
 const SortedMap = require("collections/sorted-map");
+const { db } = require("@/firebase/init");
 
 const testingCentersUtils = {
   get: (papa, file, complete, error) => {
     papa.parse(file, {
       complete: (result) => {
         var testingCentersMap = new SortedMap();
+        var refTestingCentersMap = new SortedMap();
 
         if (result.data == null || result.data.length < 2) {
           error();
@@ -32,61 +34,84 @@ const testingCentersUtils = {
           dateLastUpdated: headerArray.indexOf("report_date"),
         };
 
-        console.log(indices);
+        // console.log(indices);
 
         // Remove first item
         result.data.shift();
 
-        result.data.forEach((item) => {
-          if (item.length < 2) {
-            return;
-          }
-          //   console.log(item);
-          const testingCenter = {
-            name: item[indices.name],
-            // code: item[indices.code],
-            backlogs: parseInt(
-              item[indices.backlogs].replace(",", "")
-            ),
-            testedIndivs: parseInt(item[indices.testedIndivs].replace(",", "")),
-            testedIndivsPositive: parseInt(
-              item[indices.testedIndivsPositive].replace(",", "")
-            ),
-            testedIndivsPositivePercent:
-              item[indices.testedIndivsPositivePercent],
-            testedIndivsNegative: parseInt(
-              item[indices.testedIndivsNegative].replace(",", "")
-            ),
-            testedIndivsNegativePercent:
-              item[indices.testedIndivsNegativePercent],
-            testsConducted: parseInt(
-              item[indices.testsConducted].replace(",", "")
-            ),
-            testsRemaining: parseInt(
-              item[indices.testsRemaining].replace(",", "")
-            ),
-            location: {
-              region:
-                indices.region != -1
-                  ? item[indices.region].replace("/r", "")
-                  : null,
-            },
-            dateLastUpdated: item[indices.dateLastUpdated],
-          };
 
-          if (isNaN(testingCenter.backlogs)) {
-            testingCenter.backlogs = 0;
-          }
+        var collection = db.collection("testingCenters");
+        collection.orderBy("name").onSnapshot(snapshot => {
+          const docs = snapshot.docs;
+          docs.forEach(doc => {
+            const testingCenter = doc.data();
+            refTestingCentersMap.set(testingCenter.name.trim(), testingCenter);
+          });
 
-          // addRegionsAndCoords(testingCenter);
-          testingCentersMap.set(testingCenter.name, testingCenter);
+          try {
+            result.data.forEach((item) => {
+              if (item.length < 2) {
+                return;
+              }
+              //   console.log(item);
+              const testingCenter = {
+                name: item[indices.name],
+                // code: item[indices.code],
+                backlogs: parseInt(
+                  item[indices.backlogs].replace(",", "")
+                ),
+                testedIndivs: parseInt(item[indices.testedIndivs].replace(",", "")),
+                testedIndivsPositive: parseInt(
+                  item[indices.testedIndivsPositive].replace(",", "")
+                ),
+                testedIndivsPositivePercent:
+                  item[indices.testedIndivsPositivePercent],
+                testedIndivsNegative: parseInt(
+                  item[indices.testedIndivsNegative].replace(",", "")
+                ),
+                testedIndivsNegativePercent:
+                  item[indices.testedIndivsNegativePercent],
+                testsConducted: parseInt(
+                  item[indices.testsConducted].replace(",", "")
+                ),
+                testsRemaining: parseInt(
+                  item[indices.testsRemaining].replace(",", "")
+                ),
+                location: {
+                  region:
+                    indices.region != -1
+                      ? item[indices.region].replace("/r", "")
+                      : null,
+                },
+                dateLastUpdated: item[indices.dateLastUpdated],
+              };
+
+              if (isNaN(testingCenter.backlogs)) {
+                testingCenter.backlogs = 0;
+              }
+
+              // addRegionsAndCoords(testingCenter);
+              testingCentersMap.set(testingCenter.name.trim(), testingCenter);
+
+            });
+
+            const entries = Array.from(testingCentersMap.values());
+            // console.log(entries);
+            entries.forEach((entry) => {
+              addRegionsAndCoords(entry);
+
+              const existingItem = refTestingCentersMap.get(entry.name.trim());
+              if (existingItem) {
+                entry.location = existingItem.location;
+              }
+
+            });
+            // console.log(entries);
+            complete(entries);
+          } catch (_) {
+            error();
+          }
         });
-        const entries = Array.from(testingCentersMap.values());
-        console.log(entries);
-        entries.forEach((entry) => {
-          addRegionsAndCoords(entry);
-        });
-        complete(entries);
       },
     });
   },

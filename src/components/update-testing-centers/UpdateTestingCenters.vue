@@ -97,7 +97,14 @@
     />
 
     <!-- Display dialog on success -->
-    <SuccessDialog :isSuccess="isSuccess" successMessage="The testing data have been updated." />
+
+    <ConfirmationDialog
+      :isDisplayed="isSuccess"
+      title="Operation Successful"
+      message="The testing data have been updated. Do you want to return to the Home screen?"
+      :callback="redirectToHome"
+      :negativeCallback="hideSuccessMessage"
+    />
 
     <!-- Display dialog on submission error -->
     <ErrorDialog
@@ -113,11 +120,11 @@ import { auth, db } from "@/firebase/init";
 import testingCentersUtils from "@/utils/testing-centers-utils";
 import testingRankingsUtils from "@/utils/testing-rankings-utils";
 import ProgressDialog from "@/components/dialog/ProgressDialog.vue";
-import SuccessDialog from "@/components/dialog/SuccessDialog.vue";
+import ConfirmationDialog from "@/components/dialog/ConfirmationDialog.vue";
 import ErrorDialog from "@/components/dialog/ErrorDialog.vue";
 export default {
   name: "UpdateTestingCenters",
-  components: { ProgressDialog, SuccessDialog, ErrorDialog },
+  components: { ProgressDialog, ConfirmationDialog, ErrorDialog },
   data() {
     // console.log(this.$route.params.kit_id);
     return {
@@ -192,6 +199,9 @@ export default {
     },
     redirectToHome() {
       this.$router.push("/");
+    },
+    hideSuccessMessage() {
+      this.isSuccess = false;
     },
     hideSubmittingError() {
       this.isSubmittingError = false;

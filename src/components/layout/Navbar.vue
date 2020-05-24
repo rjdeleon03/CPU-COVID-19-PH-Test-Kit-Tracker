@@ -30,7 +30,7 @@
         </v-list-item>
         <v-list-item @click="updateTestingCenters" v-if="authenticated">
           <v-list-item-icon>
-            <v-icon>mdi-chart-line</v-icon>
+            <v-icon>mdi-database-edit</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="drawer-text">Update Testing Data</v-list-item-title>
         </v-list-item>
@@ -350,5 +350,11 @@ nav#navbar .drawer-text-right {
 }
 nav#navbar .drawer-text-right span {
   cursor: pointer !important;
+}
+.dialog-contents {
+  padding-top: 40px;
+}
+.dialog-contents p {
+  padding-top: 30px;
 }
 </style>

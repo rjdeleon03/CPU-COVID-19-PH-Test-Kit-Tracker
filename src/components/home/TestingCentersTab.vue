@@ -200,7 +200,6 @@ export default {
       this.forDeletion.isDeleteConfirm = false;
     },
     editTestingCenter(item) {
-      console.log(item);
       let key = item.id;
       this.$router.push("/testing-centers/edit/" + key);
     },
@@ -220,7 +219,6 @@ export default {
         var visayasCount = 0;
         var mindanaoCount = 0;
 
-        console.log(snapshot);
         this.testingCenters = [];
 
         snapshot.docs.forEach(doc => {

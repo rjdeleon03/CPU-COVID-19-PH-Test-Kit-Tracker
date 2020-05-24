@@ -12,68 +12,74 @@ const testingRankingsUtils = {
           return;
         }
 
-        const headerArray = result.data[0];
-        // console.log(headerArray);
+        try {
 
-        const indices = {
-          isocode: headerArray.indexOf("iso_code"),
-          country: headerArray.indexOf("location"),
-          date: headerArray.indexOf("date"),
-          testsPerThousand: headerArray.indexOf("total_tests_per_thousand")
-        };
+          const headerArray = result.data[0];
+          // console.log(headerArray);
 
-        // Remove first item
-        result.data.shift();
-
-        result.data.forEach((item) => {
-          if (item.length < 2) {
-            return;
-          }
-          const testingDataPerCountry = {
-            isocode: item[indices.isocode],
-            country: item[indices.country],
-            dateLastUpdated: item[indices.date],
-            testsPerThousand: item[indices.testsPerThousand]
+          const indices = {
+            isocode: headerArray.indexOf("iso_code"),
+            country: headerArray.indexOf("location"),
+            date: headerArray.indexOf("date"),
+            testsPerThousand: headerArray.indexOf("total_tests_per_thousand")
           };
-          if (testingDataPerCountry.isocode !== ""
-            && testingDataPerCountry.isocode !== "OWID_WRL"
-            && testingDataPerCountry.testsPerThousand !== "") {
-            // console.log(testingDataPerCountry.testsPerThousand);
-            // console.log(testingDataPerCountry.country + " -- " + testingDataPerCountry.dateLastUpdated + " --" + testingDataPerCountry.testsPerThousand);
 
-            testingDataPerCountry.testsPerThousand = parseFloat(testingDataPerCountry.testsPerThousand);
-            testingCountriesMap.set(testingDataPerCountry.isocode, testingDataPerCountry);
+          // Remove first item
+          result.data.shift();
 
-            if ("IDN+MYS+MMR+PHL+SGP+THA+VNM+BRN+LAO+TLS+KHM".indexOf(testingDataPerCountry.isocode) > -1) {
-              testingCountriesMapSEA.set(testingDataPerCountry.isocode, testingDataPerCountry);
-
+          result.data.forEach((item) => {
+            if (item.length < 2) {
+              return;
             }
-          }
-        });
+            const testingDataPerCountry = {
+              isocode: item[indices.isocode],
+              country: item[indices.country],
+              dateLastUpdated: item[indices.date],
+              testsPerThousand: item[indices.testsPerThousand]
+            };
+            if (testingDataPerCountry.isocode !== ""
+              && testingDataPerCountry.isocode !== "OWID_WRL"
+              && testingDataPerCountry.testsPerThousand !== "") {
+              // console.log(testingDataPerCountry.testsPerThousand);
+              // console.log(testingDataPerCountry.country + " -- " + testingDataPerCountry.dateLastUpdated + " --" + testingDataPerCountry.testsPerThousand);
 
-        const sortedSEAList = Array.from(testingCountriesMapSEA.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
-        const sortedWorldList = Array.from(testingCountriesMap.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
+              testingDataPerCountry.testsPerThousand = parseFloat(testingDataPerCountry.testsPerThousand);
+              testingCountriesMap.set(testingDataPerCountry.isocode, testingDataPerCountry);
 
-        console.log(sortedSEAList);
-        // console.log(sortedWorldList);
+              if ("IDN+MYS+MMR+PHL+SGP+THA+VNM+BRN+LAO+TLS+KHM".indexOf(testingDataPerCountry.isocode) > -1) {
+                testingCountriesMapSEA.set(testingDataPerCountry.isocode, testingDataPerCountry);
 
-        // const entries = Array.from(testingCountriesMap.values());
+              }
+            }
+          });
 
-        const rankingSEA = sortedSEAList.findIndex((a) => a.isocode === "PHL");
-        // console.log(rankingSEA + " / " + sortedSEAList.length);
-        const rankingWorldWide = sortedWorldList.findIndex((a) => a.isocode === "PHL");
-        // console.log(rankingWorldWide + " / " + sortedWorldList.length);
-        // entries.forEach((entry) => {
-        //   console.log(entry)
-        // });
-        complete({
-          rankingSEA: rankingSEA + 1,
-          totalSEA: sortedSEAList.length,
-          rankingWorldWide: rankingWorldWide + 1,
-          totalWorldWide: sortedWorldList.length,
-          dateLastUpdated: sortedSEAList[rankingSEA].dateLastUpdated,
-          topFiveWorldWide: sortedWorldList.slice(0, 5)
-        });
+          const sortedSEAList = Array.from(testingCountriesMapSEA.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
+          const sortedWorldList = Array.from(testingCountriesMap.values()).sort((a, b) => b.testsPerThousand - a.testsPerThousand);
+
+          // console.log(sortedSEAList);
+          // console.log(sortedWorldList);
+
+          // const entries = Array.from(testingCountriesMap.values());
+
+          const rankingSEA = sortedSEAList.findIndex((a) => a.isocode === "PHL");
+          // console.log(rankingSEA + " / " + sortedSEAList.length);
+          const rankingWorldWide = sortedWorldList.findIndex((a) => a.isocode === "PHL");
+          // console.log(rankingWorldWide + " / " + sortedWorldList.length);
+          // entries.forEach((entry) => {
+          //   console.log(entry)
+          // });
+          complete({
+            rankingSEA: rankingSEA + 1,
+            totalSEA: sortedSEAList.length,
+            rankingWorldWide: rankingWorldWide + 1,
+            totalWorldWide: sortedWorldList.length,
+            dateLastUpdated: sortedSEAList[rankingSEA].dateLastUpdated,
+            topFiveWorldWide: sortedWorldList.slice(0, 5)
+          });
+
+        } catch (_) {
+          error();
+        }
       },
     });
   },
