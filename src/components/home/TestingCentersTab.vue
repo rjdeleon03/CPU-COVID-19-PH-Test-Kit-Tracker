@@ -2,14 +2,8 @@
   <v-container id="testing-centers">
     <v-card>
       <v-card-title>
-        <!-- <v-row justify="center" no-gutters>
-          <v-col cols="12">
-            <p align="center">Breakdown by Region</p>
-          </v-col>
-        </v-row>-->
         <v-container>
           <v-row justify="center" no-gutters class="primary--text">
-            <!-- <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">Breakdown by Region</v-col> -->
             <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12">
               <div
                 class="figures-container total"
@@ -51,14 +45,12 @@
         <v-container>
           <v-row>
             <v-btn
-              icon="true"
               id="search-clear-button"
+              :depressed="true"
               color="primary"
               v-on:click="searchClear"
               v-if="tableSearch!=''"
-            >
-              <v-icon>close</v-icon>
-            </v-btn>
+            >CLEAR</v-btn>
             <v-text-field
               v-model="tableSearch"
               append-icon="mdi-magnify"
@@ -72,7 +64,7 @@
         </v-container>
       </v-card-title>
       <v-data-table
-        :headers="tableHeaders"
+        :headers="computedTableHeaders"
         :items="testingCenters"
         :sort-desc="[false, true]"
         :search="tableSearch"
@@ -93,6 +85,10 @@
         <template v-slot:item.backlogs="{ item }">
           <span>{{utils.numberWithCommas(item.backlogs)}}</span>
         </template>
+        <template v-slot:item.actions="{ item }" v-if="authenticated">
+          <v-icon small class="mr-2" @click="editTestingCenter(item)">mdi-pencil</v-icon>
+          <v-icon small @click="confirmDeletion(item)">mdi-delete</v-icon>
+        </template>
       </v-data-table>
     </v-card>
   </v-container>
@@ -103,6 +99,7 @@ import { db } from "@/firebase/init";
 import { utils } from "../../utils";
 export default {
   name: "TestingCentersTab",
+  props: ["authenticated"],
   data() {
     return {
       utils: utils,
@@ -159,8 +156,17 @@ export default {
           text: "Region",
           align: "end",
           value: "location.region"
-        }
-      ]
+        },
+        { text: "Actions", value: "actions", align: "end", sortable: false }
+      ],
+
+      // Deletion
+      forDeletion: {
+        isDeleteConfirm: false,
+        item: null,
+        title: "Delete Testing Center",
+        message: "Are you sure you want to delete this testing center?"
+      }
     };
   },
   methods: {
@@ -175,6 +181,19 @@ export default {
     },
     searchClear() {
       this.tableSearch = "";
+    },
+    confirmDeletion(item) {
+      this.forDeletion.item = item;
+      this.forDeletion.isDeleteConfirm = true;
+    },
+    cancelDeletion() {
+      this.forDeletion.item = null;
+      this.forDeletion.isDeleteConfirm = false;
+    },
+    editTestingCenter(item) {
+      console.log(item);
+      let key = item.id;
+      this.$router.push("/testing-centers/edit/" + key);
     }
   },
   mounted() {
@@ -188,6 +207,8 @@ export default {
         snapshot.docs.forEach(doc => {
           let data = doc.data();
           this.testingCenters.push(data);
+
+          data.id = doc.id;
 
           switch (data.location.region) {
             case "Luzon":
@@ -212,6 +233,13 @@ export default {
           total: luzonCount + visayasCount + mindanaoCount
         };
       });
+  },
+  computed: {
+    computedTableHeaders: function() {
+      return this.authenticated
+        ? this.tableHeaders
+        : this.tableHeaders.slice(0, -1);
+    }
   }
 };
 </script>
@@ -247,6 +275,7 @@ export default {
   padding-top: 10px;
 }
 #testing-centers #search-clear-button {
+  padding: 0px;
   margin-right: 10px;
 }
 #table-container {

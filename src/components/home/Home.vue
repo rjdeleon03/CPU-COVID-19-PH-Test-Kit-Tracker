@@ -68,7 +68,7 @@
     <!-- Cases Information -->
     <v-tabs-items v-model="tab" id="table-container">
       <v-tab-item :key="items[0].tab">
-        <TestingCentersTab />
+        <TestingCentersTab :authenticated="authenticated" />
       </v-tab-item>
       <v-tab-item :key="items[1].tab">
         <TestingInfoTab :rankingsInfo="rankingsInfo" />
