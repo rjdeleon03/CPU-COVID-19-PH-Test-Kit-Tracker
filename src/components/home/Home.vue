@@ -33,7 +33,17 @@
           <v-col cols="12" lg="auto" md="6" sm="6">
             <div class="figures-container">
               <span class="figure">{{animatedIndivsTestedPositive}}%</span>
-              <p class="label">Detection Rate</p>
+              <p class="label">
+                Detection Rate
+                <v-icon
+                  class="white--text"
+                  @click="displayDetectionRateInfo"
+                >mdi-help-circle-outline</v-icon>
+                <!-- <span>
+                
+                </span>
+                </p>-->
+              </p>
             </div>
           </v-col>
         </v-row>
@@ -73,6 +83,14 @@
 
     <!-- Display dialog when loading -->
     <ProgressDialog :isLoading="isFetching" :loadingMessage="fetchingMessage" />
+
+    <!-- Display dialog on detection rate info button click -->
+    <GenericInfoDialog
+      :isDisplayed="showDetectionRateInfo"
+      title="Detection Rate"
+      message="The detection rate is computed by dividing the number of positive individual tests over the total number of tested individuals. "
+      :callback="hideDetectionRateInfo"
+    />
   </div>
 </template>
 
@@ -87,10 +105,13 @@ const TestingCentersTab = () => import("./TestingCentersTab.vue");
 const AboutTab = () => import("./AboutTab.vue");
 const Timer = () => import("./Timer.vue");
 const ProgressDialog = () => import("@/components/dialog/ProgressDialog.vue");
+const GenericInfoDialog = () =>
+  import("@/components/dialog/GenericInfoDialog.vue");
 
 export default {
   name: "Home",
   components: {
+    GenericInfoDialog,
     ProgressDialog,
     TestingInfoTab,
     TestingInfoWorldwideTab,
@@ -140,6 +161,8 @@ export default {
       tweenedIndivsTestedPositive: 0,
 
       rankingsInfo: null,
+
+      showDetectionRateInfo: false,
 
       // Tabs
       tab: null,
@@ -227,6 +250,12 @@ export default {
     navigateToEditTestKit(item) {
       let key = item[".key"];
       this.$router.push("/kits/edit/" + key);
+    },
+    displayDetectionRateInfo() {
+      this.showDetectionRateInfo = true;
+    },
+    hideDetectionRateInfo() {
+      this.showDetectionRateInfo = false;
     }
   },
   mounted() {
