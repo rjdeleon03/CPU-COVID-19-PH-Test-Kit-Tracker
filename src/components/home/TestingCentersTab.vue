@@ -91,14 +91,25 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <ConfirmationDialog
+      :isDisplayed="forDeletion.isDeleteConfirm"
+      title="Delete Testing Center"
+      message="Are you sure you want to delete this testing center? This action CANNOT be undone."
+      :callback="deleteItem"
+      :negativeCallback="cancelDeletion"
+    />
   </v-container>
 </template>
 
 <script>
 import { db } from "@/firebase/init";
 import { utils } from "../../utils";
+const ConfirmationDialog = () =>
+  import("@/components/dialog/ConfirmationDialog.vue");
 export default {
   name: "TestingCentersTab",
+  components: { ConfirmationDialog },
   props: ["authenticated"],
   data() {
     return {
@@ -163,9 +174,7 @@ export default {
       // Deletion
       forDeletion: {
         isDeleteConfirm: false,
-        item: null,
-        title: "Delete Testing Center",
-        message: "Are you sure you want to delete this testing center?"
+        item: null
       }
     };
   },
@@ -194,6 +203,13 @@ export default {
       console.log(item);
       let key = item.id;
       this.$router.push("/testing-centers/edit/" + key);
+    },
+    deleteItem() {
+      let key = this.forDeletion.item.id;
+      db.collection("testingCenters")
+        .doc(key)
+        .delete();
+      this.cancelDeletion();
     }
   },
   mounted() {
@@ -203,6 +219,9 @@ export default {
         var luzonCount = 0;
         var visayasCount = 0;
         var mindanaoCount = 0;
+
+        console.log(snapshot);
+        this.testingCenters = [];
 
         snapshot.docs.forEach(doc => {
           let data = doc.data();
