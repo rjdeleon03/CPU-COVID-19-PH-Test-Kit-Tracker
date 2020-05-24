@@ -93,16 +93,16 @@
     <!-- Display dialog when submitting -->
     <ProgressDialog
       :isLoading="isSubmitting"
-      loadingMessage="Uploading the CSV file and updating the data on testing centers..."
+      loadingMessage="Uploading the CSV file and updating testing data..."
     />
 
     <!-- Display dialog on success -->
-    <SuccessDialog :isSuccess="isSuccess" successMessage="Testing centers have been updated." />
+    <SuccessDialog :isSuccess="isSuccess" successMessage="The testing data have been updated." />
 
     <!-- Display dialog on submission error -->
     <ErrorDialog
       :isError="isSubmittingError"
-      errorMessage="An error occurred while updating the testing center data. Please try again."
+      errorMessage="An error occurred while updating the testing data. Please try again."
       :callback="hideSubmittingError"
     />
   </div>
